@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  netpulse:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - netpulse_data:/var/lib/netpulse
+      - netpulse_logs:/var/log/netpulse
+      - ./config:/etc/netpulse:ro
+    environment:
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  netpulse-test:
+    build: .
+    command: pytest tests/ -v --cov=netpulse --cov-report=term
+    volumes:
+      - .:/app
+      - netpulse_test_data:/var/lib/netpulse
+      - netpulse_test_logs:/var/log/netpulse
+    environment:
+      - PYTHONPATH=/app
+    profiles:
+      - test
+    depends_on:
+      - netpulse
+
+volumes:
+  netpulse_data:
+    driver: local
+  netpulse_logs:
+    driver: local
+  netpulse_test_data:
+    driver: local
+  netpulse_test_logs:
+    driver: local

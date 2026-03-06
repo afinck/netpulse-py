@@ -1,0 +1,18 @@
+[Unit]
+Description=Netpulse Web Interface
+After=network.target netpulse.timer
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/netpulse
+User=root
+Group=root
+WorkingDirectory=/
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

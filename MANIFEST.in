@@ -1,0 +1,8 @@
+include netpulse/templates/*.html
+include netpulse/static/css/*.css
+include netpulse/static/js/*.js
+include config/default.conf
+include systemd/*.service
+include systemd/*.timer
+include debian/DEBIAN/postinst
+include debian/DEBIAN/prerm

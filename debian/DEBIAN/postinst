@@ -1,0 +1,156 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    configure)
+        # Create netpulse user if it doesn't exist
+        if ! id netpulse &>/dev/null; then
+            echo "Creating netpulse user..."
+            useradd --system --home /var/lib/netpulse --shell /usr/sbin/nologin netpulse
+        fi
+        
+        # Create necessary directories
+        echo "Creating directories..."
+        mkdir -p /var/lib/netpulse
+        mkdir -p /var/log/netpulse
+        mkdir -p /etc/netpulse
+        
+        # Set permissions
+        chown netpulse:netpulse /var/lib/netpulse
+        chown netpulse:netpulse /var/log/netpulse
+        chmod 755 /var/lib/netpulse
+        chmod 755 /var/log/netpulse
+        
+        # Copy templates to the correct location
+        echo "Installing templates..."
+        mkdir -p /usr/lib/python3.11/dist-packages/netpulse/templates
+        cp -r /usr/lib/python3/dist-packages/netpulse/templates/* /usr/lib/python3.11/dist-packages/netpulse/templates/ 2>/dev/null || true
+        
+        # Create templates __init__.py if it doesn't exist
+        if [ ! -f /usr/lib/python3.11/dist-packages/netpulse/templates/__init__.py ]; then
+            touch /usr/lib/python3.11/dist-packages/netpulse/templates/__init__.py
+        fi
+        if [ ! -f /etc/netpulse/netpulse.conf ]; then
+            echo "Creating default configuration..."
+            cat > /etc/netpulse/netpulse.conf << 'EOF'
+# Netpulse Configuration File
+
+# Server settings
+server.host=0.0.0.0
+server.port=8080
+server.debug=false
+
+# Database settings
+database.path=/var/lib/netpulse/netpulse.db
+
+# Measurement settings
+measurement.interval=300
+measurement.timeout=30
+measurement.retries=3
+
+# Logging settings
+logging.level=INFO
+logging.file=/var/log/netpulse/netpulse.log
+logging.max_size_mb=10
+logging.backup_count=5
+EOF
+            chown root:root /etc/netpulse/netpulse.conf
+            chmod 644 /etc/netpulse/netpulse.conf
+        fi
+        
+        # Check for missing dependencies and suggest installation
+        echo "Checking dependencies..."
+        missing_deps=()
+        
+        # Check Python packages
+        if ! python3 -c "import click" 2>/dev/null; then
+            missing_deps+=("python3-click")
+        fi
+        if ! python3 -c "import flask" 2>/dev/null; then
+            missing_deps+=("python3-flask")
+        fi
+        if ! python3 -c "import jinja2" 2>/dev/null; then
+            missing_deps+=("python3-jinja2")
+        fi
+        if ! python3 -c "import werkzeug" 2>/dev/null; then
+            missing_deps+=("python3-werkzeug")
+        fi
+        
+        # Check for librespeed-cli
+        if ! command -v librespeed-cli &> /dev/null; then
+            echo ""
+            echo "🔍 IMPORTANT: librespeed-cli not found!"
+            echo "📦 For bandwidth tests, please install librespeed-cli:"
+            echo "   wget https://github.com/librespeed/speedtest-cli/releases/latest/download/librespeed-cli_linux_arm64.tar.gz"
+            echo "   tar -xzf librespeed-cli_linux_arm64.tar.gz"
+            echo "   sudo mv librespeed-cli /usr/local/bin/"
+            echo "   sudo chmod +x /usr/local/bin/librespeed-cli"
+            echo ""
+            echo "📖 Or visit: https://github.com/librespeed/speedtest-cli"
+            echo "⚠️  Netpulse will work without librespeed-cli, but bandwidth tests will be disabled."
+        fi
+        
+        # Install missing dependencies if any
+        if [ ${#missing_deps[@]} -gt 0 ]; then
+            echo "Installing missing dependencies: ${missing_deps[*]}"
+            echo "Please run:"
+            echo "  sudo apt update"
+            echo "  sudo apt install -y ${missing_deps[*]}"
+            echo ""
+            echo "After installation, run:"
+            echo "  sudo dpkg --configure -a"
+            echo ""
+            echo "Netpulse will not be fully functional until dependencies are installed."
+        else
+            echo "All dependencies are satisfied!"
+        fi
+        
+        # Reload systemd daemon and handle existing units
+        echo "Reloading systemd daemon..."
+        systemctl daemon-reload
+        
+        # Stop and disable existing services if they exist
+        echo "Stopping existing services..."
+        systemctl stop netpulse.service || true
+        systemctl stop netpulse.timer || true
+        systemctl stop netpulse-web.service || true
+        systemctl disable netpulse.service || true
+        systemctl disable netpulse.timer || true
+        systemctl disable netpulse-web.service || true
+        
+        # Enable and start new services
+        echo "Enabling and starting netpulse services..."
+        systemctl enable netpulse.timer
+        systemctl enable netpulse-web.service
+        systemctl start netpulse.timer
+        systemctl start netpulse-web.service
+        
+        echo ""
+        echo "Netpulse installation completed!"
+        echo ""
+        echo "Web interface is available at: http://localhost:8080"
+        echo "Configuration file: /etc/netpulse/netpulse.conf"
+        echo "Log file: /var/log/netpulse/netpulse.log"
+        echo "Database: /var/lib/netpulse/netpulse.db"
+        echo ""
+        echo "To check service status:"
+        echo "  systemctl status netpulse.timer"
+        echo "  systemctl status netpulse-web.service"
+        echo ""
+        echo "To view logs:"
+        echo "  journalctl -u netpulse-web.service -f"
+        echo ""
+        ;;
+        
+    abort-upgrade|abort-fail-upgrade|abort-remove)
+        # Nothing to do here
+        ;;
+        
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

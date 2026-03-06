@@ -1,0 +1,11 @@
+netpulse (1.0.0) unstable; urgency=medium
+
+  * Initial release
+  * Network monitoring tool for Raspberry Pi
+  * Automatic bandwidth and latency measurements
+  * Responsive web interface with charts
+  * SQLite database for data storage
+  * Systemd timer integration
+  * Easy DEB package installation
+
+ -- Vector <axiomfield@gmail.com>  Wed, 05 Mar 2026 18:00:00 +0000

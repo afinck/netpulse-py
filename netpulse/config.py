@@ -1,0 +1,130 @@
+"""
+Configuration module for Netpulse
+"""
+
+import os
+from pathlib import Path
+
+# Default configuration
+DEFAULT_CONFIG = {
+    "database": {
+        "path": "/var/lib/netpulse/netpulse.db",
+        "backup_enabled": True,
+        "backup_interval_days": 7,
+    },
+    "measurement": {
+        "interval_minutes": 15,
+        "timeout_seconds": 30,
+        "retry_count": 3,
+        "servers": [],  # Empty means use default servers
+    },
+    "web": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "debug": False,
+        "secret_key": "change-me-in-production",
+    },
+    "logging": {
+        "level": "INFO",
+        "file": "/var/log/netpulse/netpulse.log",
+        "max_size_mb": 10,
+        "backup_count": 5,
+    },
+}
+
+
+class Config:
+    """Configuration manager"""
+    
+    def __init__(self, config_file="/etc/netpulse/netpulse.conf"):
+        self.config_file = config_file
+        self._config = DEFAULT_CONFIG.copy()
+        self.load()
+    
+    def load(self):
+        """Load configuration from file"""
+        if os.path.exists(self.config_file):
+            try:
+                # Simple config loading - could be enhanced with proper config parser
+                with open(self.config_file, 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#'):
+                            key, value = line.split('=', 1)
+                            key = key.strip()
+                            value = value.strip()
+                            
+                            # Parse nested keys like "database.path"
+                            keys = key.split('.')
+                            current = self._config
+                            
+                            for k in keys[:-1]:
+                                if k not in current:
+                                    current[k] = {}
+                                current = current[k]
+                            
+                            # Type conversion for configuration values
+                            def _convert_value(value, key):
+                                """Convert configuration value to appropriate type"""
+                                if key in ['measurement.interval_minutes', 'web.port', 'measurement.timeout_seconds', 'measurement.retry_count']:
+                                    try:
+                                        return int(value)
+                                    except (ValueError, TypeError):
+                                        return value  # Keep original if conversion fails
+                                elif key in ['web.debug']:
+                                    if value.lower() in ['true', 'false']:
+                                        return value.lower() == 'true'
+                                    return False
+                                elif key == 'logging.level':
+                                    return str(value)
+                                else:
+                                    return value
+                            
+                            current[keys[-1]] = _convert_value(value, key)
+            except Exception as e:
+                print(f"Warning: Could not load config file {self.config_file}: {e}")
+    
+    def get(self, key, default=None):
+        """Get configuration value"""
+        keys = key.split('.')
+        current = self._config
+        
+        try:
+            for k in keys:
+                current = current[k]
+            return current
+        except KeyError:
+            return default
+    
+    def set(self, key, value):
+        """Set configuration value"""
+        keys = key.split('.')
+        current = self._config
+        
+        for k in keys[:-1]:
+            if k not in current:
+                current[k] = {}
+            current = current[k]
+        
+        current[keys[-1]] = value
+    
+    def ensure_directories(self):
+        """Ensure necessary directories exist"""
+        db_path = Path(self.get('database.path'))
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        log_path = Path(self.get('logging.file'))
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+
+
+# Global config instance - will be initialized when needed
+config = None
+
+def get_config():
+    """Get the global config instance, initializing if necessary"""
+    global config
+    if config is None:
+        config = Config()
+    return config
+
+

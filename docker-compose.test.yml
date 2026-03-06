@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  netpulse-test:
+    build: .
+    command: >
+      sh -c "
+        python -m pytest tests/ -v 
+        --cov=netpulse 
+        --cov-report=term-missing 
+        --cov-report=html:/app/htmlcov
+        --junitxml=/app/test-results.xml
+      "
+    volumes:
+      - .:/app
+      - netpulse_test_data:/var/lib/netpulse
+      - netpulse_test_logs:/var/log/netpulse
+      - test_reports:/app/htmlcov
+    environment:
+      - PYTHONPATH=/app
+      - NETPULSE_TEST_MODE=true
+    working_dir: /app
+    profiles:
+      - test
+
+  integration-tests:
+    build: .
+    command: >
+      sh -c "
+        # Wait for service to be ready
+        python -c 'import time; time.sleep(10)' &&
+        
+        # Run integration tests
+        python -m pytest tests/test_integration.py -v 
+        --junitxml=/app/test-results.xml
+      "
+    volumes:
+      - .:/app
+      - netpulse_integration_data:/var/lib/netpulse
+      - netpulse_integration_logs:/var/log/netpulse
+    environment:
+      - PYTHONPATH=/app
+      - NETPULSE_TEST_MODE=true
+    working_dir: /app
+    depends_on:
+      - netpulse-service
+    profiles:
+      - integration
+
+  netpulse-service:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - netpulse_integration_data:/var/lib/netpulse
+      - netpulse_integration_logs:/var/log/netpulse
+    environment:
+      - PYTHONPATH=/app
+      - NETPULSE_TEST_MODE=true
+    command: ["python", "-c", "import sys; sys.path.insert(0, '/app'); from netpulse.web import app; from netpulse.config import get_config; config = get_config(); app.run(host=config.get('web.host', '0.0.0.0'), port=config.get('web.port', 8080), debug=config.get('web.debug', False))"]
+    user: "root"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    profiles:
+      - integration
+
+volumes:
+  netpulse_test_data:
+    driver: local
+  netpulse_test_logs:
+    driver: local
+  netpulse_integration_data:
+    driver: local
+  netpulse_integration_logs:
+    driver: local
+  test_reports:
+    driver: local

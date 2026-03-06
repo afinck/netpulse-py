@@ -1,0 +1,12 @@
+[Unit]
+Description=Netpulse Network Measurement Timer
+Requires=netpulse.service
+
+[Timer]
+# Run every 15 minutes
+OnCalendar=*:0/15
+Persistent=true
+RandomizedDelaySec=30
+
+[Install]
+WantedBy=timers.target

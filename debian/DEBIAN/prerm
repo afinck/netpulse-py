@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    remove|upgrade)
+        echo "Stopping netpulse services..."
+        systemctl stop netpulse.timer || true
+        systemctl stop netpulse-web.service || true
+        systemctl disable netpulse.timer || true
+        systemctl disable netpulse-web.service || true
+        ;;
+    
+    failed-upgrade)
+        # Nothing to do here
+        ;;
+    
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

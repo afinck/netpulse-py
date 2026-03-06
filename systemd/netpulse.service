@@ -1,0 +1,20 @@
+[Unit]
+Description=Netpulse Network Measurement Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/netpulse-measure --type bandwidth
+User=netpulse
+Group=netpulse
+StandardOutput=journal
+StandardError=journal
+
+# Basic security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Restart settings
+Restart=no
+RestartSec=5
