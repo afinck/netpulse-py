@@ -18,10 +18,14 @@ override_dh_python3:
 override_dh_auto_install:
 	dh_auto_install
 	# Copy wheel .dist-info to replace .egg-info if it exists
-	if [ -d "dist/netpulse-1.1.0.dist-info" ]; then \
+	@echo "=== Looking for wheel .dist-info ==="
+	@ls -la dist/ || echo "No dist directory found"
+	@if [ -d "dist/netpulse-1.1.0.dist-info" ]; then \
 		echo "Found wheel .dist-info, copying to replace .egg-info"; \
 		rm -rf debian/netpulse/usr/lib/python3*/dist-packages/netpulse-1.1.0.egg-info; \
 		cp -r dist/netpulse-1.1.0.dist-info debian/netpulse/usr/lib/python3*/dist-packages/; \
+	else \
+		echo "No wheel .dist-info found, keeping .egg-info"; \
 	fi
 	# Install systemd files
 	install -d debian/netpulse/lib/systemd/system
