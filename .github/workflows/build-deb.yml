@@ -12,12 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [amd64, arm64]
+        architecture: [amd64]
         include:
           - architecture: amd64
-            os: ubuntu
-            base_image: ubuntu:22.04
-          - architecture: arm64
             os: ubuntu
             base_image: ubuntu:22.04
 
@@ -39,11 +36,11 @@ jobs:
       with:
         context: .
         file: ./Dockerfile.build
-        platforms: linux/${{ matrix.architecture }}
+        platforms: linux/amd64
         target: artifacts
         outputs: |
-          type=local,dest=./build-${{ matrix.architecture }}
-        tags: netpulse:build-${{ matrix.architecture }}
+          type=local,dest=./build-amd64
+        tags: netpulse:build-amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
         provenance: false
