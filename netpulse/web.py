@@ -434,10 +434,10 @@ def api_config_set():
 
 
 def update_systemd_timer(interval_minutes):
-    """Update the systemd timer configuration"""
+    """Update systemd timer configuration"""
     import subprocess
 
-    # Calculate the systemd calendar format
+    # Calculate systemd calendar format
     if interval_minutes < 60:
         # For intervals less than an hour: *:0/X where X is the interval
         calendar_spec = f"*:0/{interval_minutes}"
@@ -463,21 +463,15 @@ def update_systemd_timer(interval_minutes):
     for line in lines:
         if line.startswith("OnCalendar="):
             updated_lines.append(f"OnCalendar={calendar_spec}")
+        else:
+            updated_lines.append(line)
     
     # Write updated timer content
     with open(timer_file, "w") as f:
         f.write("\n".join(updated_lines))
     
-    logger.info(
-        f"SystemD timer updated to run every {interval} minutes"
-    )
-    
-    return True
-
-def update_systemd_timer(interval):
-    """Update systemd timer configuration"""
+    # Update systemd
     try:
-        # Use shell=True for systemd commands
         subprocess.run(
             ["systemctl", "daemon-reload"], 
             check=True, 
@@ -489,7 +483,7 @@ def update_systemd_timer(interval):
             shell=True
         )
         logger.info(
-            f"SystemD timer updated to run every {interval} minutes"
+            f"SystemD timer updated to run every {interval_minutes} minutes"
         )
     except Exception as e:
         logger.error(f"Failed to update systemd timer: {e}")
