@@ -1,4 +1,4 @@
-netpulse (1.0.0) unstable; urgency=medium
+netpulse (1.1.0) unstable; urgency=medium
 
   * Initial release
   * Network monitoring tool for Raspberry Pi
@@ -7,5 +7,8 @@ netpulse (1.0.0) unstable; urgency=medium
   * SQLite database for data storage
   * Systemd timer integration
   * Easy DEB package installation
+  * Fixed database permission issues
+  * Improved systemd service restart behavior
+  * Enhanced UI consistency
 
- -- Vector <axiomfield@gmail.com>  Wed, 05 Mar 2026 18:00:00 +0000
+ -- Vector <axiomfield@gmail.com>  Sat, 07 Mar 2026 20:00:00 +0000
