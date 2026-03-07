@@ -25,13 +25,23 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Build DEB package
 RUN chmod +x build.sh && \
+    echo "Current directory contents:" && \
+    ls -la && \
+    echo "Building DEB package..." && \
     if [ "$TARGETARCH" = "arm64" ]; then \
         echo "Building for ARM64..."; \
         dpkg-buildpackage -us -uc -b --host-arch arm64; \
     else \
         echo "Building for AMD64..."; \
         dpkg-buildpackage -us -uc -b; \
-    fi
+    fi && \
+    echo "Build completed. Current directory contents:" && \
+    ls -la && \
+    echo "Parent directory contents:" && \
+    ls -la .. && \
+    echo "Looking for .deb files:" && \
+    find . -name "*.deb" -ls && \
+    find .. -name "*.deb" -ls
 
 # Runtime stage
 FROM --platform=$TARGETPLATFORM python:3.11-slim as runtime

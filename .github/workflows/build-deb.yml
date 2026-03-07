@@ -49,7 +49,9 @@ jobs:
     - name: List build artifacts
       run: |
         echo "Build artifacts for ${{ matrix.architecture }}:"
-        find ./build-${{ matrix.architecture }} -type f -name "*.deb" -exec ls -la {} \;
+        find ./build-${{ matrix.architecture }} -type f -name "*.deb" -exec ls -la {} \; || echo "No .deb files found"
+        echo "All files in build directory:"
+        ls -laR ./build-${{ matrix.architecture }} || echo "Build directory not found"
 
     - name: Test DEB package installation
       run: |
