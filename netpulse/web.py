@@ -22,8 +22,8 @@ else:
     # Configure logging
     config = get_config()
     log_file = config.get("logging.file", "/var/log/netpulse/netpulse.log")
-        
-        # Create log directory if it doesn't exist
+    
+    # Create log directory if it doesn't exist
     try:
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
     except (PermissionError, OSError):
