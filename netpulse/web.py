@@ -472,28 +472,30 @@ def update_systemd_timer(interval_minutes):
         f"SystemD timer updated to run every {interval} minutes"
     )
     
-    def update_systemd_timer(interval):
-        """Update systemd timer configuration"""
-        try:
-            # Use shell=True for systemd commands
-            subprocess.run(
-                ["systemctl", "daemon-reload"], 
-                check=True, 
-                shell=True
-            )
-            subprocess.run(
-                ["systemctl", "restart", "netpulse.timer"], 
-                check=True, 
-                shell=True
-            )
-            logger.info(
-                f"SystemD timer updated to run every {interval} minutes"
-            )
-        except Exception as e:
-            logger.error(f"Failed to update systemd timer: {e}")
-            return False
-        
-        return True
+    return True
+
+def update_systemd_timer(interval):
+    """Update systemd timer configuration"""
+    try:
+        # Use shell=True for systemd commands
+        subprocess.run(
+            ["systemctl", "daemon-reload"], 
+            check=True, 
+            shell=True
+        )
+        subprocess.run(
+            ["systemctl", "restart", "netpulse.timer"], 
+            check=True, 
+            shell=True
+        )
+        logger.info(
+            f"SystemD timer updated to run every {interval} minutes"
+        )
+    except Exception as e:
+        logger.error(f"Failed to update systemd timer: {e}")
+        return False
+    
+    return True
 
 
 def main():
