@@ -7,6 +7,20 @@ set -e
 echo "Building Netpulse DEB package..."
 
 # Check if we're in the right directory
+echo "=== Directory debug ==="
+echo "Current directory: $(pwd)"
+echo "Files in current directory:"
+ls -la | head -10
+echo "Looking for setup.py:"
+find . -name "setup.py" -exec ls -la {} \;
+echo "Testing setup.py file existence:"
+if [ -f "setup.py" ]; then
+    echo "setup.py exists and is readable"
+else
+    echo "setup.py does not exist or is not readable"
+fi
+echo "=== End directory debug ==="
+
 if [ ! -f "setup.py" ]; then
     echo "Error: setup.py not found. Please run this script from the project root."
     exit 1
