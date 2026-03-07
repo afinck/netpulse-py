@@ -24,22 +24,11 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Build DEB package
-RUN chmod +x build.sh
-RUN echo "Current directory contents:" && ls -la
-RUN echo "TARGETARCH: $TARGETARCH"
-RUN echo "TARGETPLATFORM: $TARGETPLATFORM"
-RUN echo "BUILDPLATFORM: $BUILDPLATFORM"
-RUN if [ "$TARGETARCH" = "arm64" ]; then echo "Building for ARM64..." && dpkg-buildpackage -us -uc -b --host-arch arm64; else echo "Building for AMD64..." && dpkg-buildpackage -us -uc -b; fi
-RUN echo "Build completed. Current directory contents:" && ls -la
-RUN echo "Parent directory contents:" && ls -la ..
-RUN echo "Looking for .deb files:" && find . -name "*.deb" -ls
-RUN echo "Looking for .deb files in parent:" && find .. -name "*.deb" -ls
-RUN echo "Copying .deb files to current directory..." && find .. -name "*.deb" -exec cp {} . \;
-RUN echo "Final directory contents:" && ls -la *.deb
-RUN echo "Verifying architecture:" && file *.deb
-RUN echo "Architecture check completed."
+RUN chmod +x build.sh && ./build.sh
+
+# Copy .deb files to current directory
+RUN find .. -name "*.deb" -exec cp {} . \;
 
 # Final stage - only copy .deb files
 FROM scratch as artifacts
-ARG TARGETARCH
 COPY --from=builder /app/*.deb /
