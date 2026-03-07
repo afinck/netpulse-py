@@ -13,7 +13,10 @@ case "$1" in
         
         # Install configuration file if it doesn't exist
         if [ ! -f /etc/netpulse/netpulse.conf ]; then
-            cp /usr/share/doc/netpulse/examples/netpulse.conf /etc/netpulse/netpulse.conf
+            cp /usr/share/doc/netpulse/default.conf /etc/netpulse/netpulse.conf 2>/dev/null || \
+            cp /usr/share/netpulse/default.conf /etc/netpulse/netpulse.conf 2>/dev/null || \
+            echo "No default config found, creating empty one" && \
+            touch /etc/netpulse/netpulse.conf
         fi
         
         # Enable and start services
