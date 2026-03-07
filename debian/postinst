@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+# Post-installation script for netpulse
+
+case "$1" in
+    configure)
+        # Create necessary directories
+        mkdir -p /var/lib/netpulse /var/log/netpulse /etc/netpulse
+        chown -R root:root /var/lib/netpulse /var/log/netpulse /etc/netpulse
+        chmod 755 /var/lib/netpulse /var/log/netpulse
+        chmod 755 /etc/netpulse
+        
+        # Install configuration file if it doesn't exist
+        if [ ! -f /etc/netpulse/netpulse.conf ]; then
+            cp /usr/share/doc/netpulse/examples/netpulse.conf /etc/netpulse/netpulse.conf
+        fi
+        
+        # Enable and start services
+        systemctl daemon-reload
+        systemctl enable netpulse.timer
+        systemctl start netpulse.timer
+        ;;
+        
+    abort-upgrade|failed-upgrade)
+        # Stop services on upgrade failure
+        systemctl stop netpulse.timer || true
+        systemctl stop netpulse.service || true
+        ;;
+esac
+
+exit 0

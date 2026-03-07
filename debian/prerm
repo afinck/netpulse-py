@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+# Pre-removal script for netpulse
+
+case "$1" in
+    remove|upgrade|failed-upgrade)
+        # Stop services before removal
+        systemctl stop netpulse.timer || true
+        systemctl stop netpulse.service || true
+        systemctl disable netpulse.timer || true
+        ;;
+        
+    disappear)
+        # Services are already stopped
+        ;;
+esac
+
+exit 0
