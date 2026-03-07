@@ -70,12 +70,13 @@ jobs:
         RUN chmod +x debian/postinst debian/prerm debian/rules build.sh
         
         # Build the package
-        RUN echo "=== Starting build process ===" && \
+        RUN echo "=== DEBUG START ===" && \
             echo "=== Current directory: $(pwd)" && \
             echo "=== Files in current directory:" && \
             ls -la && \
             echo "=== Checking for setup.py:" && \
             find . -name "setup.py" && \
+            echo "=== DEBUG END ===" && \
             chmod +x build.sh && \
             echo "=== Running build.sh ===" && \
             ./build.sh 2>&1 || (echo "Build failed, checking for errors..." && ls -la && cat build.sh | head -20 && exit 1)
