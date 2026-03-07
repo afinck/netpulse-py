@@ -463,9 +463,37 @@ def update_systemd_timer(interval_minutes):
     for line in lines:
         if line.startswith("OnCalendar="):
             updated_lines.append(f"OnCalendar={calendar_spec}")
+    
+    # Write updated timer content
+    with open(timer_file, "w") as f:
+        f.write("\n".join(updated_lines))
+    
     logger.info(
         f"SystemD timer updated to run every {interval} minutes"
     )
+    
+    def update_systemd_timer(interval):
+        """Update systemd timer configuration"""
+        try:
+            # Use shell=True for systemd commands
+            subprocess.run(
+                ["systemctl", "daemon-reload"], 
+                check=True, 
+                shell=True
+            )
+            subprocess.run(
+                ["systemctl", "restart", "netpulse.timer"], 
+                check=True, 
+                shell=True
+            )
+            logger.info(
+                f"SystemD timer updated to run every {interval} minutes"
+            )
+        except Exception as e:
+            logger.error(f"Failed to update systemd timer: {e}")
+            return False
+        
+        return True
 
 
 def main():
