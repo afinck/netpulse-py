@@ -32,8 +32,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y iputils-ping curl
         # Install librespeed-cli from GitHub releases (correct filename)
-        wget https://github.com/librespeed/speedtest-cli/releases/download/v1.0.12/librespeed-cli_1.0.12_linux_amd64.tar.gz
-        tar -xzf librespeed-cli_1.0.12_linux_amd64.tar.gz
+        wget https://github.com/librespeed/speedtest-cli/releases/download/v2.3.3/librespeed-cli_2.3.3_linux_amd64.tar.gz
+        tar -xzf librespeed-cli_2.3.3_linux_amd64.tar.gz
         sudo cp librespeed-cli /usr/local/bin/
         sudo chmod +x /usr/local/bin/librespeed-cli
         librespeed-cli --version
