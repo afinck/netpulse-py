@@ -494,7 +494,7 @@ def update_systemd_timer(interval_minutes):
 
 def main():
     """Main entry point for the web server"""
-    host = config.get("web.host", "0.0.0.0")
+    host = config.get("web.host", "127.0.0.1")
     port = config.get("web.port", 8080)
     debug = config.get("web.debug", False)
 
