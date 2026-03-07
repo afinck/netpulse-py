@@ -108,36 +108,7 @@
 /* Fix table striped contrast for better readability */
 .table-striped > tbody > tr:nth-of-type(odd) > td,
 .table-striped > tbody > tr:nth-of-type(odd) > th {
-    background-color: #f8f9fa !important;
-    color: #000000 !important;
-    font-weight: 500 !important;
-}
-
-.table-striped > tbody > tr:nth-of-type(even) > td,
-.table-striped > tbody > tr:nth-of-type(even) > th {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    font-weight: 500 !important;
-}
-
-.table-striped > tbody > tr:hover > td,
-.table-striped > tbody > tr:hover > th {
-    background-color: #e9ecef !important;
-    color: #000000 !important;
-    font-weight: 600 !important;
-}
-
-/* Additional contrast improvements for statistics table specifically */
-.card .table-striped > tbody > tr:nth-of-type(odd) > td,
-.card .table-striped > tbody > tr:nth-of-type(odd) > th {
-    background-color: #f1f3f4 !important;
-    color: #000000 !important;
-}
-
-.card .table-striped > tbody > tr:nth-of-type(even) > td,
-.card .table-striped > tbody > tr:nth-of-type(even) > th {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 /* Badge improvements */
