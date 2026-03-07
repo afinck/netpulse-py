@@ -21,14 +21,16 @@ if os.getenv("NETPULSE_TEST_MODE"):
 else:
     # Configure logging
     config = get_config()
-    log_file = config.get("logging.file", "/tmp/netpulse.log")
-
-    # Create log directory if it doesn't exist
-    try:
-        os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    except (PermissionError, OSError):
-        # Fallback to /tmp if we can't create the log directory
-        log_file = "/tmp/netpulse.log"
+    log_file = config.get("logging.file", "/var/log/netpulse/netpulse.log")
+        
+        # Create log directory if it doesn't exist
+        try:
+            os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        except (PermissionError, OSError):
+            # Fallback to /tmp if we can't create the log directory
+            import tempfile
+            temp_dir = tempfile.gettempdir()
+            log_file = os.path.join(temp_dir, "netpulse.log")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -70,9 +72,7 @@ def dashboard():
         # Convert timestamp string to datetime object if latest exists
         if latest and "timestamp" in latest:
             try:
-                latest["timestamp"] = datetime.strptime(
-                    latest["timestamp"], "%Y-%m-%d %H:%M:%S"
-                )
+                latest["timestamp"] = datetime.strptime(latest["timestamp"], "%Y-%m-%d %H:%M:%S")
             except (ValueError, TypeError) as e:
                 logger.error(f"Error parsing timestamp: {e}")
                 latest = None
@@ -463,19 +463,8 @@ def update_systemd_timer(interval_minutes):
     for line in lines:
         if line.startswith("OnCalendar="):
             updated_lines.append(f"OnCalendar={calendar_spec}")
-        else:
-            updated_lines.append(line)
-
-    # Write back to timer file
-    with open(timer_file, "w") as f:
-        f.write("\n".join(updated_lines))
-
-    # Reload systemd and restart timer
-    subprocess.run(["systemctl", "daemon-reload"], check=True)
-    subprocess.run(["systemctl", "restart", "netpulse.timer"], check=True)
-
     logger.info(
-        f"SystemD timer updated to run every {interval_minutes} minutes ({calendar_spec})"
+        f"SystemD timer updated to run every {interval} minutes"
     )
 
 

@@ -19,10 +19,10 @@ DEFAULT_CONFIG = {
         "servers": [],  # Empty means use default servers
     },
     "web": {
-        "host": "0.0.0.0",
+        "host": os.getenv("NETPULSE_HOST", "127.0.0.1"),
         "port": 8080,
-        "debug": False,
-        "secret_key": "change-me-in-production",
+        "debug": os.getenv("NETPULSE_DEBUG", "False").lower() == "true",
+        "secret_key": os.getenv("NETPULSE_SECRET_KEY", "change-me-in-production"),
     },
     "logging": {
         "level": "INFO",
