@@ -85,7 +85,6 @@ jobs:
         path: build-${{ matrix.architecture }}/*.deb
         retention-days: 30
         if-no-files-found: warn
-        enable-virus-scan: false
 
   release:
     needs: build
