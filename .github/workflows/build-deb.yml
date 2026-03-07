@@ -45,6 +45,7 @@ jobs:
         tags: netpulse:build-${{ matrix.architecture }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        provenance: false
 
     - name: List build artifacts
       run: |

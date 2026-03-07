@@ -30,7 +30,7 @@ RUN chmod +x build.sh && \
     echo "Building DEB package..." && \
     if [ "$TARGETARCH" = "arm64" ]; then \
         echo "Building for ARM64..."; \
-        dpkg-buildpackage -us -uc -b --host-arch arm64; \
+        dpkg-buildpackage -us -uc -b; \
     else \
         echo "Building for AMD64..."; \
         dpkg-buildpackage -us -uc -b; \
