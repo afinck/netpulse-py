@@ -71,11 +71,19 @@ jobs:
         fi
 
     - name: Upload DEB artifacts
+      run: |
+        echo "Preparing to upload artifacts for ${{ matrix.architecture }}..."
+        echo "Build directory contents:"
+        find ./build-${{ matrix.architecture }} -type f -ls || echo "No files found"
+        echo "Searching for .deb files to upload:"
+        find ./build-${{ matrix.architecture }} -name "*.deb" -ls || echo "No .deb files found"
+    - name: Upload DEB artifacts
       uses: actions/upload-artifact@v4
       with:
         name: netpulse-deb-${{ matrix.architecture }}
         path: build-${{ matrix.architecture }}/
         retention-days: 30
+        continue-on-error: true
 
   release:
     needs: build
