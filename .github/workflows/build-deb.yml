@@ -2,8 +2,7 @@ name: Build DEB Package
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ main, feature/github-actions-deb-build ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
