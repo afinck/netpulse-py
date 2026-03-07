@@ -86,6 +86,10 @@ jobs:
             find . -name "*.deb" -type f -exec echo "Found package: {}" \; && \
             ls -la *.deb && \
             dpkg -I *.deb && \
+            echo "=== Package contents ===" && \
+            dpkg -c *.deb | grep -E "(netpulse|\.dist-info|entry_points)" && \
+            echo "=== Python package check ===" && \
+            dpkg -c *.deb | grep -E "usr/lib/python.*/dist-packages.*netpulse" && \
             echo "=== Package verification complete ==="
         EOF
         
