@@ -12,10 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [amd64]
+        architecture: [amd64, arm64]
         include:
           - architecture: amd64
             os: ubuntu
+            base_image: ubuntu:22.04
+          - architecture: arm64
+            os: linux
             base_image: ubuntu:22.04
 
     steps:
@@ -24,9 +27,21 @@ jobs:
 
     - name: Build DEB package locally
       run: |
-        echo "Building Netpulse DEB package locally..."
+        echo "Building Netpulse DEB package for ${{ matrix.architecture }}..."
         chmod +x build.sh
+        
+        # Set architecture for ARM64 build
+        if [ "${{ matrix.architecture }}" = "arm64" ]; then
+          echo "Setting architecture for ARM64 build..."
+          export DEB_BUILD_OPTIONS="--host-arch arm64"
+        else
+          echo "Building for AMD64..."
+          export DEB_BUILD_OPTIONS=""
+        fi
+        
+        # Build the package
         ./build.sh
+        
         echo "Build completed. Current directory contents:"
         ls -la *.deb || echo "No .deb files found"
         echo "Package information:"
@@ -35,7 +50,7 @@ jobs:
     - name: Upload DEB artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: netpulse-deb-amd64
+        name: netpulse-deb-${{ matrix.architecture }}
         path: "*.deb"
         retention-days: 30
         if-no-files-found: warn

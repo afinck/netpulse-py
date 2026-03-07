@@ -29,7 +29,7 @@ chmod +x debian/postinst debian/prerm debian/rules
 
 # Build the package
 echo "Building DEB package for version $VERSION..."
-dpkg-buildpackage -us -uc -b
+dpkg-buildpackage -us -uc -b $DEB_BUILD_OPTIONS
 
 # Check if package was built
 if [ -f "../netpulse_${VERSION}_arm64.deb" ] || [ -f "../netpulse_${VERSION}_amd64.deb" ]; then
