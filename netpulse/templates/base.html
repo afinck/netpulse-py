@@ -12,6 +12,21 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Inline test for theme switching */
+        html[data-theme="dark"] body {
+            background-color: #1a1d20 !important;
+            color: #ffffff !important;
+        }
+        html[data-theme="dark"] .card {
+            background-color: #2d3748 !important;
+            border: 1px solid #495057 !important;
+            color: #ffffff !important;
+        }
+        html[data-theme="dark"] .navbar {
+            background-color: #0b5ed7 !important;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -124,7 +139,15 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
             console.log('Manually switched to:', newTheme);
+            console.log('HTML attribute:', document.documentElement.getAttribute('data-theme'));
             showNotification(`Theme auf ${newTheme === 'dark' ? 'Dunkel' : 'Hell'} umgeschaltet`, 'info');
+            
+            // Force CSS reload
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                link.setAttribute('href', href + '?v=' + Date.now());
+            });
         }
 
         function toggleAutoRefresh() {
