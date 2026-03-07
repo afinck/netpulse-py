@@ -48,38 +48,71 @@ jobs:
             python3 \
             python3-setuptools \
             python3-pip \
+            python3-dev \
             && rm -rf /var/lib/apt/lists/*
         
         WORKDIR /app
         COPY . .
         
+        # Verify all necessary files are present
+        RUN echo "=== Checking project structure ===" && \
+            ls -la && \
+            echo "=== Checking setup.py ===" && \
+            test -f setup.py && echo "setup.py found" || exit 1 && \
+            echo "=== Checking debian directory ===" && \
+            test -d debian && echo "debian directory found" || exit 1 && \
+            echo "=== Checking debian/rules ===" && \
+            test -f debian/rules && echo "debian/rules found" || exit 1 && \
+            echo "=== Checking debian/control ===" && \
+            test -f debian/control && echo "debian/control found" || exit 1 && \
+            echo "=== Checking build.sh ===" && \
+            test -f build.sh && echo "build.sh found" || exit 1
+        
+        # Set permissions for debian scripts
+        RUN chmod +x debian/postinst debian/prerm debian/rules build.sh
+        
         # Set architecture-specific configuration
         RUN dpkg --add-architecture ${{ matrix.arch }} || true
         
         # Build the package
-        RUN chmod +x build.sh && ./build.sh
+        RUN echo "=== Starting build process ===" && \
+            chmod +x build.sh && \
+            ./build.sh
         
-        # Verify the package
-        RUN ls -la *.deb && dpkg -I *.deb
+        # Verify the package was built and move to correct location
+        RUN echo "=== Checking build results ===" && \
+            find . -name "*.deb" -type f -exec echo "Found package: {}" \; && \
+            find . -name "*.deb" -type f -exec cp {} /app/ \; && \
+            ls -la *.deb && \
+            dpkg -I *.deb && \
+            echo "=== Package verification complete ==="
         EOF
         
         # Build using Docker Buildx for cross-platform support
+        echo "=== Starting Docker build ==="
         docker buildx build \
           --platform ${{ matrix.platform }} \
           --output type=local,dest=. \
           -f Dockerfile.build .
         
-        # Find and move the built package
-        echo "Looking for built packages..."
+        # Find and move the built package to current directory
+        echo "=== Extracting packages from Docker build ==="
         find . -name "*.deb" -type f -exec cp {} . \;
         ls -la *.deb || echo "No .deb files found in current directory"
         
-        # Verify package architecture
+        # Verify package architecture and contents
+        echo "=== Package verification ==="
         if [ -f "*.deb" ]; then
           echo "Package information:"
           dpkg -I *.deb || echo "Could not read package info"
           echo "Package architecture check:"
           dpkg --info *.deb | grep Architecture || echo "Could not determine architecture"
+          echo "Package contents check:"
+          dpkg -c *.deb | head -20 || echo "Could not list package contents"
+        else
+          echo "ERROR: No package files found!"
+          find . -name "*.deb" -o -name "*.changes" -o -name "*.buildinfo"
+          exit 1
         fi
 
     - name: Upload DEB artifacts
@@ -114,13 +147,20 @@ jobs:
         
         if [ "${{ matrix.name }}" = "amd64" ]; then
           # Test AMD64 package
+          sudo apt-get update
           sudo dpkg -i packages/*.deb || true
           sudo apt-get install -f -y
           echo "AMD64 package installed successfully"
+          
+          # Verify installation
+          which netpulse && echo "netpulse command found"
+          which netpulse-measure && echo "netpulse-measure command found"
+          systemctl status netpulse-web.service || echo "Service check skipped"
         else
           # For ARM64, we can only test the package structure
           echo "Testing ARM64 package structure..."
           dpkg -c packages/*.deb && echo "ARM64 package structure is valid"
+          dpkg -I packages/*.deb | grep Architecture && echo "Architecture check passed"
         fi
 
   release:
