@@ -22,7 +22,7 @@ rm -rf build/ dist/ *.deb debian/*.debhelper.log debian/*.substvars debian/tmp/
 # Install build dependencies
 echo "Installing build dependencies..."
 sudo apt-get update
-sudo apt-get install -y debhelper dh-python python3-setuptools
+sudo apt-get install -y debhelper dh-python python3 python3-setuptools
 
 # Set permissions for debian scripts
 chmod +x debian/postinst debian/prerm debian/rules
