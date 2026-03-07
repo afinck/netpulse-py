@@ -412,9 +412,9 @@ def api_config_set():
                         {
                             "success": True,
                             "message": (
-                                f"Konfiguration gespeichert. "
-                                f"Timer-Update fehlgeschlagen - manueller Neustart erforderlich: "
-                                f"sudo systemctl restart netpulse.timer"
+                                "Konfiguration gespeichert. "
+                                "Timer-Update fehlgeschlagen - manueller Neustart erforderlich: "
+                                "sudo systemctl restart netpulse.timer"
                             ),
                         }
                     )

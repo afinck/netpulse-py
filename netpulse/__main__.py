@@ -2,9 +2,6 @@
 Main entry point for Netpulse application
 """
 
-import os
-import sys
-
 if __name__ == "__main__":
     # Import after setting up environment
     from netpulse.config import get_config
