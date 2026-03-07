@@ -1,3 +1,15 @@
+netpulse (1.1.0) unstable; urgency=medium
+
+  * Version 1.1.0 release
+  * Web-based configuration interface
+  * Automatic SystemD timer updates
+  * API endpoints for configuration management
+  * Improved UI/UX with better readability
+  * Enhanced testing coverage
+  * Security improvements and code quality fixes
+
+ -- Vector <axiomfield@gmail.com>  Fri, 07 Mar 2026 15:00:00 +0000
+
 netpulse (1.0.0) unstable; urgency=medium
 
   * Initial release
