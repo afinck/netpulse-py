@@ -32,7 +32,7 @@ echo "Building DEB package for version $VERSION..."
 dpkg-buildpackage -us -uc -b $DEB_BUILD_OPTIONS
 
 # Check if package was built
-if [ -f "../netpulse_${VERSION}_arm64.deb" ] || [ -f "../netpulse_${VERSION}_amd64.deb" ]; then
+if [ -f "../netpulse_${VERSION}_amd64.deb" ]; then
     echo "Package built successfully!"
     
     # Move package to current directory
@@ -49,5 +49,9 @@ if [ -f "../netpulse_${VERSION}_arm64.deb" ] || [ -f "../netpulse_${VERSION}_amd
     
 else
     echo "Error: Package build failed!"
+    echo "Looking for package files:"
+    find .. -name "*.deb" -ls || echo "No .deb files found"
+    echo "Parent directory contents:"
+    ls -la .. || echo "Cannot access parent directory"
     exit 1
 fi
