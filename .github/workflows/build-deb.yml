@@ -34,14 +34,21 @@ jobs:
         if [ "${{ matrix.architecture }}" = "arm64" ]; then
           echo "Setting architecture for ARM64 build..."
           export DEB_BUILD_OPTIONS="--host-arch arm64"
+          export CC="aarch64-linux-gnu-gcc"
+          export CXX="aarch64-linux-gnu-g++"
+          # Install cross-compilation tools for ARM64
+          sudo apt-get update || true
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu || true
         else
           echo "Building for AMD64..."
           export DEB_BUILD_OPTIONS=""
+          export CC="gcc"
+          export CXX="g++"
         fi
         
-        # Build the package with proper permissions
+        # Install build dependencies
         sudo apt-get update || true
-        sudo apt-get install -y debhelper dh-python python3 python3-setuptools || true
+        sudo apt-get install -y build-essential debhelper dh-python python3 python3-setuptools || true
         ./build.sh
         
         echo "Build completed. Current directory contents:"
