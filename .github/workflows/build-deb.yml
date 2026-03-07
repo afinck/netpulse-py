@@ -40,6 +40,7 @@ jobs:
         context: .
         file: ./Dockerfile.build
         platforms: linux/${{ matrix.architecture }}
+        target: artifacts
         outputs: |
           type=local,dest=./build-${{ matrix.architecture }}
         tags: netpulse:build-${{ matrix.architecture }}
@@ -81,9 +82,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: netpulse-deb-${{ matrix.architecture }}
-        path: build-${{ matrix.architecture }}/
+        path: build-${{ matrix.architecture }}/*.deb
         retention-days: 30
-        continue-on-error: true
+        if-no-files-found: warn
 
   release:
     needs: build
