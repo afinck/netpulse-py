@@ -15,6 +15,6 @@ StandardError=journal
 NoNewPrivileges=true
 PrivateTmp=true
 
-# Restart settings
-Restart=always
-RestartSec=5
+# Restart settings  
+Restart=on-failure
+RestartSec=10
