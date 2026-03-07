@@ -21,8 +21,15 @@ rm -rf build/ dist/ *.deb debian/*.debhelper.log debian/*.substvars debian/tmp/
 
 # Install build dependencies
 echo "Installing build dependencies..."
-sudo apt-get update
-sudo apt-get install -y debhelper dh-python python3-setuptools
+if command -v sudo >/dev/null 2>&1; then
+    # Running with sudo (outside Docker)
+    sudo apt-get update
+    sudo apt-get install -y debhelper dh-python python3-setuptools
+else
+    # Running without sudo (inside Docker)
+    apt-get update
+    apt-get install -y debhelper dh-python python3-setuptools
+fi
 
 # Set permissions for debian scripts
 chmod +x debian/postinst debian/prerm debian/rules
