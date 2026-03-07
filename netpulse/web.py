@@ -175,7 +175,9 @@ def export_csv():
 
         # Generate filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"/tmp/netpulse_export_{timestamp}.csv"
+        import tempfile
+        temp_dir = tempfile.gettempdir()
+        filename = f"{temp_dir}/netpulse_export_{timestamp}.csv"
 
         # Export data
         db.export_to_csv(filename, start_date, end_date)
@@ -435,50 +437,15 @@ def api_config_set():
 
 def update_systemd_timer(interval_minutes):
     """Update systemd timer configuration"""
-    import subprocess
-
-    # Calculate systemd calendar format
-    if interval_minutes < 60:
-        # For intervals less than an hour: *:0/X where X is the interval
-        calendar_spec = f"*:0/{interval_minutes}"
-    elif interval_minutes == 60:
-        # Exactly one hour
-        calendar_spec = "hourly"
-    elif interval_minutes < 1440:
-        # For intervals between 1-24 hours: */X:00 where X is hours
-        hours = interval_minutes // 60
-        calendar_spec = f"*/{hours}:00"
-    else:
-        # Daily
-        calendar_spec = "daily"
-
-    # Read the current timer file
-    timer_file = "/lib/systemd/system/netpulse.timer"
-    with open(timer_file, "r") as f:
-        timer_content = f.read()
-
-    # Update the OnCalendar line
-    lines = timer_content.split("\n")
-    updated_lines = []
-    for line in lines:
-        if line.startswith("OnCalendar="):
-            updated_lines.append(f"OnCalendar={calendar_spec}")
-        else:
-            updated_lines.append(line)
-    
-    # Write updated timer content
-    with open(timer_file, "w") as f:
-        f.write("\n".join(updated_lines))
-    
-    # Update systemd
     try:
+        # Use full paths for systemd commands
         subprocess.run(
-            ["systemctl", "daemon-reload"], 
+            ["/usr/bin/systemctl", "daemon-reload"], 
             check=True, 
             shell=True
         )
         subprocess.run(
-            ["systemctl", "restart", "netpulse.timer"], 
+            ["/usr/bin/systemctl", "restart", "netpulse.timer"], 
             check=True, 
             shell=True
         )
