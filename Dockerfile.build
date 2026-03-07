@@ -29,13 +29,7 @@ RUN echo "Current directory contents:" && ls -la
 RUN echo "TARGETARCH: $TARGETARCH"
 RUN echo "TARGETPLATFORM: $TARGETPLATFORM"
 RUN echo "BUILDPLATFORM: $BUILDPLATFORM"
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        echo "Building for ARM64..." && \
-        dpkg-buildpackage -us -uc -b --host-arch arm64; \
-    else \
-        echo "Building for AMD64..." && \
-        dpkg-buildpackage -us -uc -b; \
-    fi
+RUN if [ "$TARGETARCH" = "arm64" ]; then echo "Building for ARM64..." && dpkg-buildpackage -us -uc -b --host-arch arm64; else echo "Building for AMD64..." && dpkg-buildpackage -us -uc -b; fi
 RUN echo "Build completed. Current directory contents:" && ls -la
 RUN echo "Parent directory contents:" && ls -la ..
 RUN echo "Looking for .deb files:" && find . -name "*.deb" -ls
