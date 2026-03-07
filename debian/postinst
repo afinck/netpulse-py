@@ -20,12 +20,17 @@ case "$1" in
         systemctl daemon-reload
         systemctl enable netpulse.timer
         systemctl start netpulse.timer
+        
+        # Enable and start web service
+        systemctl enable netpulse-web.service
+        systemctl restart netpulse-web.service
         ;;
         
     abort-upgrade|failed-upgrade)
         # Stop services on upgrade failure
         systemctl stop netpulse.timer || true
         systemctl stop netpulse.service || true
+        systemctl stop netpulse-web.service || true
         ;;
 esac
 

@@ -8,7 +8,9 @@ case "$1" in
         # Stop services before removal
         systemctl stop netpulse.timer || true
         systemctl stop netpulse.service || true
+        systemctl stop netpulse-web.service || true
         systemctl disable netpulse.timer || true
+        systemctl disable netpulse-web.service || true
         ;;
         
     disappear)
