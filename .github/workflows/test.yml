@@ -27,22 +27,24 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov pytest-mock black isort flake8 bandit safety
 
-    - name: Lint with flake8 (temporarily disabled for testing)
+    - name: Lint with flake8
       run: |
-        echo "Skipping flake8 checks temporarily to test cross-compilation"
-        echo "Will re-enable after fixing environment-specific issues"
+        echo "Running flake8 checks..."
+        flake8 --version
+        echo "Checking critical errors (E9,F63,F7,F82):"
+        flake8 netpulse/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        echo "Checking full code quality:"
+        flake8 netpulse/ --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --ignore=C901,W503
 
-    - name: Security check with bandit (temporarily disabled for testing)
+    - name: Security check with bandit
       run: |
-        echo "Skipping bandit checks temporarily to test cross-compilation"
-        echo "Will re-enable after fixing security issues"
-        # bandit -r netpulse/
+        echo "Running bandit security checks..."
+        bandit -r netpulse/
 
-    - name: Check dependencies with safety (temporarily disabled for testing)
+    - name: Check dependencies with safety
       run: |
-        echo "Skipping safety checks temporarily to test cross-compilation"
-        echo "Will re-enable after fixing dependency issues"
-        # safety check
+        echo "Running safety dependency checks..."
+        safety check
 
     - name: Install system dependencies
       run: |
