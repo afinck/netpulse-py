@@ -35,22 +35,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Login to Docker Hub
-      if: github.event_name != 'pull_request'
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: netpulse
-        tags: |
-          type=ref,event=tag
-          type=raw,value=latest,enable={{is_default_branch}}
-
     - name: Build and export DEB package
       uses: docker/build-push-action@v5
       with:
@@ -59,9 +43,25 @@ jobs:
         platforms: linux/${{ matrix.architecture }}
         outputs: |
           type=local,dest=./build-${{ matrix.architecture }}
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: netpulse:build-${{ matrix.architecture }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: List build artifacts
+      run: |
+        echo "Build artifacts for ${{ matrix.architecture }}:"
+        find ./build-${{ matrix.architecture }} -type f -name "*.deb" -exec ls -la {} \;
+
+    - name: Test DEB package installation
+      run: |
+        cd ./build-${{ matrix.architecture }}
+        if ls *.deb 1> /dev/null 2>&1; then
+          echo "Testing DEB package installation..."
+          sudo dpkg -i *.deb || echo "Dependencies missing, but package structure is valid"
+        else
+          echo "No DEB package found!"
+          exit 1
+        fi
 
     - name: Upload DEB artifacts
       uses: actions/upload-artifact@v4

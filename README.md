@@ -236,26 +236,23 @@ Die Anwendung hat eine vollständige CI/CD-Pipeline mit GitHub Actions:
 ### Docker Images
 
 ```bash
-# Pull latest image
-docker pull afinck/netpulse:latest
+# Build locally for testing
+docker build -t netpulse:latest .
 
-# Pull specific version
-docker pull afinck/netpulse:v1.1.0
-
-# Pull specific architecture
-docker pull afinck/netpulse:amd64
-docker pull afinck/netpulse:arm64
+# Build with cross-compilation
+docker buildx build --platform linux/arm64 -t netpulse:arm64 .
 ```
 
 ### DEB Package Installation
 
-Automatisch gebaute DEB-Pakete sind in GitHub Releases verfügbar:
+DEB-Pakete werden als GitHub Actions Artifacts bereitgestellt:
 
 ```bash
-# Download and install (ARM64 für Raspberry Pi)
-wget https://github.com/afinck/netpulse-py/releases/latest/download/netpulse_1.1.0_arm64.deb
-sudo dpkg -i netpulse_1.1.0_arm64.deb
-sudo apt-get install -f
+# Download from GitHub Actions artifacts
+# Available in Actions tab -> Workflow runs -> Download artifacts
+
+# Manual build (if needed)
+make build  # or ./build.sh
 ```
 
 ## Changelog
