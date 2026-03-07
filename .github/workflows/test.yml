@@ -47,7 +47,13 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y librespeed-cli iputils-ping curl
+        sudo apt-get install -y iputils-ping curl
+        # Install librespeed-cli from GitHub releases
+        wget https://github.com/librespeed/speedtest-cli/releases/latest/download/librespeed-cli-linux-x86_64.tar.gz
+        tar -xzf librespeed-cli-linux-x86_64.tar.gz
+        sudo cp librespeed-cli /usr/local/bin/
+        sudo chmod +x /usr/local/bin/librespeed-cli
+        librespeed-cli --version
 
     - name: Test with pytest (unit tests only)
       run: |
