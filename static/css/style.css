@@ -1,5 +1,41 @@
 /* Custom styles for Netpulse */
 
+/* CSS Variables for theme support */
+:root {
+    --bg-primary: #0d6efd;
+    --bg-success: #198754;
+    --bg-warning: #ffc107;
+    --bg-info: #0dcaf0;
+    --bg-light: #f8f9fa;
+    --bg-dark: #212529;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #6c757d;
+    --text-white: #ffffff;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --body-bg: #ffffff;
+    --navbar-bg: #0d6efd;
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --bg-primary: #0b5ed7;
+    --bg-success: #146c43;
+    --bg-warning: #ffca2c;
+    --bg-info: #0aa2c0;
+    --bg-light: #343a40;
+    --bg-dark: #1a1d20;
+    --text-primary: #ffffff;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    --text-white: #ffffff;
+    --border-color: #495057;
+    --card-bg: #2d3748;
+    --body-bg: #1a1d20;
+    --navbar-bg: #0b5ed7;
+}
+
 /* Card hover effects */
 .card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -149,21 +185,105 @@ footer {
 }
 
 /* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .card {
-        background-color: #2d3748;
-        border-color: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .table {
-        color: #e2e8f0;
-    }
-    
-    .table-striped > tbody > tr:nth-of-type(odd) > td,
-    .table-striped > tbody > tr:nth-of-type(odd) > th {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
+[data-theme="dark"] body {
+    background-color: var(--body-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .navbar {
+    background-color: var(--navbar-bg) !important;
+}
+
+[data-theme="dark"] .navbar-dark .navbar-nav .nav-link {
+    color: var(--text-white) !important;
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: var(--bg-light);
+    color: var(--text-white);
+}
+
+[data-theme="dark"] footer {
+    background-color: var(--bg-light) !important;
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .table {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > td,
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > th {
+    background-color: transparent;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:hover > td {
+    background-color: var(--bg-light) !important;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control {
+    background-color: var(--bg-light);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--bg-light);
+    border-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-outline-primary {
+    border-color: var(--bg-primary);
+    color: var(--bg-primary);
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+    background-color: var(--bg-primary);
+    border-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .alert {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-header {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-footer {
+    border-color: var(--border-color);
 }
 
 /* Animation for new data */

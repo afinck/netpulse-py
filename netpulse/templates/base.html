@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>{% block title %}Netpulse - Netzwerk Monitor{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
@@ -92,6 +93,24 @@
     <script>
         let autoRefresh = true;
         let refreshInterval;
+
+        // System theme detection
+        function detectSystemTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        }
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            const themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            themeQuery.addListener(detectSystemTheme);
+        }
+
+        // Initialize theme on page load
+        detectSystemTheme();
 
         function toggleAutoRefresh() {
             autoRefresh = !autoRefresh;
