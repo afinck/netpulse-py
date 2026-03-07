@@ -72,7 +72,7 @@ jobs:
         # Build the package
         RUN echo "=== Starting build process ===" && \
             chmod +x build.sh && \
-            ./build.sh
+            ./build.sh 2>&1 || (echo "Build failed, checking for errors..." && ls -la && exit 1)
         
         # Verify the package was built
         RUN echo "=== Checking build results ===" && \
@@ -93,6 +93,12 @@ jobs:
         echo "=== Extracting packages from Docker build ==="
         find . -name "*.deb" -type f -exec cp {} . \;
         ls -la *.deb || echo "No .deb files found in current directory"
+        
+        # Debug: Show Docker build output
+        echo "=== Docker build debug info ==="
+        find . -name "*.log" -o -name "*.buildinfo" -exec cat {} \; || echo "No build logs found"
+        echo "=== Current working directory contents ==="
+        ls -la || echo "Could not list directory"
         
         # Verify package architecture and contents
         echo "=== Package verification ==="
