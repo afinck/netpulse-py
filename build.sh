@@ -17,7 +17,7 @@ VERSION=$(grep "version=" setup.py | cut -d'"' -f2)
 
 # Clean previous builds
 echo "Cleaning previous builds..."
-rm -rf build/ dist/ *.deb debian/*.debhelper.log debian/*.substvars debian/tmp/
+rm -rf build/ *.deb debian/*.debhelper.log debian/*.substvars debian/tmp/ || true
 
 # Install build dependencies
 echo "Installing build dependencies..."
