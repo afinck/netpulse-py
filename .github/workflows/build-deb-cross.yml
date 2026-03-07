@@ -1,0 +1,148 @@
+name: Build DEB Package (Cross-Compile)
+
+on:
+  push:
+    branches: [ main, feature/github-actions-deb-build ]
+  pull_request:
+    branches: [ main, feature/github-actions-deb-build ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: amd64
+            arch: amd64
+            platform: linux/amd64
+            base_image: ubuntu:22.04
+          - name: arm64
+            arch: arm64
+            platform: linux/arm64
+            base_image: arm64v8/ubuntu:22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build DEB package
+      run: |
+        echo "Building Netpulse DEB package for ${{ matrix.name }} (arch: ${{ matrix.arch }})..."
+        
+        # Create Dockerfile for cross-compilation
+        cat > Dockerfile.build << 'EOF'
+        FROM ${{ matrix.base_image }}
+        
+        # Prevent interactive prompts during package installation
+        ENV DEBIAN_FRONTEND=noninteractive
+        
+        # Install build dependencies
+        RUN apt-get update && apt-get install -y \
+            build-essential \
+            debhelper \
+            dh-python \
+            python3 \
+            python3-setuptools \
+            python3-pip \
+            && rm -rf /var/lib/apt/lists/*
+        
+        WORKDIR /app
+        COPY . .
+        
+        # Set architecture-specific configuration
+        RUN dpkg --add-architecture ${{ matrix.arch }} || true
+        
+        # Build the package
+        RUN chmod +x build.sh && ./build.sh
+        
+        # Verify the package
+        RUN ls -la *.deb && dpkg -I *.deb
+        EOF
+        
+        # Build using Docker Buildx for cross-platform support
+        docker buildx build \
+          --platform ${{ matrix.platform }} \
+          --output type=local,dest=. \
+          -f Dockerfile.build .
+        
+        # Find and move the built package
+        echo "Looking for built packages..."
+        find . -name "*.deb" -type f -exec cp {} . \;
+        ls -la *.deb || echo "No .deb files found in current directory"
+        
+        # Verify package architecture
+        if [ -f "*.deb" ]; then
+          echo "Package information:"
+          dpkg -I *.deb || echo "Could not read package info"
+          echo "Package architecture check:"
+          dpkg --info *.deb | grep Architecture || echo "Could not determine architecture"
+        fi
+
+    - name: Upload DEB artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: netpulse-deb-${{ matrix.name }}
+        path: "*.deb"
+        retention-days: 30
+        if-no-files-found: warn
+
+  test-install:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: amd64
+          - name: arm64
+    if: github.event_name != 'pull_request'
+    
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: netpulse-deb-${{ matrix.name }}
+        path: packages/
+
+    - name: Test package installation
+      run: |
+        echo "Testing ${{ matrix.name }} package installation..."
+        ls -la packages/
+        
+        if [ "${{ matrix.name }}" = "amd64" ]; then
+          # Test AMD64 package
+          sudo dpkg -i packages/*.deb || true
+          sudo apt-get install -f -y
+          echo "AMD64 package installed successfully"
+        else
+          # For ARM64, we can only test the package structure
+          echo "Testing ARM64 package structure..."
+          dpkg -c packages/*.deb && echo "ARM64 package structure is valid"
+        fi
+
+  release:
+    needs: [build, test-install]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        pattern: netpulse-deb-*
+        merge-multiple: true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: artifacts/*
+        draft: false
+        prerelease: false
+        generate_release_notes: true
