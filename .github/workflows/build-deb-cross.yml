@@ -87,9 +87,11 @@ jobs:
             ls -la *.deb && \
             dpkg -I *.deb && \
             echo "=== Package contents ===" && \
-            dpkg -c *.deb | grep -E "(netpulse|\.dist-info|entry_points)" && \
+            dpkg -c *.deb | grep -E "(netpulse|\.dist-info|\.egg-info|entry_points)" && \
             echo "=== Python package check ===" && \
             dpkg -c *.deb | grep -E "usr/lib/python.*/dist-packages.*netpulse" && \
+            echo "=== Metadata check ===" && \
+            dpkg -c *.deb | grep -E "(\.dist-info|\.egg-info)" && \
             echo "=== Package verification complete ==="
         EOF
         

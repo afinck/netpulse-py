@@ -34,4 +34,5 @@ setup(
         ("/lib/systemd/system", ["systemd/netpulse.service", "systemd/netpulse.timer", "systemd/netpulse-web.service"]),
     ],
     zip_safe=False,
+    use_2to3=False,
 )
