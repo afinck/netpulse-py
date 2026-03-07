@@ -39,7 +39,9 @@ jobs:
           export DEB_BUILD_OPTIONS=""
         fi
         
-        # Build the package
+        # Build the package with proper permissions
+        sudo apt-get update || true
+        sudo apt-get install -y debhelper dh-python python3 python3-setuptools || true
         ./build.sh
         
         echo "Build completed. Current directory contents:"
