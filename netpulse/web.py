@@ -166,6 +166,7 @@ def settings():
 @app.route("/export/csv")
 def export_csv():
     """Export measurements as CSV"""
+    temp_filename = None
     try:
         db = get_database()
 
@@ -177,20 +178,39 @@ def export_csv():
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         import tempfile
         temp_dir = tempfile.gettempdir()
-        filename = f"{temp_dir}/netpulse_export_{timestamp}.csv"
+        temp_filename = f"{temp_dir}/netpulse_export_{timestamp}.csv"
 
         # Export data
-        db.export_to_csv(filename, start_date, end_date)
+        db.export_to_csv(temp_filename, start_date, end_date)
 
-        # Send file
-        return send_file(
-            filename,
+        # Send file and cleanup
+        def remove_file(response):
+            try:
+                import os
+                if temp_filename and os.path.exists(temp_filename):
+                    os.unlink(temp_filename)
+            except Exception as e:
+                logger.warning(f"Failed to cleanup temp file {temp_filename}: {e}")
+            return response
+
+        response = send_file(
+            temp_filename,
             as_attachment=True,
             download_name=f"netpulse_export_{timestamp}.csv",
         )
+        response.call_on_close(lambda: remove_file(response))
+        return response
 
     except Exception as e:
         logger.error(f"Error exporting CSV: {e}")
+        # Cleanup on error
+        if temp_filename:
+            try:
+                import os
+                if os.path.exists(temp_filename):
+                    os.unlink(temp_filename)
+            except Exception as cleanup_error:
+                logger.warning(f"Failed to cleanup temp file on error: {cleanup_error}")
         flash(f"Fehler beim Exportieren: {e}", "error")
         return redirect("/export")
 
@@ -342,6 +362,9 @@ def api_config_set():
             return jsonify({"error": "JSON data required"}), 400
 
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"error": "Invalid JSON format - object required"}), 400
+        
         config = get_config()
 
         # Check if interval is being changed
@@ -350,8 +373,12 @@ def api_config_set():
 
         # Update measurement interval if provided
         if "measurement" in data:
-            if "interval_minutes" in data["measurement"]:
-                new_interval = data["measurement"]["interval_minutes"]
+            measurement_config = data["measurement"]
+            if not isinstance(measurement_config, dict):
+                return jsonify({"error": "measurement section must be an object"}), 400
+                
+            if "interval_minutes" in measurement_config:
+                new_interval = measurement_config["interval_minutes"]
                 if (
                     not isinstance(new_interval, int)
                     or new_interval < 1
@@ -367,8 +394,8 @@ def api_config_set():
                     )
                 config.set("measurement.interval_minutes", new_interval)
 
-            if "timeout_seconds" in data["measurement"]:
-                timeout = data["measurement"]["timeout_seconds"]
+            if "timeout_seconds" in measurement_config:
+                timeout = measurement_config["timeout_seconds"]
                 if not isinstance(timeout, int) or timeout < 5 or timeout > 300:
                     return (
                         jsonify(
@@ -380,8 +407,8 @@ def api_config_set():
                     )
                 config.set("measurement.timeout_seconds", timeout)
 
-            if "retry_count" in data["measurement"]:
-                retry = data["measurement"]["retry_count"]
+            if "retry_count" in measurement_config:
+                retry = measurement_config["retry_count"]
                 if not isinstance(retry, int) or retry < 1 or retry > 10:
                     return (
                         jsonify(
@@ -438,15 +465,71 @@ def api_config_set():
 def update_systemd_timer(interval_minutes):
     """Update systemd timer configuration"""
     import subprocess
+    import fcntl
+
+    # Calculate systemd calendar format
+    if interval_minutes < 60:
+        # For intervals less than an hour: *-*-* *:{interval}:00
+        calendar_spec = f"*-*-* *:{interval_minutes:02d}:00"
+    elif interval_minutes == 60:
+        # Exactly one hour
+        calendar_spec = "hourly"
+    elif interval_minutes < 1440:
+        # For intervals between 1-24 hours: *-*-* */{hours}:00:00
+        hours = interval_minutes // 60
+        calendar_spec = f"*-*-* */{hours}:00:00"
+    else:
+        # Daily
+        calendar_spec = "daily"
+
+    # Read the current timer file with error handling
+    timer_file = "/lib/systemd/system/netpulse.timer"
     try:
-        # Use shell=False for security (systemctl is trusted)
+        with open(timer_file, "r") as f:
+            # Acquire exclusive lock
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            timer_content = f.read()
+    except FileNotFoundError:
+        logger.error(f"Timer file not found: {timer_file}")
+        return False
+    except PermissionError:
+        logger.error(f"Permission denied accessing timer file: {timer_file}")
+        return False
+    except Exception as e:
+        logger.error(f"Error reading timer file: {e}")
+        return False
+
+    # Update the OnCalendar line
+    lines = timer_content.split("\n")
+    updated_lines = []
+    for line in lines:
+        if line.startswith("OnCalendar="):
+            updated_lines.append(f"OnCalendar={calendar_spec}")
+        else:
+            updated_lines.append(line)
+    
+    # Write updated timer content with locking
+    try:
+        with open(timer_file, "w") as f:
+            # Acquire exclusive lock
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            f.write("\n".join(updated_lines))
+    except PermissionError:
+        logger.error(f"Permission denied writing to timer file: {timer_file}")
+        return False
+    except Exception as e:
+        logger.error(f"Error writing timer file: {e}")
+        return False
+    
+    # Update systemd
+    try:
         subprocess.run(
-            "/usr/bin/systemctl daemon-reload", 
+            ["systemctl", "daemon-reload"], 
             check=True, 
             shell=False
         )
         subprocess.run(
-            "/usr/bin/systemctl restart netpulse.timer", 
+            ["systemctl", "restart", "netpulse.timer"], 
             check=True, 
             shell=False
         )
@@ -462,7 +545,7 @@ def update_systemd_timer(interval_minutes):
 
 def main():
     """Main entry point for the web server"""
-    host = config.get("web.host", "127.0.0.1")
+    host = config.get("web.host", "0.0.0.0")
     port = config.get("web.port", 8080)
     debug = config.get("web.debug", False)
 

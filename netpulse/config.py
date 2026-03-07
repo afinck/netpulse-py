@@ -3,6 +3,7 @@ Configuration module for Netpulse
 """
 
 import os
+import secrets
 from pathlib import Path
 
 # Default configuration
@@ -19,10 +20,10 @@ DEFAULT_CONFIG = {
         "servers": [],  # Empty means use default servers
     },
     "web": {
-        "host": os.getenv("NETPULSE_HOST", "127.0.0.1"),
+        "host": "0.0.0.0",
         "port": 8080,
-        "debug": os.getenv("NETPULSE_DEBUG", "False").lower() == "true",
-        "secret_key": os.getenv("NETPULSE_SECRET_KEY", "change-me-in-production"),
+        "debug": False,
+        "secret_key": os.getenv("NETPULSE_SECRET_KEY") or secrets.token_hex(32),
     },
     "logging": {
         "level": "INFO",

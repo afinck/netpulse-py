@@ -2,6 +2,9 @@
 Main entry point for Netpulse application
 """
 
+import os
+import sys
+
 if __name__ == "__main__":
     # Import after setting up environment
     from netpulse.config import get_config
@@ -11,7 +14,7 @@ if __name__ == "__main__":
     config = get_config()
 
     # Get host and port from config
-    host = config.get("web.host", "127.0.0.1")
+    host = config.get("web.host", "0.0.0.0")
     port = config.get("web.port", 8080)
     debug = config.get("web.debug", False)
 

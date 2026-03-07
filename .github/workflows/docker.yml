@@ -2,7 +2,7 @@ name: Docker Build
 
 on:
   push:
-    branches: [ main, feature/github-actions-deb-build ]
+    branches: [ main ]
     tags:
       - 'v*'
   pull_request:

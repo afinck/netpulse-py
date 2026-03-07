@@ -2,7 +2,7 @@ name: Build DEB Package
 
 on:
   push:
-    branches: [ main, feature/github-actions-deb-build ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -13,10 +13,6 @@ jobs:
     strategy:
       matrix:
         architecture: [amd64]
-        include:
-          - architecture: amd64
-            os: ubuntu
-            base_image: ubuntu:22.04
 
     steps:
     - name: Checkout code
@@ -27,7 +23,7 @@ jobs:
         echo "Building Netpulse DEB package for ${{ matrix.architecture }}..."
         chmod +x build.sh
         
-        # Build for AMD64 (simplified)
+        # Build for AMD64
         echo "Building for AMD64..."
         
         # Install build dependencies

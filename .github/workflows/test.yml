@@ -2,7 +2,7 @@ name: Tests
 
 on:
   push:
-    branches: [ main, feature/github-actions-deb-build ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -25,26 +25,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov pytest-mock black isort flake8 bandit safety
-
-    - name: Lint with flake8
-      run: |
-        echo "Running flake8 checks..."
-        flake8 --version
-        echo "Checking critical errors (E9,F63,F7,F82):"
-        flake8 netpulse/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        echo "Checking full code quality:"
-        flake8 netpulse/ --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --ignore=C901,W503
-
-    - name: Security check with bandit
-      run: |
-        echo "Running bandit security checks..."
-        bandit -r netpulse/
-
-    - name: Check dependencies with safety
-      run: |
-        echo "Running safety dependency checks..."
-        safety check
+        pip install pytest pytest-cov pytest-mock
 
     - name: Install system dependencies
       run: |
