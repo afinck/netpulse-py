@@ -22,14 +22,14 @@ else:
     # Configure logging
     config = get_config()
     log_file = config.get("logging.file", "/tmp/netpulse.log")
-    
+
     # Create log directory if it doesn't exist
     try:
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
     except (PermissionError, OSError):
         # Fallback to /tmp if we can't create the log directory
         log_file = "/tmp/netpulse.log"
-    
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
