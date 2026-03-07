@@ -73,6 +73,11 @@ jobs:
         RUN echo "=== Starting build process ===" && \
             chmod +x build.sh && \
             echo "=== Running build.sh ===" && \
+            echo "=== Current directory: $(pwd)" && \
+            echo "=== Files in current directory:" && \
+            ls -la && \
+            echo "=== Checking for setup.py:" && \
+            find . -name "setup.py" && \
             ./build.sh 2>&1 || (echo "Build failed, checking for errors..." && ls -la && cat build.sh | head -20 && exit 1)
         
         # Verify the package was built
