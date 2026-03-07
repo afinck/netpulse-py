@@ -71,18 +71,14 @@ jobs:
         # Set permissions for debian scripts
         RUN chmod +x debian/postinst debian/prerm debian/rules build.sh
         
-        # Set architecture-specific configuration
-        RUN dpkg --add-architecture ${{ matrix.arch }} || true
-        
         # Build the package
         RUN echo "=== Starting build process ===" && \
             chmod +x build.sh && \
             ./build.sh
         
-        # Verify the package was built and move to correct location
+        # Verify the package was built
         RUN echo "=== Checking build results ===" && \
             find . -name "*.deb" -type f -exec echo "Found package: {}" \; && \
-            find . -name "*.deb" -type f -exec cp {} /app/ \; && \
             ls -la *.deb && \
             dpkg -I *.deb && \
             echo "=== Package verification complete ==="
@@ -102,18 +98,20 @@ jobs:
         
         # Verify package architecture and contents
         echo "=== Package verification ==="
-        if [ -f "*.deb" ]; then
-          echo "Package information:"
-          dpkg -I *.deb || echo "Could not read package info"
-          echo "Package architecture check:"
-          dpkg --info *.deb | grep Architecture || echo "Could not determine architecture"
-          echo "Package contents check:"
-          dpkg -c *.deb | head -20 || echo "Could not list package contents"
-        else
-          echo "ERROR: No package files found!"
-          find . -name "*.deb" -o -name "*.changes" -o -name "*.buildinfo"
-          exit 1
-        fi
+        for pkg in *.deb; do
+          if [ -f "$pkg" ]; then
+            echo "Package information for $pkg:"
+            dpkg -I "$pkg" || echo "Could not read package info"
+            echo "Package architecture check:"
+            dpkg --info "$pkg" | grep Architecture || echo "Could not determine architecture"
+            echo "Package contents check:"
+            dpkg -c "$pkg" | head -10 || echo "Could not list package contents"
+          else
+            echo "ERROR: No package files found!"
+            find . -name "*.deb" -o -name "*.changes" -o -name "*.buildinfo"
+            exit 1
+          fi
+        done
 
     - name: Upload DEB artifacts
       uses: actions/upload-artifact@v4
