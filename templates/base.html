@@ -48,8 +48,11 @@
                             <i class="bi bi-gear"></i> Einstellungen
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="runTest()">Test jetzt ausführen</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('settings') }}">
+                                <i class="bi bi-gear-fill"></i> Einstellungen
+                            </a></li>
                             <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="runTest()">Test jetzt ausführen</a></li>
                             <li><a class="dropdown-item" href="#" onclick="toggleAutoRefresh()">Auto-Refresh</a></li>
                         </ul>
                     </li>
@@ -154,5 +157,6 @@
     </script>
 
     {% block scripts %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

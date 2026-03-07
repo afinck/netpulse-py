@@ -138,6 +138,12 @@ def export():
     return render_template('export.html')
 
 
+@app.route('/settings')
+def settings():
+    """Settings page"""
+    return render_template('settings.html')
+
+
 @app.route('/export/csv')
 def export_csv():
     """Export measurements as CSV"""
@@ -269,6 +275,132 @@ def api_health():
             'error': str(e),
             'timestamp': datetime.now().isoformat()
         }), 500
+
+
+@app.route('/api/config', methods=['GET'])
+def api_config_get():
+    """API endpoint to get current configuration"""
+    try:
+        config = get_config()
+        
+        # Return only the configuration settings that should be editable via web interface
+        return jsonify({
+            'measurement': {
+                'interval_minutes': config.get('measurement.interval_minutes', 15),
+                'timeout_seconds': config.get('measurement.timeout_seconds', 30),
+                'retry_count': config.get('measurement.retry_count', 3),
+            }
+        })
+    
+    except Exception as e:
+        logger.error(f"Error getting config: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/config', methods=['POST'])
+def api_config_set():
+    """API endpoint to update configuration"""
+    try:
+        if not request.is_json:
+            return jsonify({'error': 'JSON data required'}), 400
+        
+        data = request.get_json()
+        config = get_config()
+        
+        # Check if interval is being changed
+        old_interval = config.get('measurement.interval_minutes', 15)
+        new_interval = old_interval
+        
+        # Update measurement interval if provided
+        if 'measurement' in data:
+            if 'interval_minutes' in data['measurement']:
+                new_interval = data['measurement']['interval_minutes']
+                if not isinstance(new_interval, int) or new_interval < 1 or new_interval > 1440:
+                    return jsonify({'error': 'interval_minutes must be an integer between 1 and 1440'}), 400
+                config.set('measurement.interval_minutes', new_interval)
+            
+            if 'timeout_seconds' in data['measurement']:
+                timeout = data['measurement']['timeout_seconds']
+                if not isinstance(timeout, int) or timeout < 5 or timeout > 300:
+                    return jsonify({'error': 'timeout_seconds must be an integer between 5 and 300'}), 400
+                config.set('measurement.timeout_seconds', timeout)
+            
+            if 'retry_count' in data['measurement']:
+                retry = data['measurement']['retry_count']
+                if not isinstance(retry, int) or retry < 1 or retry > 10:
+                    return jsonify({'error': 'retry_count must be an integer between 1 and 10'}), 400
+                config.set('measurement.retry_count', retry)
+        
+        # Save configuration
+        if config.save():
+            logger.info("Configuration updated successfully")
+            
+            # If interval changed, try to update systemd timer
+            if old_interval != new_interval:
+                try:
+                    update_systemd_timer(new_interval)
+                    return jsonify({
+                        'success': True, 
+                        'message': f'Konfiguration erfolgreich gespeichert. Timer auf {new_interval} Minuten aktualisiert.'
+                    })
+                except Exception as timer_error:
+                    logger.warning(f"Failed to update systemd timer: {timer_error}")
+                    return jsonify({
+                        'success': True, 
+                        'message': f'Konfiguration gespeichert. Timer-Update fehlgeschlagen - manueller Neustart erforderlich: sudo systemctl restart netpulse.timer'
+                    })
+            else:
+                return jsonify({'success': True, 'message': 'Konfiguration erfolgreich gespeichert'})
+        else:
+            return jsonify({'error': 'Failed to save configuration'}), 500
+    
+    except Exception as e:
+        logger.error(f"Error updating config: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+def update_systemd_timer(interval_minutes):
+    """Update the systemd timer configuration"""
+    import subprocess
+    
+    # Calculate the systemd calendar format
+    if interval_minutes < 60:
+        # For intervals less than an hour: *:0/X where X is the interval
+        calendar_spec = f"*:0/{interval_minutes}"
+    elif interval_minutes == 60:
+        # Exactly one hour
+        calendar_spec = "hourly"
+    elif interval_minutes < 1440:
+        # For intervals between 1-24 hours: */X:00 where X is hours
+        hours = interval_minutes // 60
+        calendar_spec = f"*/{hours}:00"
+    else:
+        # Daily
+        calendar_spec = "daily"
+    
+    # Read the current timer file
+    timer_file = "/lib/systemd/system/netpulse.timer"
+    with open(timer_file, 'r') as f:
+        timer_content = f.read()
+    
+    # Update the OnCalendar line
+    lines = timer_content.split('\n')
+    updated_lines = []
+    for line in lines:
+        if line.startswith('OnCalendar='):
+            updated_lines.append(f'OnCalendar={calendar_spec}')
+        else:
+            updated_lines.append(line)
+    
+    # Write back to timer file
+    with open(timer_file, 'w') as f:
+        f.write('\n'.join(updated_lines))
+    
+    # Reload systemd and restart timer
+    subprocess.run(['systemctl', 'daemon-reload'], check=True)
+    subprocess.run(['systemctl', 'restart', 'netpulse.timer'], check=True)
+    
+    logger.info(f"SystemD timer updated to run every {interval_minutes} minutes ({calendar_spec})")
 
 
 def main():
