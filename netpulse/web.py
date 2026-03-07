@@ -439,16 +439,16 @@ def update_systemd_timer(interval_minutes):
     """Update systemd timer configuration"""
     import subprocess
     try:
-        # Use full paths for systemd commands
+        # Use shell=False for security (systemctl is trusted)
         subprocess.run(
-            ["/usr/bin/systemctl", "daemon-reload"], 
+            "/usr/bin/systemctl daemon-reload", 
             check=True, 
-            shell=True
+            shell=False
         )
         subprocess.run(
-            ["/usr/bin/systemctl", "restart", "netpulse.timer"], 
+            "/usr/bin/systemctl restart netpulse.timer", 
             check=True, 
-            shell=True
+            shell=False
         )
         logger.info(
             f"SystemD timer updated to run every {interval_minutes} minutes"

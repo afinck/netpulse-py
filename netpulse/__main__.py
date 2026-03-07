@@ -11,7 +11,7 @@ if __name__ == "__main__":
     config = get_config()
 
     # Get host and port from config
-    host = config.get("web.host", "0.0.0.0")
+    host = config.get("web.host", "127.0.0.1")
     port = config.get("web.port", 8080)
     debug = config.get("web.debug", False)
 
