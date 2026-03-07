@@ -28,9 +28,11 @@ RUN chmod +x build.sh && \
     echo "Current directory contents:" && \
     ls -la && \
     echo "Building DEB package for TARGETARCH: $TARGETARCH..." && \
+    echo "TARGETPLATFORM: $TARGETPLATFORM" && \
+    echo "BUILDPLATFORM: $BUILDPLATFORM" && \
     if [ "$TARGETARCH" = "arm64" ]; then \
         echo "Building for ARM64..."; \
-        dpkg-buildpackage -us -uc -b; \
+        dpkg-buildpackage -us -uc -b --host-arch arm64; \
     else \
         echo "Building for AMD64..."; \
         dpkg-buildpackage -us -uc -b; \
