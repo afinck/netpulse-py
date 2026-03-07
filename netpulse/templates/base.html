@@ -53,6 +53,8 @@
                                 <i class="bi bi-gear-fill"></i> Einstellungen
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="toggleTheme()">Theme umschalten</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#" onclick="runTest()">Test jetzt ausführen</a></li>
                             <li><a class="dropdown-item" href="#" onclick="toggleAutoRefresh()">Auto-Refresh</a></li>
                         </ul>
@@ -116,6 +118,14 @@
 
         // Initialize theme on page load
         detectSystemTheme();
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            console.log('Manually switched to:', newTheme);
+            showNotification(`Theme auf ${newTheme === 'dark' ? 'Dunkel' : 'Hell'} umgeschaltet`, 'info');
+        }
 
         function toggleAutoRefresh() {
             autoRefresh = !autoRefresh;
