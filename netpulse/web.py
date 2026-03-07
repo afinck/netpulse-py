@@ -3,17 +3,18 @@ Web interface for Netpulse
 """
 
 import logging
+# Configure logging
+import os
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify, send_file, flash, redirect
-from pathlib import Path
+
+from flask import (Flask, flash, jsonify, redirect, render_template, request,
+                   send_file)
 
 from .config import get_config
 from .database import get_database
 from .speedtest import SpeedtestRunner
 
-# Configure logging
-import os
-if os.getenv('NETPULSE_TEST_MODE'):
+if os.getenv("NETPULSE_TEST_MODE"):
     # Use simple logging for tests
     logging.basicConfig(level=logging.INFO)
 else:
@@ -21,11 +22,11 @@ else:
     config = get_config()
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
-            logging.FileHandler(config.get('logging.file', '/tmp/netpulse.log')),
-            logging.StreamHandler()
-        ]
+            logging.FileHandler(config.get("logging.file", "/tmp/netpulse.log")),
+            logging.StreamHandler(),
+        ],
     )
 
 logger = logging.getLogger(__name__)
@@ -35,334 +36,393 @@ app = Flask(__name__)
 
 # Initialize config
 config = get_config()
-app.secret_key = config.get('web.secret_key', 'change-me-in-production')
+app.secret_key = config.get("web.secret_key", "change-me-in-production")
 
 # Ensure necessary directories exist (only in production)
-if not os.getenv('NETPULSE_TEST_MODE'):
+if not os.getenv("NETPULSE_TEST_MODE"):
     config.ensure_directories()
 
 
-@app.route('/')
+@app.route("/")
 def dashboard():
     """Main dashboard page"""
     try:
         db = get_database()
-        
+
         # Get latest measurements
         latest_measurements = db.get_latest_measurements(1)
         latest = latest_measurements[0] if latest_measurements else None
-        
+
         # Convert timestamp string to datetime object if latest exists
-        if latest and 'timestamp' in latest:
+        if latest and "timestamp" in latest:
             try:
-                latest['timestamp'] = datetime.strptime(latest['timestamp'], '%Y-%m-%d %H:%M:%S')
+                latest["timestamp"] = datetime.strptime(
+                    latest["timestamp"], "%Y-%m-%d %H:%M:%S"
+                )
             except (ValueError, TypeError) as e:
                 logger.error(f"Error parsing timestamp: {e}")
                 latest = None
-        
+
         # Get today's statistics
-        today_stats = db.get_statistics('day')
-        
+        today_stats = db.get_statistics("day")
+
         # Get current period statistics (default to day)
-        period = request.args.get('period', 'day')
+        period = request.args.get("period", "day")
         stats = db.get_statistics(period)
-        
-        return render_template('dashboard.html', 
-                             latest=latest, 
-                             today_stats=today_stats,
-                             stats=stats,
-                             period=period)
-    
+
+        return render_template(
+            "dashboard.html",
+            latest=latest,
+            today_stats=today_stats,
+            stats=stats,
+            period=period,
+        )
+
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
-        flash(f"Fehler beim Laden des Dashboards: {e}", 'error')
-        return render_template('dashboard.html', 
-                             latest=None, 
-                             today_stats={},
-                             stats={},
-                             period='day')
+        flash(f"Fehler beim Laden des Dashboards: {e}", "error")
+        return render_template(
+            "dashboard.html", latest=None, today_stats={}, stats={}, period="day"
+        )
 
 
-@app.route('/history')
+@app.route("/history")
 def history():
     """History page with all measurements"""
     try:
         db = get_database()
-        
+
         # Get filter parameters
-        period = request.args.get('period', '')
-        test_type = request.args.get('test_type', '')
-        limit = int(request.args.get('limit', 50))
-        
+        period = request.args.get("period", "")
+        test_type = request.args.get("test_type", "")
+        limit = int(request.args.get("limit", 50))
+
         # Get measurements
         if period:
             measurements = db.get_measurements_by_period(period)
         else:
             measurements = db.get_measurements(test_type=test_type, limit=limit)
-        
+
         # Filter by test type if specified
         if test_type and period:
-            measurements = [m for m in measurements if m['test_type'] == test_type]
-        
+            measurements = [m for m in measurements if m["test_type"] == test_type]
+
         # Limit results
         measurements = measurements[:limit]
-        
+
         # Convert timestamp strings to datetime objects
         for measurement in measurements:
-            if 'timestamp' in measurement and isinstance(measurement['timestamp'], str):
+            if "timestamp" in measurement and isinstance(measurement["timestamp"], str):
                 try:
-                    measurement['timestamp'] = datetime.strptime(measurement['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    measurement["timestamp"] = datetime.strptime(
+                        measurement["timestamp"], "%Y-%m-%d %H:%M:%S"
+                    )
                 except (ValueError, TypeError) as e:
                     logger.error(f"Error parsing timestamp: {e}")
                     # Keep as string if parsing fails
-        
-        return render_template('history.html', 
-                             measurements=measurements,
-                             period=period,
-                             test_type=test_type,
-                             limit=limit)
-    
+
+        return render_template(
+            "history.html",
+            measurements=measurements,
+            period=period,
+            test_type=test_type,
+            limit=limit,
+        )
+
     except Exception as e:
         logger.error(f"Error loading history: {e}")
-        flash(f"Fehler beim Laden des Verlaufs: {e}", 'error')
-        return render_template('history.html', 
-                             measurements=[],
-                             period='',
-                             test_type='',
-                             limit=50)
+        flash(f"Fehler beim Laden des Verlaufs: {e}", "error")
+        return render_template(
+            "history.html", measurements=[], period="", test_type="", limit=50
+        )
 
 
-@app.route('/export')
+@app.route("/export")
 def export():
     """Export page"""
-    return render_template('export.html')
+    return render_template("export.html")
 
 
-@app.route('/settings')
+@app.route("/settings")
 def settings():
     """Settings page"""
-    return render_template('settings.html')
+    return render_template("settings.html")
 
 
-@app.route('/export/csv')
+@app.route("/export/csv")
 def export_csv():
     """Export measurements as CSV"""
     try:
         db = get_database()
-        
+
         # Get filter parameters
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
-        
+        start_date = request.args.get("start_date")
+        end_date = request.args.get("end_date")
+
         # Generate filename
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"/tmp/netpulse_export_{timestamp}.csv"
-        
+
         # Export data
         db.export_to_csv(filename, start_date, end_date)
-        
+
         # Send file
-        return send_file(filename, 
-                        as_attachment=True, 
-                        download_name=f"netpulse_export_{timestamp}.csv")
-    
+        return send_file(
+            filename,
+            as_attachment=True,
+            download_name=f"netpulse_export_{timestamp}.csv",
+        )
+
     except Exception as e:
         logger.error(f"Error exporting CSV: {e}")
-        flash(f"Fehler beim Exportieren: {e}", 'error')
-        return redirect('/export')
+        flash(f"Fehler beim Exportieren: {e}", "error")
+        return redirect("/export")
 
 
-@app.route('/api/data')
+@app.route("/api/data")
 def api_data():
     """API endpoint for chart data"""
     try:
         db = get_database()
-        
-        period = request.args.get('period', 'day')
+
+        period = request.args.get("period", "day")
         measurements = db.get_measurements_by_period(period)
-        
+
         # Prepare data for charts
         labels = []
         download_speeds = []
         upload_speeds = []
         latencies = []
-        
+
         for measurement in measurements:
             # Format timestamp for display
-            timestamp = datetime.strptime(measurement['timestamp'], '%Y-%m-%d %H:%M:%S')
-            
-            if period == 'day':
-                labels.append(timestamp.strftime('%H:%M'))
-            elif period == 'week':
-                labels.append(timestamp.strftime('%a %H:%M'))
-            elif period == 'month':
-                labels.append(timestamp.strftime('%d.%m'))
-            elif period == 'year':
-                labels.append(timestamp.strftime('%d.%m'))
-            
-            download_speeds.append(measurement['download_speed'] or 0)
-            upload_speeds.append(measurement.get('upload_speed', 0) or 0)
-            latencies.append(measurement['latency'] or 0)
-        
-        return jsonify({
-            'labels': labels,
-            'download_speeds': download_speeds,
-            'upload_speeds': upload_speeds,
-            'latencies': latencies
-        })
-    
+            timestamp = datetime.strptime(measurement["timestamp"], "%Y-%m-%d %H:%M:%S")
+
+            if period == "day":
+                labels.append(timestamp.strftime("%H:%M"))
+            elif period == "week":
+                labels.append(timestamp.strftime("%a %H:%M"))
+            elif period == "month":
+                labels.append(timestamp.strftime("%d.%m"))
+            elif period == "year":
+                labels.append(timestamp.strftime("%d.%m"))
+
+            download_speeds.append(measurement["download_speed"] or 0)
+            upload_speeds.append(measurement.get("upload_speed", 0) or 0)
+            latencies.append(measurement["latency"] or 0)
+
+        return jsonify(
+            {
+                "labels": labels,
+                "download_speeds": download_speeds,
+                "upload_speeds": upload_speeds,
+                "latencies": latencies,
+            }
+        )
+
     except Exception as e:
         logger.error(f"Error getting API data: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/test', methods=['POST'])
+@app.route("/api/test", methods=["POST"])
 def api_test():
     """API endpoint to run a test"""
     try:
-        test_type = request.json.get('type', 'bandwidth') if request.is_json else 'bandwidth'
-        
+        test_type = (
+            request.json.get("type", "bandwidth") if request.is_json else "bandwidth"
+        )
+
         runner = SpeedtestRunner()
         success = runner.run_measurement(test_type)
-        
+
         if success:
-            return jsonify({'success': True, 'message': 'Test erfolgreich durchgeführt'})
+            return jsonify(
+                {"success": True, "message": "Test erfolgreich durchgeführt"}
+            )
         else:
-            return jsonify({'success': False, 'error': 'Test fehlgeschlagen'})
-    
+            return jsonify({"success": False, "error": "Test fehlgeschlagen"})
+
     except Exception as e:
         logger.error(f"Error running test: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
-@app.route('/api/stats')
+@app.route("/api/stats")
 def api_stats():
     """API endpoint for statistics"""
     try:
         db = get_database()
-        
-        period = request.args.get('period', 'day')
+
+        period = request.args.get("period", "day")
         stats = db.get_statistics(period)
         return jsonify(stats)
-    
+
     except Exception as e:
         logger.error(f"Error getting stats: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/health')
+@app.route("/api/health")
 def api_health():
     """Health check endpoint"""
     try:
-        # Get config for this request
-        config = get_config()
+        # Get database for this request
         db = get_database()
-        
+
         # Check database connection
         latest = db.get_latest_measurements(1)
-        
-        return jsonify({
-            'status': 'healthy',
-            'database': 'connected',
-            'latest_measurement': len(latest) > 0,
-            'timestamp': datetime.now().isoformat()
-        })
-    
+
+        return jsonify(
+            {
+                "status": "healthy",
+                "database": "connected",
+                "latest_measurement": len(latest) > 0,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
+
     except Exception as e:
         logger.error(f"Health check failed: {e}")
-        return jsonify({
-            'status': 'unhealthy',
-            'error': str(e),
-            'timestamp': datetime.now().isoformat()
-        }), 500
+        return (
+            jsonify(
+                {
+                    "status": "unhealthy",
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat(),
+                }
+            ),
+            500,
+        )
 
 
-@app.route('/api/config', methods=['GET'])
+@app.route("/api/config", methods=["GET"])
 def api_config_get():
     """API endpoint to get current configuration"""
     try:
         config = get_config()
-        
+
         # Return only the configuration settings that should be editable via web interface
-        return jsonify({
-            'measurement': {
-                'interval_minutes': config.get('measurement.interval_minutes', 15),
-                'timeout_seconds': config.get('measurement.timeout_seconds', 30),
-                'retry_count': config.get('measurement.retry_count', 3),
+        return jsonify(
+            {
+                "measurement": {
+                    "interval_minutes": config.get("measurement.interval_minutes", 15),
+                    "timeout_seconds": config.get("measurement.timeout_seconds", 30),
+                    "retry_count": config.get("measurement.retry_count", 3),
+                }
             }
-        })
-    
+        )
+
     except Exception as e:
         logger.error(f"Error getting config: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/config', methods=['POST'])
+@app.route("/api/config", methods=["POST"])
 def api_config_set():
     """API endpoint to update configuration"""
     try:
         if not request.is_json:
-            return jsonify({'error': 'JSON data required'}), 400
-        
+            return jsonify({"error": "JSON data required"}), 400
+
         data = request.get_json()
         config = get_config()
-        
+
         # Check if interval is being changed
-        old_interval = config.get('measurement.interval_minutes', 15)
+        old_interval = config.get("measurement.interval_minutes", 15)
         new_interval = old_interval
-        
+
         # Update measurement interval if provided
-        if 'measurement' in data:
-            if 'interval_minutes' in data['measurement']:
-                new_interval = data['measurement']['interval_minutes']
-                if not isinstance(new_interval, int) or new_interval < 1 or new_interval > 1440:
-                    return jsonify({'error': 'interval_minutes must be an integer between 1 and 1440'}), 400
-                config.set('measurement.interval_minutes', new_interval)
-            
-            if 'timeout_seconds' in data['measurement']:
-                timeout = data['measurement']['timeout_seconds']
+        if "measurement" in data:
+            if "interval_minutes" in data["measurement"]:
+                new_interval = data["measurement"]["interval_minutes"]
+                if (
+                    not isinstance(new_interval, int)
+                    or new_interval < 1
+                    or new_interval > 1440
+                ):
+                    return (
+                        jsonify(
+                            {
+                                "error": "interval_minutes must be an integer between 1 and 1440"
+                            }
+                        ),
+                        400,
+                    )
+                config.set("measurement.interval_minutes", new_interval)
+
+            if "timeout_seconds" in data["measurement"]:
+                timeout = data["measurement"]["timeout_seconds"]
                 if not isinstance(timeout, int) or timeout < 5 or timeout > 300:
-                    return jsonify({'error': 'timeout_seconds must be an integer between 5 and 300'}), 400
-                config.set('measurement.timeout_seconds', timeout)
-            
-            if 'retry_count' in data['measurement']:
-                retry = data['measurement']['retry_count']
+                    return (
+                        jsonify(
+                            {
+                                "error": "timeout_seconds must be an integer between 5 and 300"
+                            }
+                        ),
+                        400,
+                    )
+                config.set("measurement.timeout_seconds", timeout)
+
+            if "retry_count" in data["measurement"]:
+                retry = data["measurement"]["retry_count"]
                 if not isinstance(retry, int) or retry < 1 or retry > 10:
-                    return jsonify({'error': 'retry_count must be an integer between 1 and 10'}), 400
-                config.set('measurement.retry_count', retry)
-        
+                    return (
+                        jsonify(
+                            {"error": "retry_count must be an integer between 1 and 10"}
+                        ),
+                        400,
+                    )
+                config.set("measurement.retry_count", retry)
+
         # Save configuration
         if config.save():
             logger.info("Configuration updated successfully")
-            
+
             # If interval changed, try to update systemd timer
             if old_interval != new_interval:
                 try:
                     update_systemd_timer(new_interval)
-                    return jsonify({
-                        'success': True, 
-                        'message': f'Konfiguration erfolgreich gespeichert. Timer auf {new_interval} Minuten aktualisiert.'
-                    })
+                    return jsonify(
+                        {
+                            "success": True,
+                            "message": (
+                                f"Konfiguration erfolgreich gespeichert. "
+                                f"Timer auf {new_interval} Minuten aktualisiert."
+                            ),
+                        }
+                    )
                 except Exception as timer_error:
                     logger.warning(f"Failed to update systemd timer: {timer_error}")
-                    return jsonify({
-                        'success': True, 
-                        'message': f'Konfiguration gespeichert. Timer-Update fehlgeschlagen - manueller Neustart erforderlich: sudo systemctl restart netpulse.timer'
-                    })
+                    return jsonify(
+                        {
+                            "success": True,
+                            "message": (
+                                f"Konfiguration gespeichert. "
+                                f"Timer-Update fehlgeschlagen - manueller Neustart erforderlich: "
+                                f"sudo systemctl restart netpulse.timer"
+                            ),
+                        }
+                    )
             else:
-                return jsonify({'success': True, 'message': 'Konfiguration erfolgreich gespeichert'})
+                return jsonify(
+                    {
+                        "success": True,
+                        "message": "Konfiguration erfolgreich gespeichert",
+                    }
+                )
         else:
-            return jsonify({'error': 'Failed to save configuration'}), 500
-    
+            return jsonify({"error": "Failed to save configuration"}), 500
+
     except Exception as e:
         logger.error(f"Error updating config: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 
 def update_systemd_timer(interval_minutes):
     """Update the systemd timer configuration"""
     import subprocess
-    
+
     # Calculate the systemd calendar format
     if interval_minutes < 60:
         # For intervals less than an hour: *:0/X where X is the interval
@@ -377,40 +437,42 @@ def update_systemd_timer(interval_minutes):
     else:
         # Daily
         calendar_spec = "daily"
-    
+
     # Read the current timer file
     timer_file = "/lib/systemd/system/netpulse.timer"
-    with open(timer_file, 'r') as f:
+    with open(timer_file, "r") as f:
         timer_content = f.read()
-    
+
     # Update the OnCalendar line
-    lines = timer_content.split('\n')
+    lines = timer_content.split("\n")
     updated_lines = []
     for line in lines:
-        if line.startswith('OnCalendar='):
-            updated_lines.append(f'OnCalendar={calendar_spec}')
+        if line.startswith("OnCalendar="):
+            updated_lines.append(f"OnCalendar={calendar_spec}")
         else:
             updated_lines.append(line)
-    
+
     # Write back to timer file
-    with open(timer_file, 'w') as f:
-        f.write('\n'.join(updated_lines))
-    
+    with open(timer_file, "w") as f:
+        f.write("\n".join(updated_lines))
+
     # Reload systemd and restart timer
-    subprocess.run(['systemctl', 'daemon-reload'], check=True)
-    subprocess.run(['systemctl', 'restart', 'netpulse.timer'], check=True)
-    
-    logger.info(f"SystemD timer updated to run every {interval_minutes} minutes ({calendar_spec})")
+    subprocess.run(["systemctl", "daemon-reload"], check=True)
+    subprocess.run(["systemctl", "restart", "netpulse.timer"], check=True)
+
+    logger.info(
+        f"SystemD timer updated to run every {interval_minutes} minutes ({calendar_spec})"
+    )
 
 
 def main():
     """Main entry point for the web server"""
-    host = config.get('web.host', '0.0.0.0')
-    port = config.get('web.port', 8080)
-    debug = config.get('web.debug', False)
-    
+    host = config.get("web.host", "0.0.0.0")
+    port = config.get("web.port", 8080)
+    debug = config.get("web.debug", False)
+
     logger.info(f"Starting Netpulse web server on {host}:{port}")
-    
+
     try:
         app.run(host=host, port=port, debug=debug, load_dotenv=False)
     except KeyboardInterrupt:
@@ -420,5 +482,5 @@ def main():
         raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
