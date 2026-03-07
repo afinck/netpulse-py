@@ -22,64 +22,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up QEMU for cross-compilation
-      if: matrix.architecture == 'arm64'
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: arm64
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Build and export DEB package
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./Dockerfile.build
-        platforms: linux/amd64
-        target: artifacts
-        outputs: |
-          type=local,dest=./build-amd64
-        tags: netpulse:build-amd64
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        provenance: false
-
-    - name: List build artifacts
+    - name: Build DEB package locally
       run: |
-        echo "Build artifacts for ${{ matrix.architecture }}:"
-        find ./build-${{ matrix.architecture }} -type f -name "*.deb" -exec ls -la {} \; || echo "No .deb files found"
-        echo "All files in build directory:"
-        ls -laR ./build-${{ matrix.architecture }} || echo "Build directory not found"
-        echo "Looking for .deb files in parent directories:"
-        find . -name "*.deb" -ls 2>/dev/null || echo "No .deb files found anywhere"
+        echo "Building Netpulse DEB package locally..."
+        chmod +x build.sh
+        ./build.sh
+        echo "Build completed. Current directory contents:"
+        ls -la *.deb || echo "No .deb files found"
+        echo "Package information:"
+        dpkg -I *.deb || echo "No package info available"
 
-    - name: Test DEB package installation
-      run: |
-        echo "Searching for .deb files..."
-        DEB_FILE=$(find ./build-${{ matrix.architecture }} -name "*.deb" | head -1)
-        if [ -n "$DEB_FILE" ]; then
-          echo "Testing DEB package installation: $DEB_FILE"
-          sudo dpkg -i "$DEB_FILE" || echo "Dependencies missing, but package structure is valid"
-        else
-          echo "No DEB package found in build directory!"
-          echo "Available files:"
-          find ./build-${{ matrix.architecture }} -type f -ls || echo "Build directory empty"
-          exit 1
-        fi
-
-    - name: Upload DEB artifacts
-      run: |
-        echo "Preparing to upload artifacts for ${{ matrix.architecture }}..."
-        echo "Build directory contents:"
-        find ./build-${{ matrix.architecture }} -type f -ls || echo "No files found"
-        echo "Searching for .deb files to upload:"
-        find ./build-${{ matrix.architecture }} -name "*.deb" -ls || echo "No .deb files found"
     - name: Upload DEB artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: netpulse-deb-${{ matrix.architecture }}
-        path: build-${{ matrix.architecture }}/*.deb
+        name: netpulse-deb-amd64
+        path: "*.deb"
         retention-days: 30
         if-no-files-found: warn
 
