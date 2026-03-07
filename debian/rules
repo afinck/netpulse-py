@@ -24,6 +24,6 @@ override_dh_auto_install:
 
 override_dh_fixperms:
 	dh_fixperms
-	chmod +x debian/netpulse/DEBIAN/postinst
-	chmod +x debian/netpulse/DEBIAN/prerm
+	chmod +x debian/postinst
+	chmod +x debian/prerm
 	chmod +x debian/rules
