@@ -16,5 +16,5 @@ NoNewPrivileges=true
 PrivateTmp=true
 
 # Restart settings
-Restart=no
+Restart=always
 RestartSec=5
