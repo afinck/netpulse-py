@@ -35,4 +35,9 @@ setup(
     ],
     zip_safe=False,
     use_2to3=False,
+    options={
+        'bdist_wheel': {
+            'universal': 0,
+        }
+    },
 )

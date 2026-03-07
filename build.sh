@@ -36,6 +36,8 @@ chmod +x debian/postinst debian/prerm debian/rules
 
 # Build the package
 echo "Building DEB package for version ${VERSION}..."
+# Force wheel format to get .dist-info instead of .egg-info
+python3 setup.py bdist_wheel 2>/dev/null || echo "Wheel build failed, continuing with egg format"
 dpkg-buildpackage -us -uc -b
 
 # Debug: Show what was created
