@@ -2,9 +2,9 @@ name: Build DEB Package (Cross-Compile)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/cross-compile-github-actions ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feature/cross-compile-github-actions ]
   workflow_dispatch:
 
 jobs:
