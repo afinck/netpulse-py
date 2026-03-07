@@ -24,7 +24,22 @@ class Database:
 
     def ensure_database(self):
         """Ensure database exists and tables are created"""
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+        db_path = Path(self.db_path)
+        
+        # Try to create directory with proper error handling
+        try:
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            # Check if we can write to the directory
+            test_file = db_path.parent / ".permission_test"
+            test_file.write_text("test")
+            test_file.unlink()
+        except (PermissionError, OSError) as e:
+            logger.error(f"Cannot create/write to database directory {db_path.parent}: {e}")
+            # Fallback to user's home directory
+            fallback_dir = Path.home() / ".netpulse"
+            fallback_dir.mkdir(exist_ok=True)
+            self.db_path = str(fallback_dir / "netpulse.db")
+            logger.warning(f"Using fallback database path: {self.db_path}")
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
@@ -81,7 +96,40 @@ class Database:
                 return cursor.lastrowid
         except sqlite3.Error as e:
             logger.error(f"Failed to add measurement: {e}")
-            raise
+            logger.error(f"Database path: {self.db_path}")
+            # Try to recreate database if it's corrupted
+            if "readonly" in str(e).lower() or "attempt to write a readonly database" in str(e).lower():
+                logger.warning("Database appears to be readonly, attempting to recreate...")
+                try:
+                    Path(self.db_path).unlink(missing_ok=True)
+                    self.ensure_database()
+                    # Retry the operation
+                    with sqlite3.connect(self.db_path) as conn:
+                        cursor = conn.execute(
+                            """
+                            INSERT INTO measurements (
+                                timestamp, download_speed, upload_speed, latency,
+                                jitter, packet_loss, server_name, test_type
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                            (
+                                measurement["timestamp"],
+                                measurement["download_speed"],
+                                measurement.get("upload_speed"),
+                                measurement["latency"],
+                                measurement.get("jitter"),
+                                measurement.get("packet_loss"),
+                                measurement.get("server_name"),
+                                measurement["test_type"],
+                            ),
+                        )
+                        conn.commit()
+                        return cursor.lastrowid
+                except Exception as retry_e:
+                    logger.error(f"Failed to recreate database: {retry_e}")
+                    raise
+            else:
+                raise
 
     def get_measurements(
         self,
