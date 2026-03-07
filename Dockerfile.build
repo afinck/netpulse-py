@@ -41,7 +41,11 @@ RUN chmod +x build.sh && \
     ls -la .. && \
     echo "Looking for .deb files:" && \
     find . -name "*.deb" -ls && \
-    find .. -name "*.deb" -ls
+    find .. -name "*.deb" -ls && \
+    echo "Copying .deb files to current directory..." && \
+    find .. -name "*.deb" -exec cp {} . \; && \
+    echo "Final directory contents:" && \
+    ls -la *.deb
 
 # Runtime stage
 FROM --platform=$TARGETPLATFORM python:3.11-slim as runtime
