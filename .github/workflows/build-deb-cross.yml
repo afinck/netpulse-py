@@ -72,7 +72,8 @@ jobs:
         # Build the package
         RUN echo "=== Starting build process ===" && \
             chmod +x build.sh && \
-            ./build.sh 2>&1 || (echo "Build failed, checking for errors..." && ls -la && exit 1)
+            echo "=== Running build.sh ===" && \
+            ./build.sh 2>&1 || (echo "Build failed, checking for errors..." && ls -la && cat build.sh | head -20 && exit 1)
         
         # Verify the package was built
         RUN echo "=== Checking build results ===" && \
