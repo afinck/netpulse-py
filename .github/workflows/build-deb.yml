@@ -53,15 +53,20 @@ jobs:
         find ./build-${{ matrix.architecture }} -type f -name "*.deb" -exec ls -la {} \; || echo "No .deb files found"
         echo "All files in build directory:"
         ls -laR ./build-${{ matrix.architecture }} || echo "Build directory not found"
+        echo "Looking for .deb files in parent directories:"
+        find . -name "*.deb" -ls 2>/dev/null || echo "No .deb files found anywhere"
 
     - name: Test DEB package installation
       run: |
-        cd ./build-${{ matrix.architecture }}
-        if ls *.deb 1> /dev/null 2>&1; then
-          echo "Testing DEB package installation..."
-          sudo dpkg -i *.deb || echo "Dependencies missing, but package structure is valid"
+        echo "Searching for .deb files..."
+        DEB_FILE=$(find ./build-${{ matrix.architecture }} -name "*.deb" | head -1)
+        if [ -n "$DEB_FILE" ]; then
+          echo "Testing DEB package installation: $DEB_FILE"
+          sudo dpkg -i "$DEB_FILE" || echo "Dependencies missing, but package structure is valid"
         else
-          echo "No DEB package found!"
+          echo "No DEB package found in build directory!"
+          echo "Available files:"
+          find ./build-${{ matrix.architecture }} -type f -ls || echo "Build directory empty"
           exit 1
         fi
 
