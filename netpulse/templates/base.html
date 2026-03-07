@@ -96,17 +96,22 @@
 
         // System theme detection
         function detectSystemTheme() {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            console.log('System theme detection:', isDark ? 'dark' : 'light');
+            
+            if (isDark) {
                 document.documentElement.setAttribute('data-theme', 'dark');
+                console.log('Applied dark theme');
             } else {
                 document.documentElement.setAttribute('data-theme', 'light');
+                console.log('Applied light theme');
             }
         }
 
         // Listen for system theme changes
         if (window.matchMedia) {
             const themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            themeQuery.addListener(detectSystemTheme);
+            themeQuery.addEventListener('change', detectSystemTheme);
         }
 
         // Initialize theme on page load
