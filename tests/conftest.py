@@ -16,53 +16,64 @@ def temp_db():
     """Create a temporary database for testing"""
     from netpulse.database import Database
     
-    # Create a temporary directory for the database
+    # Create a temporary directory for database
     with tempfile.TemporaryDirectory() as temp_dir:
         test_db_path = os.path.join(temp_dir, 'test.db')
         
         # Create a fresh database instance with test path
-        db = Database(test_db_path)
-        db.ensure_database()
-        
-        # Add some test data
-        from datetime import datetime
-        test_measurements = [
-            {
-                'timestamp': datetime.now().strftime('%Y-%m-%d 10:00:00'),
-                'download_speed': 50.5,
-                'upload_speed': 10.2,
-                'latency': 15.3,
-                'jitter': 2.1,
-                'packet_loss': 0.0,
-                'server_name': 'Test Server 1',
-                'test_type': 'bandwidth'
-            },
-            {
-                'timestamp': datetime.now().strftime('%Y-%m-%d 10:15:00'),
-                'download_speed': 48.2,
-                'upload_speed': 9.8,
-                'latency': 16.1,
-                'jitter': 2.3,
-                'packet_loss': 0.1,
-                'server_name': 'Test Server 2',
-                'test_type': 'bandwidth'
-            },
-            {
-                'timestamp': datetime.now().strftime('%Y-%m-%d 10:30:00'),
-                'download_speed': 0.0,
-                'upload_speed': 0.0,
-                'latency': 14.8,
-                'jitter': 1.9,
-                'packet_loss': 0.0,
-                'server_name': '8.8.8.8 (Google DNS)',
-                'test_type': 'latency'
+        # Use the test_config to avoid config conflicts
+        test_config = Config()
+        test_config._config = {
+            'database': {
+                'path': test_db_path,
+                'backup_enabled': False,
+                'backup_interval_days': 7,
             }
-        ]
+        }
         
-        for measurement in test_measurements:
-            db.add_measurement(measurement)
-        
-        yield db
+        with patch('netpulse.database.get_config', return_value=test_config):
+            db = Database(test_db_path)
+            db.ensure_database()
+            
+            # Add some test data
+            from datetime import datetime
+            test_measurements = [
+                {
+                    'timestamp': datetime.now().strftime('%Y-%m-%d 10:00:00'),
+                    'download_speed': 50.5,
+                    'upload_speed': 10.2,
+                    'latency': 15.3,
+                    'jitter': 2.1,
+                    'packet_loss': 0.0,
+                    'server_name': 'Test Server 1',
+                    'test_type': 'bandwidth'
+                },
+                {
+                    'timestamp': datetime.now().strftime('%Y-%m-%d 10:15:00'),
+                    'download_speed': 48.2,
+                    'upload_speed': 9.8,
+                    'latency': 16.1,
+                    'jitter': 2.3,
+                    'packet_loss': 0.1,
+                    'server_name': 'Test Server 2',
+                    'test_type': 'bandwidth'
+                },
+                {
+                    'timestamp': datetime.now().strftime('%Y-%m-%d 10:30:00'),
+                    'download_speed': 0.0,
+                    'upload_speed': 0.0,
+                    'latency': 14.8,
+                    'jitter': 1.9,
+                    'packet_loss': 0.0,
+                    'server_name': '8.8.8.8 (Google DNS)',
+                    'test_type': 'latency'
+                }
+            ]
+            
+            for measurement in test_measurements:
+                db.add_measurement(measurement)
+            
+            yield db
 
 
 @pytest.fixture
@@ -94,6 +105,8 @@ def test_config():
             'backup_count': 1,
         }
     }
+    # Override config file location for tests
+    config.config_file = '/tmp/test_netpulse.conf'
     return config
 
 
@@ -139,11 +152,14 @@ def flask_app(test_config, temp_db):
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     
-    # Override the database for testing
+    # Override both database and config for testing
     with patch('netpulse.web.get_database', return_value=temp_db):
-        with app.test_client() as client:
-            with app.app_context():
-                yield client
+        with patch('netpulse.web.get_config', return_value=test_config):
+            with patch('netpulse.speedtest.get_config', return_value=test_config):
+                with patch('netpulse.database.get_config', return_value=test_config):
+                    with app.test_client() as client:
+                        with app.app_context():
+                            yield client
 
 
 @pytest.fixture

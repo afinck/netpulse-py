@@ -159,21 +159,21 @@
                         <tbody>
                             <tr>
                                 <td>Download (Mbit/s)</td>
-                                <td class="text-primary">{{ "%.2f"|format(stats.download_speed.min if stats and stats.get('download_speed') else 0) }}</td>
-                                <td class="text-primary">{{ "%.2f"|format(stats.download_speed.avg if stats and stats.get('download_speed') else 0) }}</td>
-                                <td class="text-primary">{{ "%.2f"|format(stats.download_speed.max if stats and stats.get('download_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.min if stats and stats.get('download_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.avg if stats and stats.get('download_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.max if stats and stats.get('download_speed') else 0) }}</td>
                             </tr>
                             <tr>
                                 <td>Upload (Mbit/s)</td>
-                                <td class="text-success">{{ "%.2f"|format(stats.upload_speed.min if stats and stats.get('upload_speed') else 0) }}</td>
-                                <td class="text-success">{{ "%.2f"|format(stats.upload_speed.avg if stats and stats.get('upload_speed') else 0) }}</td>
-                                <td class="text-success">{{ "%.2f"|format(stats.upload_speed.max if stats and stats.get('upload_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.min if stats and stats.get('upload_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.avg if stats and stats.get('upload_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.max if stats and stats.get('upload_speed') else 0) }}</td>
                             </tr>
                             <tr>
                                 <td>Latenz (ms)</td>
-                                <td class="text-warning">{{ "%.1f"|format(stats.latency.min if stats and stats.get('latency') else 0) }}</td>
-                                <td class="text-warning">{{ "%.1f"|format(stats.latency.avg if stats and stats.get('latency') else 0) }}</td>
-                                <td class="text-warning">{{ "%.1f"|format(stats.latency.max if stats and stats.get('latency') else 0) }}</td>
+                                <td>{{ "%.1f"|format(stats.latency.min if stats and stats.get('latency') else 0) }}</td>
+                                <td>{{ "%.1f"|format(stats.latency.avg if stats and stats.get('latency') else 0) }}</td>
+                                <td>{{ "%.1f"|format(stats.latency.max if stats and stats.get('latency') else 0) }}</td>
                             </tr>
                         </tbody>
                     </table>

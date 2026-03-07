@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Export - Netpulse{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">
+            <i class="bi bi-download"></i> Daten Export
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">CSV Export</h5>
+                <p class="card-text">
+                    Exportieren Sie alle Messungen als CSV-Datei für die externe Analyse.
+                </p>
+                
+                <form method="GET" action="/export/csv">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Startdatum</label>
+                            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">Enddatum</label>
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-download"></i> Exportieren
+                        </button>
+                        <a href="/history" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Zurück zum Verlauf
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> Hinweise
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check-circle text-success"></i> CSV-Dateien können in Excel, LibreOffice Calc oder anderen Tabellenkalkulationsprogrammen geöffnet werden</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Die Export-Datei enthält alle Messungen im gewählten Zeitraum</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Wenn kein Zeitraum ausgewählt ist, werden alle Messungen exportiert</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

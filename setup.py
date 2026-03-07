@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="netpulse",
-    version="1.0.0",
+    version="1.1.0",
     description="Network monitoring tool for Raspberry Pi",
     author="Vector",
     packages=find_packages(),

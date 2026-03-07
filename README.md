@@ -8,7 +8,7 @@ Dieses Projekt ist unter der [MIT License](LICENSE) lizenziert.
 
 ## Features
 
-- ✅ Automatische Messung von Bandbreite und Latenz (alle 15 Minuten)
+- ✅ Automatische Messung von Bandbreite und Latenz (konfigurierbares Intervall)
 - ✅ Responsive Webinterface mit Echtzeit-Charts und historischen Tabellen
 - ✅ SQLite Datenbank für zuverlässige Datenspeicherung
 - ✅ Systemd Timer für robuste automatische Messungen
@@ -16,6 +16,8 @@ Dieses Projekt ist unter der [MIT License](LICENSE) lizenziert.
 - ✅ Unterstützung für librespeed-cli mit JSON-Array-Format
 - ✅ Vollständige Fehlerbehandlung und Logging
 - ✅ Manuelles Testen über Webinterface und Kommandozeile
+- ✅ **Web-basierte Konfiguration** für Messintervall, Timeout und Wiederholungsversuche
+- ✅ **Automatische SystemD-Timer-Aktualisierung** bei Konfigurationsänderungen
 
 ## Installation
 
@@ -63,10 +65,32 @@ sudo systemctl list-timers | grep netpulse
 
 Die Konfigurationsdatei befindet sich unter `/etc/netpulse/netpulse.conf`.
 
+### Web-basierte Konfiguration (Empfohlen)
+Die einfachste Methode zur Konfiguration ist über das Webinterface:
+1. Webinterface unter `http://<RASPBERRY-PI-IP>:8080` öffnen
+2. Menü "Einstellungen" auswählen
+3. Gewünschte Werte anpassen und speichern
+4. SystemD-Timer wird bei Bedarf automatisch aktualisiert
+
+### Manuelle Konfiguration
 **Wichtige Einstellungen:**
-- `measurement.interval_minutes`: Messintervall (Standard: 15)
+- `measurement.interval_minutes`: Messintervall (Standard: 15, Bereich: 1-1440)
+- `measurement.timeout_seconds`: Timeout für Messungen (Standard: 30, Bereich: 5-300)
+- `measurement.retry_count`: Wiederholungsversuche (Standard: 3, Bereich: 1-10)
 - `database.path`: Datenbankpfad (Standard: `/var/lib/netpulse/netpulse.db`)
 - `web.port`: Webinterface-Port (Standard: 8080)
+
+**Beispiel-Konfiguration:**
+```ini
+# Measurement settings
+measurement.interval_minutes=30
+measurement.timeout_seconds=60
+measurement.retry_count=5
+
+# Web interface settings
+web.host=0.0.0.0
+web.port=8080
+```
 
 ## Fehlerbehebung
 
@@ -158,19 +182,27 @@ docker-compose up --build
 ### Komponenten
 - **`netpulse/speedtest.py`**: librespeed-cli Integration mit JSON-Array-Parsing
 - **`netpulse/database.py`**: SQLite CRUD-Operationen und Statistiken
-- **`netpulse/web.py`**: Flask Webinterface mit API-Endpunkten
-- **`netpulse/config.py`**: Konfigurationsmanagement mit Default-Werten
+- **`netpulse/web.py`**: Flask Webinterface mit API-Endpunkten und Konfiguration
+- **`netpulse/config.py`**: Konfigurationsmanagement mit Default-Werten und Speicherung
 
 ### Datenfluss
-1. **Timer** löst `netpulse.service` alle 15 Minuten aus
+1. **Timer** löst `netpulse.service` im konfigurierten Intervall aus
 2. **Speedtest** führt `librespeed-cli` aus und parst JSON-Array
 3. **Datenbank** speichert Messwerte mit Timestamp
 4. **Webinterface** zeigt Echtzeit- und historische Daten
+5. **Konfiguration** kann über Webinterface oder Konfigurationsdatei angepasst werden
 
 ### Services
-- **`netpulse.timer`**: Systemd Timer für automatische Messungen
+- **`netpulse.timer`**: Systemd Timer für automatische Messungen (konfigurierbar)
 - **`netpulse.service`**: Oneshot Service für einzelne Messungen
 - **`netpulse-web.service`**: Flask Webserver als Daemon
+
+### API-Endpunkte
+- `GET/POST /api/config`: Konfigurationsmanagement
+- `GET /api/data`: Chart-Daten für verschiedene Zeiträume
+- `GET /api/stats`: Statistische Auswertungen
+- `POST /api/test`: Manuelles Auslösen von Messungen
+- `GET /api/health`: Health-Check Endpunkt
 
 ## CI/CD
 
@@ -183,6 +215,15 @@ Die Anwendung hat eine vollständige CI/CD-Pipeline mit GitHub Actions:
 - **Coverage**: codecov Integration
 
 ## Changelog
+
+### v1.1.0 (2026-03-07)
+- ✅ **Web-basierte Konfiguration** für Messintervall, Timeout und Wiederholungsversuche hinzugefügt
+- ✅ **Automatische SystemD-Timer-Aktualisierung** bei Konfigurationsänderungen implementiert
+- ✅ **API-Endpunkte** für Konfigurationsmanagement (`/api/config`) hinzugefügt
+- ✅ **Einstellungsseite** im Webinterface mit Formular zur Konfiguration
+- ✅ **Verbesserte UI** mit farblichen Statistikwerten für bessere Lesbarkeit
+- ✅ **Erweiterte Tests** für neue Konfigurationsfunktionen
+- ✅ **Dokumentation** aktualisiert und erweitert
 
 ### v1.0.0 (2026-03-06)
 - ✅ JSON-Parsing für librespeed-cli Array-Format behoben

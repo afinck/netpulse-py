@@ -35,6 +35,58 @@ class TestWebInterface:
         assert response.status_code == 200
         assert b'Export' in response.data
     
+    def test_settings_page(self, flask_app):
+        """Test settings page loads"""
+        response = flask_app.get('/settings')
+        assert response.status_code == 200
+        assert b'Einstellungen' in response.data
+        assert b'Messintervall' in response.data
+    
+    def test_api_config_get(self, flask_app):
+        """Test API config GET endpoint"""
+        response = flask_app.get('/api/config')
+        assert response.status_code == 200
+        
+        data = json.loads(response.data)
+        assert 'measurement' in data
+        assert 'interval_minutes' in data['measurement']
+        assert 'timeout_seconds' in data['measurement']
+        assert 'retry_count' in data['measurement']
+    
+    def test_api_config_post_valid(self, flask_app):
+        """Test API config POST endpoint with valid data"""
+        config_data = {
+            'measurement': {
+                'interval_minutes': 30,
+                'timeout_seconds': 60,
+                'retry_count': 5
+            }
+        }
+        
+        response = flask_app.post('/api/config',
+                                 json=config_data,
+                                 content_type='application/json')
+        assert response.status_code == 200
+        
+        result = json.loads(response.data)
+        assert result['success'] == True
+    
+    def test_api_config_post_invalid(self, flask_app):
+        """Test API config POST endpoint with invalid data"""
+        config_data = {
+            'measurement': {
+                'interval_minutes': 0,  # Invalid: less than 1
+            }
+        }
+        
+        response = flask_app.post('/api/config',
+                                 json=config_data,
+                                 content_type='application/json')
+        assert response.status_code == 400
+        
+        result = json.loads(response.data)
+        assert 'error' in result
+    
     def test_api_data_endpoint(self, flask_app, temp_db):
         """Test API data endpoint"""
         response = flask_app.get('/api/data?period=day')
