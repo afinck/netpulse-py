@@ -24,13 +24,13 @@ else:
     log_file = config.get("logging.file", "/var/log/netpulse/netpulse.log")
         
         # Create log directory if it doesn't exist
-        try:
-            os.makedirs(os.path.dirname(log_file), exist_ok=True)
-        except (PermissionError, OSError):
-            # Fallback to /tmp if we can't create the log directory
-            import tempfile
-            temp_dir = tempfile.gettempdir()
-            log_file = os.path.join(temp_dir, "netpulse.log")
+    try:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    except (PermissionError, OSError):
+        # Fallback to /tmp if we can't create the log directory
+        import tempfile
+        temp_dir = tempfile.gettempdir()
+        log_file = os.path.join(temp_dir, "netpulse.log")
 
     logging.basicConfig(
         level=logging.INFO,
