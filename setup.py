@@ -33,4 +33,5 @@ setup(
         ("/etc/netpulse", ["config/default.conf"]),
         ("/lib/systemd/system", ["systemd/netpulse.service", "systemd/netpulse.timer", "systemd/netpulse-web.service"]),
     ],
+    zip_safe=False,
 )
