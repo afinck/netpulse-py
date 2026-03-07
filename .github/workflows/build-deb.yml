@@ -1,0 +1,95 @@
+name: Build DEB Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        architecture: [amd64, arm64]
+        include:
+          - architecture: amd64
+            os: ubuntu
+            base_image: ubuntu:22.04
+          - architecture: arm64
+            os: ubuntu
+            base_image: ubuntu:22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU for cross-compilation
+      if: matrix.architecture == 'arm64'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: netpulse
+        tags: |
+          type=ref,event=tag
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and export DEB package
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.build
+        platforms: linux/${{ matrix.architecture }}
+        outputs: |
+          type=local,dest=./build-${{ matrix.architecture }}
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Upload DEB artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: netpulse-deb-${{ matrix.architecture }}
+        path: build-${{ matrix.architecture }}/
+        retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        pattern: netpulse-deb-*
+        merge-multiple: true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: artifacts/*
+        draft: false
+        prerelease: false
+        generate_release_notes: true

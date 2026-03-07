@@ -7,6 +7,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     librespeed-cli \
     iputils-ping \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
@@ -44,4 +45,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 USER netpulse
 
 # Default command
-CMD ["python", "-m", "netpulse"]
+CMD ["python", "-m", "netpulse.web"]

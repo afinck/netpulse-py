@@ -17,17 +17,17 @@ override_dh_python3:
 
 override_dh_auto_install:
 	dh_auto_install
-	# Install templates and static files to the correct Python 3.11 path
-	mkdir -p debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/templates
-	cp -r templates/*.html debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/templates/ || true
-	cp templates/__init__.py debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/templates/ || true
+	# Install templates and static files to correct Python path
+	mkdir -p debian/netpulse/usr/lib/python3/dist-packages/netpulse/templates
+	cp -r templates/*.html debian/netpulse/usr/lib/python3/dist-packages/netpulse/templates/ || true
+	cp templates/__init__.py debian/netpulse/usr/lib/python3/dist-packages/netpulse/templates/ || true
 	if [ -d "static/css" ]; then \
-		mkdir -p debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/static/css; \
-		cp -r static/css/*.css debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/static/css/ || true; \
+		mkdir -p debian/netpulse/usr/lib/python3/dist-packages/netpulse/static/css; \
+		cp -r static/css/*.css debian/netpulse/usr/lib/python3/dist-packages/netpulse/static/css/ || true; \
 	fi
 	if [ -d "static/js" ]; then \
-		mkdir -p debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/static/js; \
-		cp -r static/js/*.js debian/netpulse/usr/lib/python3.11/dist-packages/netpulse/static/js/ || true; \
+		mkdir -p debian/netpulse/usr/lib/python3/dist-packages/netpulse/static/js; \
+		cp -r static/js/*.js debian/netpulse/usr/lib/python3/dist-packages/netpulse/static/js/ || true; \
 	fi
 	# Install systemd files
 	install -d debian/lib/systemd/system

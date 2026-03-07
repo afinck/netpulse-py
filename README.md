@@ -212,7 +212,51 @@ Die Anwendung hat eine vollständige CI/CD-Pipeline mit GitHub Actions:
 - **Security**: bandit, safety
 - **Integration Tests**: Docker-basiert
 - **Automatische Builds**: DEB-Pakete und Docker Images
+- **Cross-Compilation**: ARM64 und AMD64 Builds
 - **Coverage**: codecov Integration
+
+### GitHub Actions Workflows
+
+**Test Workflow (`.github/workflows/test.yml`)**
+- Läuft auf jedem Push und Pull Request
+- Testet alle Python-Versionen
+- Code-Qualität und Security-Checks
+- Coverage-Reporting
+
+**Docker Build (`.github/workflows/docker.yml`)**
+- Multi-Architecture Builds (AMD64/ARM64)
+- Cross-Compilation mit QEMU
+- Automatische Push zu Docker Hub
+
+**DEB Package Build (`.github/workflows/build-deb.yml`)**
+- Cross-compilation für ARM64 und AMD64
+- Docker-basierte Build-Umgebung
+- Automatische Releases auf Tags
+
+### Docker Images
+
+```bash
+# Pull latest image
+docker pull afinck/netpulse:latest
+
+# Pull specific version
+docker pull afinck/netpulse:v1.1.0
+
+# Pull specific architecture
+docker pull afinck/netpulse:amd64
+docker pull afinck/netpulse:arm64
+```
+
+### DEB Package Installation
+
+Automatisch gebaute DEB-Pakete sind in GitHub Releases verfügbar:
+
+```bash
+# Download and install (ARM64 für Raspberry Pi)
+wget https://github.com/afinck/netpulse-py/releases/latest/download/netpulse_1.1.0_arm64.deb
+sudo dpkg -i netpulse_1.1.0_arm64.deb
+sudo apt-get install -f
+```
 
 ## Changelog
 
