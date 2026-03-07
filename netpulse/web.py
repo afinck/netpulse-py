@@ -17,19 +17,29 @@ from .speedtest import SpeedtestRunner
 if os.getenv("NETPULSE_TEST_MODE"):
     # Use simple logging for tests
     logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 else:
-    # Normal logging configuration
+    # Configure logging
     config = get_config()
+    log_file = config.get("logging.file", "/tmp/netpulse.log")
+    
+    # Create log directory if it doesn't exist
+    try:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    except (PermissionError, OSError):
+        # Fallback to /tmp if we can't create the log directory
+        log_file = "/tmp/netpulse.log"
+    
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
-            logging.FileHandler(config.get("logging.file", "/tmp/netpulse.log")),
+            logging.FileHandler(log_file),
             logging.StreamHandler(),
         ],
     )
 
-logger = logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)
 
 # Create Flask app
 app = Flask(__name__)
@@ -40,7 +50,11 @@ app.secret_key = config.get("web.secret_key", "change-me-in-production")
 
 # Ensure necessary directories exist (only in production)
 if not os.getenv("NETPULSE_TEST_MODE"):
-    config.ensure_directories()
+    try:
+        config.ensure_directories()
+    except (PermissionError, OSError):
+        # Skip directory creation in environments where we don't have permissions
+        pass
 
 
 @app.route("/")
