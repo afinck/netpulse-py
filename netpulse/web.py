@@ -437,6 +437,7 @@ def api_config_set():
 
 def update_systemd_timer(interval_minutes):
     """Update systemd timer configuration"""
+    import subprocess
     try:
         # Use full paths for systemd commands
         subprocess.run(
