@@ -7,9 +7,21 @@ case "$1" in
     configure)
         # Create necessary directories
         mkdir -p /var/lib/netpulse /var/log/netpulse /etc/netpulse
-        chown -R root:root /var/lib/netpulse /var/log/netpulse /etc/netpulse
+        
+        # Set proper ownership for netpulse user
+        chown -R netpulse:netpulse /var/lib/netpulse /var/log/netpulse
+        chown root:root /etc/netpulse
+        
+        # Set proper permissions
         chmod 755 /var/lib/netpulse /var/log/netpulse
         chmod 755 /etc/netpulse
+        
+        # Ensure database directory is writable by netpulse user
+        chmod 775 /var/lib/netpulse
+        find /var/lib/netpulse -name "*.db" -exec chmod 664 {} \; 2>/dev/null || true
+        
+        # Ensure log directory is writable by netpulse user
+        chmod 775 /var/log/netpulse
         
         # Install configuration file if it doesn't exist
         if [ ! -f /etc/netpulse/netpulse.conf ]; then
