@@ -144,4 +144,4 @@ jobs:
           
           🤖 **This release was created automatically by GitHub Actions**
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
