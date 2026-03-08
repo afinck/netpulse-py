@@ -1,0 +1,27 @@
+netpulse (1.1.1) unstable; urgency=medium
+
+  * Cross-compilation support for ARM64 and AMD64
+  * Python 3.11+ compatibility with modern .dist-info packaging
+  * System-wide installation paths for universal Python compatibility
+  * GitHub Actions workflow for automated multi-architecture builds
+  * Enhanced debugging and verification scripts
+  * Fixed PackageNotFoundError for Python 3.11+ systems
+  * Comprehensive documentation and testing improvements
+  * Modern wheel-based packaging with metadata extraction
+
+ -- Vector <axiomfield@gmail.com>  Sat, 08 Mar 2026 10:00:00 +0000
+
+netpulse (1.1.0) unstable; urgency=medium
+
+  * Initial release
+  * Network monitoring tool for Raspberry Pi
+  * Automatic bandwidth and latency measurements
+  * Responsive web interface with charts
+  * SQLite database for data storage
+  * Systemd timer integration
+  * Easy DEB package installation
+  * Fixed database permission issues
+  * Improved systemd service restart behavior
+  * Enhanced UI consistency
+
+ -- Vector <axiomfield@gmail.com>  Sat, 07 Mar 2026 20:00:00 +0000
