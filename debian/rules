@@ -56,6 +56,14 @@ override_dh_auto_install:
 	install -d debian/netpulse/lib/systemd/system
 	install -m 644 systemd/*.service debian/netpulse/lib/systemd/system/
 	install -m 644 systemd/*.timer debian/netpulse/lib/systemd/system/
+	
+	# Install helper script
+	install -d debian/netpulse/usr/lib/netpulse
+	install -m 755 systemd/netpulse-timer-helper.sh debian/netpulse/usr/lib/netpulse/
+	
+	# Install sudoers file
+	install -d debian/netpulse/etc/sudoers.d
+	install -m 440 debian/netpulse.sudoers debian/netpulse/etc/sudoers.d/netpulse
 
 override_dh_fixperms:
 	dh_fixperms

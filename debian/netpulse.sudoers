@@ -1,0 +1,2 @@
+# Allow netpulse user to run timer update helper script without password
+netpulse ALL=(ALL) NOPASSWD: /usr/lib/netpulse/netpulse-timer-helper.sh

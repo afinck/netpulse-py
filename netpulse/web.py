@@ -463,98 +463,25 @@ def api_config_set():
 
 
 def update_systemd_timer(interval_minutes):
-    """Update systemd timer configuration"""
+    """Update systemd timer configuration using helper script"""
     import subprocess
-    import fcntl
 
     logger.info(f"Updating systemd timer to {interval_minutes} minutes")
 
-    # Calculate systemd calendar format
-    if interval_minutes < 60:
-        # For intervals less than 60 minutes: *:0/{interval}:00
-        # This matches the current format *:0/15 for 15 minutes
-        calendar_spec = f"*:0/{interval_minutes}:00"
-    elif interval_minutes == 60:
-        # Exactly one hour: hourly
-        calendar_spec = "hourly"
-    elif interval_minutes < 1440:
-        # For intervals between 1-24 hours: *-*-* */{hours}:00:00
-        hours = interval_minutes // 60
-        calendar_spec = f"*-*-* */{hours}:00:00"
-    else:
-        # Daily
-        calendar_spec = "daily"
-
-    logger.info(f"Using calendar specification: {calendar_spec}")
-
-    # Read the current timer file with error handling
-    timer_file = "/lib/systemd/system/netpulse.timer"
     try:
-        with open(timer_file, "r") as f:
-            # Acquire exclusive lock
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            timer_content = f.read()
-        logger.info(f"Successfully read timer file: {timer_file}")
-    except FileNotFoundError:
-        logger.error(f"Timer file not found: {timer_file}")
-        return False
-    except PermissionError:
-        logger.error(f"Permission denied accessing timer file: {timer_file}")
-        return False
-    except Exception as e:
-        logger.error(f"Error reading timer file: {e}")
-        return False
-
-    # Update the OnCalendar line
-    lines = timer_content.split("\n")
-    updated_lines = []
-    for line in lines:
-        if line.startswith("OnCalendar="):
-            old_spec = line.split("=", 1)[1] if "=" in line else ""
-            updated_lines.append(f"OnCalendar={calendar_spec}")
-            logger.info(f"Updated OnCalendar from '{old_spec}' to '{calendar_spec}'")
-        else:
-            updated_lines.append(line)
-    
-    # Write updated timer content with locking
-    try:
-        with open(timer_file, "w") as f:
-            # Acquire exclusive lock
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            f.write("\n".join(updated_lines))
-        logger.info(f"Successfully updated timer file: {timer_file}")
-    except PermissionError:
-        logger.error(f"Permission denied writing to timer file: {timer_file}")
-        return False
-    except Exception as e:
-        logger.error(f"Error writing timer file: {e}")
-        return False
-    
-    # Update systemd
-    try:
-        logger.info("Reloading systemd daemon...")
+        # Use helper script with sudo
         result = subprocess.run(
-            ["systemctl", "daemon-reload"], 
-            check=True, 
+            ["sudo", "/usr/lib/netpulse/netpulse-timer-helper.sh", str(interval_minutes)],
+            check=True,
             capture_output=True,
             text=True,
             shell=False
         )
-        logger.info(f"systemctl daemon-reload output: {result.stdout}")
         
-        logger.info("Restarting netpulse.timer...")
-        result = subprocess.run(
-            ["systemctl", "restart", "netpulse.timer"], 
-            check=True, 
-            capture_output=True,
-            text=True,
-            shell=False
-        )
-        logger.info(f"systemctl restart netpulse.timer output: {result.stdout}")
+        logger.info(f"Timer update successful: {result.stdout}")
+        logger.info(f"SystemD timer updated to run every {interval_minutes} minutes")
+        return True
         
-        logger.info(
-            f"SystemD timer updated to run every {interval_minutes} minutes"
-        )
     except subprocess.CalledProcessError as e:
         logger.error(f"Failed to update systemd timer: {e}")
         logger.error(f"stdout: {e.stdout}")
@@ -563,8 +490,6 @@ def update_systemd_timer(interval_minutes):
     except Exception as e:
         logger.error(f"Failed to update systemd timer: {e}")
         return False
-    
-    return True
 
 
 def main():
