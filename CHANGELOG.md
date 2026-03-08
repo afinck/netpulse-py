@@ -2,6 +2,40 @@
 
 Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
 
+## [1.1.1] - 2026-03-08
+
+### ✨ Features
+- **Cross-Compilation**: GitHub Actions für automatische Multi-Architecture builds
+  - ARM64 builds für Raspberry Pi und andere ARM-Geräte
+  - AMD64 builds für Standard x86_64 Systeme
+  - Docker Buildx Integration für cross-platform builds
+- **Python 3.11+ Kompatibilität**: Modernes Python-Packaging mit `.dist-info` Format
+  - Behebung von `PackageNotFoundError` auf Python 3.11+
+  - System-wide Installation in `/usr/lib/python3/dist-packages/`
+  - Kompatibel mit allen Python-Versionen (3.8+)
+- **Debug-Tools**: Zwei neue Verifikationsskripte
+  - `verify_installation.sh`: Prüft Paketinstallation und Metadaten
+  - `debug_measurements.sh`: Diagnostiziert Messungsprobleme
+
+### 🔧 Technical Improvements
+- **Modern Packaging**: Wheel-basierte builds mit `.dist-info` Metadaten
+- **System-wide Installation**: Universelle Python-Paketpfade
+- **Debian Rules Enhancement**: Automatische Metadaten-Extraktion aus Wheels
+- **Build Script Improvements**: Robuste Fehlerbehandlung und Debug-Ausgaben
+- **Docker Integration**: Multi-architecture Docker Buildx workflow
+
+### 🐛 Bug Fixes
+- **PackageNotFoundError**: Behoben durch system-weite Metadaten-Installation
+- **Python Version Mismatch**: Paket funktioniert auf allen Python-Versionen
+- **Cross-compilation Issues**: DEB-Pakete für alle Architekturen funktionieren
+
+### 📚 Documentation
+- **README.md**: Aktualisiert mit Cross-Compilation und Python 3.11+ Infos
+- **Troubleshooting**: Erweiterte Fehlerbehebungs-Sektion mit Debug-Skripten
+- **CI/CD**: Dokumentation des neuen Cross-Compilation Workflows
+
+---
+
 ## [1.1.0] - 2026-03-07
 
 ### ✨ Features

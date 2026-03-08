@@ -21,9 +21,11 @@ Dieses Projekt ist unter der [MIT License](LICENSE) lizenziert.
 
 ## Installation
 
+### DEB-Paket (Empfohlen)
 ```bash
 # DEB-Paket installieren
-sudo dpkg -i netpulse_1.0.0_arm64.deb
+sudo dpkg -i netpulse_1.1.0_arm64.deb  # Raspberry Pi
+sudo dpkg -i netpulse_1.1.0_amd64.deb  # x86_64 Systeme
 
 # Abhängigkeiten installieren (falls nötig)
 sudo apt-get install -f
@@ -32,6 +34,16 @@ sudo apt-get install -f
 sudo systemctl enable --now netpulse.timer
 sudo systemctl enable --now netpulse-web
 ```
+
+### Python 3.11+ Kompatibilität
+Netpulse verwendet modernes Python-Packaging (`.dist-info` Format) und ist vollständig mit Python 3.11+ kompatibel.
+
+### Cross-Compilation
+Die DEB-Pakete werden automatisch für multiple Architekturen gebaut:
+- **ARM64**: Für Raspberry Pi und andere ARM-Geräte
+- **AMD64**: Für Standard x86_64 Systeme
+
+Siehe `.github/workflows/build-deb-cross.yml` für Details.
 
 ## Verwendung
 
@@ -106,6 +118,18 @@ sudo chown -R netpulse:netpulse /var/lib/netpulse/
 sudo -u netpulse netpulse-measure --type bandwidth --verbose
 ```
 
+### PackageNotFoundError (Python 3.11+)
+```bash
+# 1. Installation prüfen
+dpkg -l | grep netpulse
+
+# 2. Package-Metadaten prüfen
+./verify_installation.sh  # Verifikationsskript verwenden
+
+# 3. Falls nötig, Paket neu installieren
+sudo dpkg -r netpulse && sudo dpkg -i netpulse_1.1.0_*.deb
+```
+
 ### Timer funktioniert nicht
 ```bash
 # Timer neu starten
@@ -116,6 +140,17 @@ sudo systemctl start netpulse.service
 
 # Logs prüfen
 sudo journalctl -u netpulse.service -f
+```
+
+### Messungen funktionieren nicht
+```bash
+# Debug-Skript ausführen
+./debug_measurements.sh
+
+# Häufigste Probleme:
+# - Datenbank-Berechtigungen: sudo chown -R netpulse:netpulse /var/lib/netpulse/
+# - librespeed-cli fehlt: sudo apt-get install librespeed-cli
+# - Netzwerk-Probleme: ping 8.8.8.8
 ```
 
 ## Entwicklung
@@ -211,10 +246,25 @@ Die Anwendung hat eine vollständige CI/CD-Pipeline mit GitHub Actions:
 - **Code-Qualität**: flake8, black, isort
 - **Security**: bandit, safety
 - **Integration Tests**: Docker-basiert
-- **Automatische Builds**: DEB-Pakete und Docker Images
+- **Cross-Compilation**: Automatische DEB-Pakete für ARM64 und AMD64
 - **Coverage**: codecov Integration
 
+### Cross-Compilation Workflow
+Der `.github/workflows/build-deb-cross.yml` Workflow:
+- **Docker Buildx**: Multi-architecture builds
+- **Modern Python Packaging**: `.dist-info` Format für Python 3.11+
+- **System-wide Installation**: Kompatibel mit allen Python-Versionen
+- **Automated Releases**: DEB-Pakete für alle Architekturen
+
 ## Changelog
+
+### v1.1.1 (2026-03-08)
+- ✅ **Cross-Compilation**: GitHub Actions für ARM64 und AMD64 builds
+- ✅ **Python 3.11+ Kompatibilität**: Modernes `.dist-info` packaging
+- ✅ **System-wide Installation**: Universelle Python-Paketpfade
+- ✅ **Debug-Tools**: Verifikations- und Debug-Skripte
+- ✅ **Multi-Architecture Support**: Docker Buildx Integration
+- ✅ **Package-Metadata-Fix**: `PackageNotFoundError` behoben
 
 ### v1.1.0 (2026-03-07)
 - ✅ **Web-basierte Konfiguration** für Messintervall, Timeout und Wiederholungsversuche hinzugefügt
