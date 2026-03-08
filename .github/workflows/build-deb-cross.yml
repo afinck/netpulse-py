@@ -92,6 +92,8 @@ jobs:
             dpkg -c *.deb | grep -E "usr/lib/python.*/dist-packages.*netpulse" && \
             echo "=== Metadata check ===" && \
             dpkg -c *.deb | grep -E "(\.dist-info|\.egg-info)" && \
+            echo "=== Final metadata verification ===" && \
+            dpkg -c *.deb | grep -E "netpulse-1\.1\.0\.(dist|egg)-info" && \
             echo "=== Package verification complete ==="
         EOF
         
