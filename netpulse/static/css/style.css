@@ -7,6 +7,11 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Custom gradient background for footer */
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -151,9 +156,13 @@ main .container {
 }
 
 @media (max-width: 768px) {
-    .container {
-        padding: 20px;
-        margin: 10px;
+    body {
+        padding: 10px;
+    }
+    
+    main .container {
+        padding: 15px;
+        margin: 0;
     }
     
     .stats-grid {
@@ -162,5 +171,42 @@ main .container {
     
     .stat-card .value {
         font-size: 1.5em;
+    }
+    
+    /* Fix table responsiveness on mobile */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Ensure Bootstrap cards don't have excessive margins on mobile */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Fix row spacing on mobile */
+    .row {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+    }
+    
+    .row > .col,
+    .row > [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    
+    /* Footer mobile adjustments */
+    footer .container {
+        padding: 0 10px;
+    }
+    
+    footer .card {
+        border-radius: 8px;
+    }
+    
+    footer .card-body small {
+        color: #ffffff !important;
+        font-size: 0.875rem;
     }
 }

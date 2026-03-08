@@ -100,11 +100,15 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-light text-center py-3 mt-5">
+    <footer class="bg-gradient text-center py-4 mt-5">
         <div class="container">
-            <small class="text-muted">
-                Netpulse v{{ version }} - Netzwerk-Monitoring für Raspberry Pi
-            </small>
+            <div class="card shadow-sm">
+                <div class="card-body py-3">
+                    <small class="text-white mb-0 d-block">
+                        <i class="bi bi-speedometer2"></i> Netpulse v{{ version }} - Netzwerk-Monitoring für Raspberry Pi
+                    </small>
+                </div>
+            </div>
         </div>
     </footer>
 

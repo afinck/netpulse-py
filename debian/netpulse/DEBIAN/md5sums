@@ -21,14 +21,14 @@ ac1a73cb8cc60540add4d436b0584066  usr/lib/python3.11/dist-packages/netpulse/__py
 2e15f802c032985e26695db70e1a6338  usr/lib/python3.11/dist-packages/netpulse/config.py
 1e20a0bd36fc5e87b98617782f49ca3b  usr/lib/python3.11/dist-packages/netpulse/database.py
 03f48709e0adec3c9a3e9eb9456799ad  usr/lib/python3.11/dist-packages/netpulse/speedtest.py
-a1de9a91e1ee27fd33fa2754438fb4d9  usr/lib/python3.11/dist-packages/netpulse/static/css/style.css
+a5e0d5b3ac1541b607c2458338afed02  usr/lib/python3.11/dist-packages/netpulse/static/css/style.css
 1e5982787410b75b9f375cb85aebc13f  usr/lib/python3.11/dist-packages/netpulse/static/icons/favicon-16x16.png
 50a55b5ece4e7bb48c333d143c553130  usr/lib/python3.11/dist-packages/netpulse/static/icons/favicon.svg
 f916ea2b674ce90eecbd1e6ae7e7ee35  usr/lib/python3.11/dist-packages/netpulse/templates/__init__.py
 7cb67f67f81adb86ca2df68cd8181bac  usr/lib/python3.11/dist-packages/netpulse/templates/__pycache__/__init__.cpython-311.pyc
-e1373683add84e3eddd6211f68a241f2  usr/lib/python3.11/dist-packages/netpulse/templates/base.html
+4f667279fa67d4583c7202e520192003  usr/lib/python3.11/dist-packages/netpulse/templates/base.html
 509cf7a9038e434d468a2aa57ae9dd7d  usr/lib/python3.11/dist-packages/netpulse/templates/base_broken.html
-4930978d822e35ccba947fdcf97b5656  usr/lib/python3.11/dist-packages/netpulse/templates/dashboard.html
+f05afb6ddf9e71502a86c8cb1703a6e6  usr/lib/python3.11/dist-packages/netpulse/templates/dashboard.html
 a9bf1fbd41fd2e921b81414fea4de76b  usr/lib/python3.11/dist-packages/netpulse/templates/export.html
 3fb50cdd126a4e3ae77720ad1003f90f  usr/lib/python3.11/dist-packages/netpulse/templates/history.html
 2d2f550f8271f54ec6adda0ebe4a83d5  usr/lib/python3.11/dist-packages/netpulse/templates/settings.html
