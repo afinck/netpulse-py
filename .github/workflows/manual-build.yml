@@ -1,0 +1,79 @@
+name: Manual DEB Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for build'
+        required: false
+        default: 'Manual build for testing'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: amd64
+            arch: amd64
+            platform: linux/amd64
+            base_image: ubuntu:22.04
+          - name: arm64
+            arch: arm64
+            platform: linux/arm64
+            base_image: arm64v8/ubuntu:22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build DEB package
+      run: |
+        echo "Building Netpulse DEB package for ${{ matrix.name }} (arch: ${{ matrix.arch }})..."
+        
+        # Create Dockerfile for cross-compilation
+        cat > Dockerfile.build << 'EOF'
+        FROM ${{ matrix.base_image }}
+        
+        # Prevent interactive prompts during package installation
+        ENV DEBIAN_FRONTEND=noninteractive
+        
+        # Install build dependencies
+        RUN apt-get update
+        RUN apt-get install -y build-essential debhelper dh-python python3 python3-setuptools python3-pip python3-dev unzip
+        
+        WORKDIR /app
+        COPY . .
+        
+        # Make build script executable and run build
+        RUN chmod +x build.sh
+        RUN ./build.sh
+        
+        # Verify package was created
+        RUN echo "=== Build results ===" && \
+            find . -name "*.deb" -type f -exec ls -la {} \; || \
+            (echo "ERROR: No package files found!" && exit 1)
+        EOF
+        
+        # Build using Docker Buildx for cross-platform support
+        echo "=== Starting Docker build ==="
+        docker buildx build \
+          --platform ${{ matrix.platform }} \
+          --output type=local,dest=. \
+          -f Dockerfile.build .
+        
+        # Find and move the built package to current directory
+        echo "=== Extracting packages from Docker build ==="
+        find . -name "*.deb" -type f -exec cp {} . \;
+        ls -la *.deb || echo "No .deb files found in current directory"
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: netpulse-deb-${{ matrix.name }}
+        path: "*.deb"
+        retention-days: 30
+        if-no-files-found: warn

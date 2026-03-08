@@ -23,24 +23,43 @@ class Database:
         self.ensure_database()
 
     def ensure_database(self):
-        """Ensure database exists and tables are created"""
+        """Ensure database exists and is accessible"""
         db_path = Path(self.db_path)
+        db_path.parent.mkdir(parents=True, exist_ok=True)
         
-        # Try to create directory with proper error handling
+        # Check and fix permissions if we have sufficient privileges
         try:
-            db_path.parent.mkdir(parents=True, exist_ok=True)
-            # Check if we can write to the directory
-            test_file = db_path.parent / ".permission_test"
-            test_file.write_text("test")
-            test_file.unlink()
-        except (PermissionError, OSError) as e:
-            logger.error(f"Cannot create/write to database directory {db_path.parent}: {e}")
-            # Fallback to user's home directory
-            fallback_dir = Path.home() / ".netpulse"
-            fallback_dir.mkdir(exist_ok=True)
-            self.db_path = str(fallback_dir / "netpulse.db")
-            logger.warning(f"Using fallback database path: {self.db_path}")
+            if os.geteuid() == 0:  # Running as root
+                import pwd
+                import grp
+                
+                # Get netpulse user info
+                try:
+                    user_info = pwd.getpwnam('netpulse')
+                    group_info = grp.getgrnam('netpulse')
+                    
+                    # Set proper ownership
+                    os.chown(db_path.parent, user_info.pw_uid, group_info.gr_gid)
+                    os.chmod(db_path.parent, 0o775)  # rwxrwxr-x
+                    
+                    # Set database file permissions if it exists
+                    if db_path.exists():
+                        os.chown(db_path, user_info.pw_uid, group_info.gr_gid)
+                        os.chmod(db_path, 0o664)  # rw-rw-r--
+                        
+                    logger.info(f"Set proper ownership for {db_path.parent}")
+                except KeyError:
+                    logger.warning("netpulse user not found, skipping permission setup")
+        except Exception as e:
+            logger.warning(f"Could not set permissions: {e}")
+        
+        if not db_path.exists():
+            self._create_database()
+        else:
+            self._verify_database()
 
+    def _create_database(self):
+        """Create the database and tables"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS measurements (
@@ -52,23 +71,33 @@ class Database:
                     jitter REAL,
                     packet_loss REAL,
                     server_name TEXT,
-                    test_type TEXT NOT NULL,
-                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                    test_type TEXT NOT NULL
                 )
             """)
-
-            # Create indexes for better performance
-            conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_timestamp ON measurements(timestamp)"
-            )
-            conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_test_type ON measurements(test_type)"
-            )
-            conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_created_at ON measurements(created_at)"
-            )
-
             conn.commit()
+        logger.info(f"Created database at {self.db_path}")
+
+    def _verify_database(self):
+        """Verify database integrity and structure"""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                # Check if table exists and has correct structure
+                cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='measurements'")
+                if not cursor.fetchone():
+                    logger.warning("Measurements table not found, creating it")
+                    self._create_database()
+                    return
+                
+                # Create indexes for better performance
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON measurements(timestamp)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_test_type ON measurements(test_type)")
+                conn.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON measurements(created_at)")
+                conn.commit()
+                
+                logger.info("Database verification completed")
+        except sqlite3.Error as e:
+            logger.error(f"Database verification failed: {e}")
+            raise
 
     def add_measurement(self, measurement: Dict) -> int:
         """Add a new measurement to the database"""
