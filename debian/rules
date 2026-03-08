@@ -1,0 +1,64 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild --with python3
+
+override_dh_auto_test:
+	# Skip tests during package build
+	@echo "Skipping tests during package build"
+
+override_dh_shlibdeps:
+	# Skip automatic dependency calculation
+	@echo "Skipping shlibdeps"
+
+override_dh_python3:
+	# Skip automatic Python dependency calculation
+	dh_python3 --no-guessing-deps
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/netpulse
+	# Extract .dist-info from wheel and replace .egg-info
+	@echo "=== Looking for wheel .dist-info ==="
+	@ls -la dist/ || echo "No dist directory found"
+	@if [ -f "dist/netpulse-1.1.1-py3-none-any.whl" ]; then \
+		echo "Found wheel file, extracting .dist-info"; \
+		cd dist && \
+		echo "Contents of wheel:" && \
+		unzip -l netpulse-1.1.1-py3-none-any.whl | grep dist-info || echo "No dist-info in wheel listing"; \
+		unzip -q netpulse-1.1.1-py3-none-any.whl netpulse-1.1.1.dist-info/* && \
+		echo "Extraction completed, checking results:" && \
+		ls -la netpulse-1.1.1.dist-info/ || echo "dist-info directory not found after extraction"; \
+		cd .. && \
+		if [ -d "dist/netpulse-1.1.1.dist-info" ]; then \
+			echo "Successfully extracted .dist-info, replacing .egg-info"; \
+			echo "Before replacement:" && \
+			find debian/netpulse -name "*egg-info" -o -name "*dist-info" || echo "No metadata found"; \
+			echo "Removing all version-specific netpulse metadata..." && \
+			rm -rf debian/netpulse/usr/lib/python3.10/dist-packages/netpulse-1.1.0.dist-info && \
+			rm -rf debian/netpulse/usr/lib/python3.10/dist-packages/netpulse-1.1.0.egg-info && \
+			echo "Installing metadata to system-wide location..." && \
+			mkdir -p debian/netpulse/usr/lib/python3/dist-packages && \
+			cp -r dist/netpulse-1.1.1.dist-info debian/netpulse/usr/lib/python3/dist-packages/ && \
+			echo "Also copying netpulse package files to system-wide location..." && \
+			mkdir -p debian/netpulse/usr/lib/python3/dist-packages && \
+			cp -r debian/netpulse/usr/lib/python3.10/dist-packages/netpulse debian/netpulse/usr/lib/python3/dist-packages/ && \
+			echo "After replacement:" && \
+			find debian/netpulse -name "*egg-info" -o -name "*dist-info" && \
+			echo "System-wide package files:" && \
+			ls -la debian/netpulse/usr/lib/python3/dist-packages/ | grep netpulse || echo "No netpulse in system-wide"; \
+		else \
+			echo "Failed to extract .dist-info from wheel"; \
+		fi; \
+	else \
+		echo "No wheel file found, keeping .egg-info"; \
+	fi
+	# Install systemd files
+	install -d debian/netpulse/lib/systemd/system
+	install -m 644 systemd/*.service debian/netpulse/lib/systemd/system/
+	install -m 644 systemd/*.timer debian/netpulse/lib/systemd/system/
+
+override_dh_fixperms:
+	dh_fixperms
+	chmod +x debian/postinst
+	chmod +x debian/prerm
+	chmod +x debian/rules

@@ -1,0 +1,417 @@
+/* Custom styles for Netpulse */
+
+/* CSS Variables for theme support */
+:root {
+    --bg-primary: #0d6efd;
+    --bg-success: #198754;
+    --bg-warning: #ffc107;
+    --bg-info: #0dcaf0;
+    --bg-light: #f8f9fa;
+    --bg-dark: #212529;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #6c757d;
+    --text-white: #ffffff;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --body-bg: #ffffff;
+    --navbar-bg: #0d6efd;
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --bg-primary: #0b5ed7;
+    --bg-success: #146c43;
+    --bg-warning: #ffca2c;
+    --bg-info: #0aa2c0;
+    --bg-light: #343a40;
+    --bg-dark: #1a1d20;
+    --text-primary: #ffffff;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    --text-white: #ffffff;
+    --border-color: #495057;
+    --card-bg: #2d3748;
+    --body-bg: #1a1d20;
+    --navbar-bg: #0b5ed7;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Status card animations */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-warning,
+.card.bg-info {
+    transition: all 0.3s ease;
+}
+
+.card.bg-primary:hover {
+    background-color: #0056b3 !important;
+}
+
+.card.bg-success:hover {
+    background-color: #198754 !important;
+}
+
+.card.bg-warning:hover {
+    background-color: #e0a800 !important;
+}
+
+.card.bg-info:hover {
+    background-color: #0c5460 !important;
+}
+
+/* Chart container */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body h4 {
+        font-size: 1.2rem;
+    }
+    
+    .card-body h6 {
+        font-size: 1.0rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+}
+
+/* Loading spinner */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Status indicators */
+.status-online {
+    color: #28a745;
+}
+
+.status-offline {
+    color: #dc3545;
+}
+
+.status-warning {
+    color: #ffc107;
+}
+
+/* Period button active state */
+.period-btn.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+/* Table improvements */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Fix table striped contrast for better readability */
+.table-striped > tbody > tr:nth-of-type(odd) > td,
+.table-striped > tbody > tr:nth-of-type(odd) > th {
+    color: #ffffff !important;
+}
+
+/* Badge improvements */
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+/* Alert improvements */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Navbar improvements */
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* Footer improvements */
+footer {
+    margin-top: auto;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    .dropdown-menu {
+        display: none !important;
+    }
+    
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+}
+
+/* Dark mode support with higher specificity */
+html[data-theme="dark"] body {
+    background-color: #1a1d20 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .container {
+    background-color: transparent !important;
+}
+
+html[data-theme="dark"] main {
+    background-color: transparent !important;
+}
+
+html[data-theme="dark"] .card {
+    background-color: #2d3748 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .card-header {
+    background-color: #343a40 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .card-body {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .navbar {
+    background-color: #0b5ed7 !important;
+}
+
+html[data-theme="dark"] .navbar-dark .navbar-nav .nav-link {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .navbar-brand {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .dropdown-menu {
+    background-color: #2d3748 !important;
+    border-color: #495057 !important;
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] footer {
+    background-color: #343a40 !important;
+    color: #adb5bd !important;
+}
+
+html[data-theme="dark"] .table {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .table th {
+    color: #ffffff !important;
+    border-color: #495057 !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td,
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: rgba(52, 58, 64, 0.5) !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > td,
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > th {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:hover > td {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .form-control {
+    background-color: #343a40 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .form-control:focus {
+    background-color: #343a40 !important;
+    border-color: #0b5ed7 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .btn-outline-primary {
+    border-color: #0b5ed7 !important;
+    color: #0b5ed7 !important;
+}
+
+html[data-theme="dark"] .btn-outline-primary:hover {
+    background-color: #0b5ed7 !important;
+    border-color: #0b5ed7 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .alert {
+    background-color: #2d3748 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .modal-content {
+    background-color: #2d3748 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .modal-header {
+    background-color: #343a40 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .modal-footer {
+    background-color: #343a40 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, html[data-theme="dark"] h4, html[data-theme="dark"] h5, html[data-theme="dark"] h6 {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] p, html[data-theme="dark"] span, html[data-theme="dark"] small {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .text-muted {
+    color: #adb5bd !important;
+}
+
+html[data-theme="dark"] .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Animation for new data */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Improved readability for status cards */
+.card-body {
+    position: relative;
+}
+
+.card-body h4 {
+    color: #ffffff !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.card-body h6 {
+    color: #ffffff !important;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.25rem;
+}
+
+/* Better contrast for statistics */
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Improved card backgrounds for better contrast */
+.card.bg-primary {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card.bg-success {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card.bg-warning {
+    background: linear-gradient(135deg, #e0a800 0%, #d6a038 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card.bg-info {
+    background: linear-gradient(135deg, #0c5460 0%, #0a4c8a 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Favicon */
+.favicon {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    vertical-align: middle;
+}

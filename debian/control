@@ -1,0 +1,22 @@
+Source: netpulse
+Section: net
+Priority: optional
+Maintainer: Vector <axiomfield@gmail.com>
+Build-Depends: debhelper (>= 12), python3-setuptools, python3
+Standards-Version: 4.5.0
+Homepage: https://github.com/afinck/netpulse-py
+
+Package: netpulse
+Architecture: any
+Depends: ${misc:Depends}, python3, python3-flask (>= 2.2.2), python3-click (>= 8.1.3), python3-jinja2 (>= 3.1.0), python3-werkzeug (>= 2.2.2)
+Description: Network monitoring tool for Raspberry Pi
+ Netpulse is a lightweight network monitoring tool designed for Raspberry Pi.
+ It measures bandwidth and latency using librespeed-cli and provides a
+ responsive web interface with charts and statistics.
+ .
+ Features:
+ - Automatic network measurements
+ - SQLite database for data storage
+ - Responsive web interface with Bootstrap
+ - Systemd timer for reliable measurements
+ - Easy DEB package installation

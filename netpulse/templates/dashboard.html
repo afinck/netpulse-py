@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Netpulse{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">
+            <i class="bi bi-speedometer2"></i> Netzwerk Dashboard
+        </h1>
+    </div>
+</div>
+
+<!-- Current Status Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Download</h6>
+                        <h4 class="mb-0">{{ "%.2f"|format(latest.download_speed) if latest else 'Keine Daten' }} Mbit/s</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-download fs-2"></i>
+                    </div>
+                </div>
+                <small class="text-white-50">
+                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Upload</h6>
+                        <h4 class="mb-0">{{ "%.2f"|format(latest.upload_speed) if latest else 'Keine Daten' }} Mbit/s</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-upload fs-2"></i>
+                    </div>
+                </div>
+                <small class="text-white-50">
+                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Latenz</h6>
+                        <h4 class="mb-0">{{ "%.1f"|format(latest.latency) if latest else 'Keine Daten' }} ms</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-clock fs-2"></i>
+                    </div>
+                </div>
+                <small class="text-white-50">
+                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Heute</h6>
+                        <h4 class="mb-0">{{ today_stats.count }}</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-calendar-day fs-2"></i>
+                    </div>
+                </div>
+                <small class="text-white-50">
+                    Messungen heute
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Period Selection -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Zeitauswahl</h5>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="day">Tag</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="week">Woche</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="month">Monat</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="year">Jahr</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-up"></i> Bandbreite
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="bandwidthChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-graph-down"></i> Latenz
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="latencyChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-table"></i> Statistiken
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Metrik</th>
+                                <th>Minimum</th>
+                                <th>Durchschnitt</th>
+                                <th>Maximum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Download (Mbit/s)</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.min if stats and stats.get('download_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.avg if stats and stats.get('download_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.download_speed.max if stats and stats.get('download_speed') else 0) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Upload (Mbit/s)</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.min if stats and stats.get('upload_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.avg if stats and stats.get('upload_speed') else 0) }}</td>
+                                <td>{{ "%.2f"|format(stats.upload_speed.max if stats and stats.get('upload_speed') else 0) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Latenz (ms)</td>
+                                <td>{{ "%.1f"|format(stats.latency.min if stats and stats.get('latency') else 0) }}</td>
+                                <td>{{ "%.1f"|format(stats.latency.avg if stats and stats.get('latency') else 0) }}</td>
+                                <td>{{ "%.1f"|format(stats.latency.max if stats and stats.get('latency') else 0) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Chart configuration
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: true,
+            position: 'top',
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    }
+};
+
+// Initialize charts
+let bandwidthChart, latencyChart;
+
+function initCharts() {
+    // Bandwidth Chart
+    const bandwidthCtx = document.getElementById('bandwidthChart').getContext('2d');
+    bandwidthChart = new Chart(bandwidthCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Download (Mbit/s)',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Upload (Mbit/s)',
+                    data: [],
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    tension: 0.1
+                }
+            ]
+        },
+        options: chartOptions
+    });
+
+    // Latency Chart
+    const latencyCtx = document.getElementById('latencyChart').getContext('2d');
+    latencyChart = new Chart(latencyCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Latenz (ms)',
+                data: [],
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: chartOptions
+    });
+}
+
+function loadChartData(period) {
+    fetch(`/api/data?period=${period}`)
+        .then(response => response.json())
+        .then(data => {
+            // Update bandwidth chart
+            bandwidthChart.data.labels = data.labels;
+            bandwidthChart.data.datasets[0].data = data.download_speeds;
+            bandwidthChart.data.datasets[1].data = data.upload_speeds;
+            bandwidthChart.update();
+
+            // Update latency chart
+            latencyChart.data.labels = data.labels;
+            latencyChart.data.datasets[0].data = data.latencies;
+            latencyChart.update();
+        })
+        .catch(error => {
+            console.error('Error loading chart data:', error);
+        });
+}
+
+// Period button handlers
+document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Load data for selected period
+        loadChartData(this.dataset.period);
+    });
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initCharts();
+    
+    // Set default period to 'day'
+    document.querySelector('.period-btn[data-period="day"]').classList.add('active');
+    loadChartData('day');
+});
+</script>
+{% endblock %}
