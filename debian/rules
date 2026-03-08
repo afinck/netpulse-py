@@ -16,7 +16,7 @@ override_dh_python3:
 	dh_python3 --no-guessing-deps
 
 override_dh_auto_install:
-	dh_auto_install
+	dh_auto_install --destdir=debian/netpulse
 	# Extract .dist-info from wheel and replace .egg-info
 	@echo "=== Looking for wheel .dist-info ==="
 	@ls -la dist/ || echo "No dist directory found"
@@ -32,11 +32,11 @@ override_dh_auto_install:
 		if [ -d "dist/netpulse-1.1.0.dist-info" ]; then \
 			echo "Successfully extracted .dist-info, replacing .egg-info"; \
 			echo "Before replacement:" && \
-			ls -la debian/netpulse/usr/lib/python3*/dist-packages/ | grep egg-info || echo "No egg-info found"; \
+			find debian/netpulse -name "*egg-info" -o -name "*dist-info" || echo "No metadata found"; \
 			rm -rf debian/netpulse/usr/lib/python3*/dist-packages/netpulse-1.1.0.egg-info && \
-			cp -r dist/netpulse-1.1.0.dist-info debian/netpulse/usr/lib/python3*/dist-packages/ && \
+			cp -r dist/netpulse-1.1.0.dist-info debian/netpulse/usr/lib/python3/dist-packages/ && \
 			echo "After replacement:" && \
-			ls -la debian/netpulse/usr/lib/python3*/dist-packages/ | grep dist-info || echo "No dist-info found after replacement"; \
+			find debian/netpulse -name "*egg-info" -o -name "*dist-info" || echo "No metadata found after replacement"; \
 		else \
 			echo "Failed to extract .dist-info from wheel"; \
 		fi; \
