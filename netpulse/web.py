@@ -13,6 +13,7 @@ from flask import (Flask, flash, jsonify, redirect, render_template, request,
 from .config import get_config
 from .database import get_database
 from .speedtest import SpeedtestRunner
+from . import __version__
 
 if os.getenv("NETPULSE_TEST_MODE"):
     # Use simple logging for tests
@@ -90,13 +91,14 @@ def dashboard():
             today_stats=today_stats,
             stats=stats,
             period=period,
+            version=__version__,
         )
 
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
         flash(f"Fehler beim Laden des Dashboards: {e}", "error")
         return render_template(
-            "dashboard.html", latest=None, today_stats={}, stats={}, period="day"
+            "dashboard.html", latest=None, today_stats={}, stats={}, period="day", version=__version__
         )
 
 
@@ -141,26 +143,27 @@ def history():
             period=period,
             test_type=test_type,
             limit=limit,
+            version=__version__,
         )
 
     except Exception as e:
         logger.error(f"Error loading history: {e}")
         flash(f"Fehler beim Laden des Verlaufs: {e}", "error")
         return render_template(
-            "history.html", measurements=[], period="", test_type="", limit=50
+            "history.html", measurements=[], period="", test_type="", limit=50, version=__version__
         )
 
 
 @app.route("/export")
 def export():
     """Export page"""
-    return render_template("export.html")
+    return render_template("export.html", version=__version__)
 
 
 @app.route("/settings")
 def settings():
     """Settings page"""
-    return render_template("settings.html")
+    return render_template("settings.html", version=__version__)
 
 
 @app.route("/export/csv")
