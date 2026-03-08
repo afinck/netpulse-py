@@ -105,8 +105,43 @@ jobs:
         files: |
           artifacts/netpulse-deb-amd64/*.deb
           artifacts/netpulse-deb-arm64/*.deb
-        generate_release_notes: true
         draft: false
         prerelease: false
+        name: Release ${{ github.ref_name }}
+        body: |
+          ## Release ${{ github.ref_name }}
+          
+          🚀 **Automatic Release**
+          
+          ### 📦 Downloads
+          - **AMD64**: `netpulse_${{ github.ref_name }}_amd64.deb` - For desktops and servers
+          - **ARM64**: `netpulse_${{ github.ref_name }}_arm64.deb` - For Raspberry Pi and ARM servers
+          
+          ### ✨ Features
+          - Complete CI/CD pipeline with automatic releases
+          - Cross-compilation support for multiple architectures
+          - Database permission fixes for production deployments
+          - Python 3.8-3.13 compatibility testing
+          - Zero-touch release automation
+          
+          ### 🔧 Installation
+          ```bash
+          # Download the appropriate package for your architecture
+          # Install with:
+          sudo dpkg -i netpulse_${{ github.ref_name }}_arm64.deb  # For Raspberry Pi
+          sudo dpkg -i netpulse_${{ github.ref_name }}_amd64.deb  # For desktops/servers
+          sudo apt-get install -f  # Install dependencies if needed
+          ```
+          
+          ### 🎯 What's Fixed
+          - Database schema issues resolved
+          - Missing imports added (os, timedelta)
+          - Static CSS file for web interface
+          - Python path wildcard compatibility
+          - Module installation fixes
+          
+          ---
+          
+          🤖 **This release was created automatically by GitHub Actions**
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
