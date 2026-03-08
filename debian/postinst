@@ -10,7 +10,7 @@ case "$1" in
         
         # Set proper ownership for netpulse user
         chown -R netpulse:netpulse /var/lib/netpulse /var/log/netpulse
-        chown root:root /etc/netpulse
+        chown -R netpulse:netpulse /etc/netpulse
         
         # Set proper permissions
         chmod 755 /var/lib/netpulse /var/log/netpulse
@@ -23,6 +23,12 @@ case "$1" in
         # Ensure log directory is writable by netpulse user
         chmod 775 /var/log/netpulse
         
+        # Ensure log file has proper permissions for netpulse user
+        if [ -f /var/log/netpulse/netpulse.log ]; then
+            chown netpulse:netpulse /var/log/netpulse/netpulse.log
+            chmod 664 /var/log/netpulse/netpulse.log
+        fi
+        
         # Install configuration file if it doesn't exist
         if [ ! -f /etc/netpulse/netpulse.conf ]; then
             cp /usr/share/doc/netpulse/default.conf /etc/netpulse/netpulse.conf 2>/dev/null || \
@@ -30,6 +36,10 @@ case "$1" in
             echo "No default config found, creating empty one" && \
             touch /etc/netpulse/netpulse.conf
         fi
+        
+        # Ensure config file has proper permissions for netpulse user
+        chown netpulse:netpulse /etc/netpulse/netpulse.conf
+        chmod 664 /etc/netpulse/netpulse.conf
         
         # Enable and start services
         systemctl daemon-reload
