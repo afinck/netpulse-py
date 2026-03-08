@@ -23,12 +23,20 @@ override_dh_auto_install:
 	@if [ -f "dist/netpulse-1.1.0-py3-none-any.whl" ]; then \
 		echo "Found wheel file, extracting .dist-info"; \
 		cd dist && \
+		echo "Contents of wheel:" && \
+		unzip -l netpulse-1.1.0-py3-none-any.whl | grep dist-info || echo "No dist-info in wheel listing"; \
 		unzip -q netpulse-1.1.0-py3-none-any.whl netpulse-1.1.0.dist-info/* && \
+		echo "Extraction completed, checking results:" && \
+		ls -la netpulse-1.1.0.dist-info/ || echo "dist-info directory not found after extraction"; \
 		cd .. && \
 		if [ -d "dist/netpulse-1.1.0.dist-info" ]; then \
 			echo "Successfully extracted .dist-info, replacing .egg-info"; \
-			rm -rf debian/netpulse/usr/lib/python3*/dist-packages/netpulse-1.1.0.egg-info; \
-			cp -r dist/netpulse-1.1.0.dist-info debian/netpulse/usr/lib/python3*/dist-packages/; \
+			echo "Before replacement:" && \
+			ls -la debian/netpulse/usr/lib/python3*/dist-packages/ | grep egg-info || echo "No egg-info found"; \
+			rm -rf debian/netpulse/usr/lib/python3*/dist-packages/netpulse-1.1.0.egg-info && \
+			cp -r dist/netpulse-1.1.0.dist-info debian/netpulse/usr/lib/python3*/dist-packages/ && \
+			echo "After replacement:" && \
+			ls -la debian/netpulse/usr/lib/python3*/dist-packages/ | grep dist-info || echo "No dist-info found after replacement"; \
 		else \
 			echo "Failed to extract .dist-info from wheel"; \
 		fi; \
