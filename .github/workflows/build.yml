@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main, feature/* ]
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a release after build'
+        required: false
+        default: 'false'
 
 jobs:
   build:
@@ -100,3 +105,18 @@ jobs:
         path: "*.deb"
         retention-days: 30
         if-no-files-found: warn
+
+  create-release:
+    if: github.event.inputs.create_release == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        draft: false
+        prerelease: false
