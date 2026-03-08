@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Background circle -->
+  <circle cx="8" cy="8" r="7" fill="#0d6efd" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Speedometer arc -->
+  <path d="M 4 10 A 4 4 0 1 1 12 10" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Speedometer needle -->
+  <line x1="8" y1="8" x2="11" y2="5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="8" cy="8" r="1" fill="#ffffff"/>
+  
+  <!-- Network dots -->
+  <circle cx="5" cy="6" r="0.8" fill="#ffffff"/>
+  <circle cx="11" cy="6" r="0.8" fill="#ffffff"/>
+  <circle cx="8" cy="4" r="0.8" fill="#ffffff"/>
+</svg>

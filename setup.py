@@ -26,6 +26,7 @@ setup(
         "netpulse": [
             "templates/*.html",
             "static/css/*.css",
+            "static/icons/*",
             "static/js/*.js",
         ],
     },
