@@ -22,9 +22,9 @@
                         <select class="form-select" id="period" name="period">
                             <option value="">Alle</option>
                             <option value="day" {% if request.args.get('period') == 'day' %}selected{% endif %}>Heute</option>
-                            <option value="week" {% if request.args.get('period') == 'week' %}selected{% endif %}>Diese Woche</option>
-                            <option value="month" {% if request.args.get('period') == 'month' %}selected{% endif %}>Dieser Monat</option>
-                            <option value="year" {% if request.args.get('period') == 'year' %}selected{% endif %}>Dieses Jahr</option>
+                            <option value="week" {% if request.args.get('period') == 'week' %}selected{% endif %}>Letzte 7 Tage</option>
+                            <option value="month" {% if request.args.get('period') == 'month' %}selected{% endif %}>Letzte 30 Tage</option>
+                            <option value="year" {% if request.args.get('period') == 'year' %}selected{% endif %}>Letzte 365 Tage</option>
                         </select>
                     </div>
                     

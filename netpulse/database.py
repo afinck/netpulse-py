@@ -209,14 +209,14 @@ class Database:
         if period == "day":
             start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
         elif period == "week":
-            start_date = now - timedelta(days=now.weekday())
-            start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            # Last 7 days (rolling week)
+            start_date = now - timedelta(days=7)
         elif period == "month":
-            start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            # Last 30 days (rolling month)
+            start_date = now - timedelta(days=30)
         elif period == "year":
-            start_date = now.replace(
-                month=1, day=1, hour=0, minute=0, second=0, microsecond=0
-            )
+            # Last 365 days (rolling year)
+            start_date = now - timedelta(days=365)
         else:
             raise ValueError(f"Invalid period: {period}")
 
