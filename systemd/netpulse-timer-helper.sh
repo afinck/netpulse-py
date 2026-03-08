@@ -26,9 +26,25 @@ elif [ "$INTERVAL_MINUTES" -eq 60 ]; then
     # Exactly one hour: hourly
     CALENDAR_SPEC="hourly"
 elif [ "$INTERVAL_MINUTES" -lt 1440 ]; then
-    # For intervals between 1-24 hours: *-*-* */{hours}:00:00
+    # For intervals between 1-24 hours, use hourly with step
     HOURS=$((INTERVAL_MINUTES / 60))
-    CALENDAR_SPEC="*-*-* */${HOURS}:00:00"
+    if [ "$HOURS" -eq 1 ]; then
+        CALENDAR_SPEC="hourly"
+    elif [ "$HOURS" -eq 2 ]; then
+        CALENDAR_SPEC="*-*-* 00/2:00:00"
+    elif [ "$HOURS" -eq 3 ]; then
+        CALENDAR_SPEC="*-*-* 00/3:00:00"
+    elif [ "$HOURS" -eq 4 ]; then
+        CALENDAR_SPEC="*-*-* 00/4:00:00"
+    elif [ "$HOURS" -eq 6 ]; then
+        CALENDAR_SPEC="*-*-* 00/6:00:00"
+    elif [ "$HOURS" -eq 8 ]; then
+        CALENDAR_SPEC="*-*-* 00/8:00:00"
+    elif [ "$HOURS" -eq 12 ]; then
+        CALENDAR_SPEC="*-*-* 00/12:00:00"
+    else
+        CALENDAR_SPEC="*-*-* 00/${HOURS}:00:00"
+    fi
 else
     # Daily
     CALENDAR_SPEC="daily"

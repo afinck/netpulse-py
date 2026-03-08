@@ -3,7 +3,7 @@ acf72329bea8178d40455d377585c403  lib/systemd/system/netpulse.service
 fdf1ecfe5c73432d70c5360eca9ee386  lib/systemd/system/netpulse.timer
 c614736d0449e67b35354a6ab388d1cf  usr/bin/netpulse
 e6fe07d645af846f9c2f6d91c8970bd9  usr/bin/netpulse-measure
-9d67a056fd0bb6d2578e813b95120cbc  usr/lib/netpulse/netpulse-timer-helper.sh
+33e834d1ba21c4a2e0d6b1041f073922  usr/lib/netpulse/netpulse-timer-helper.sh
 e3aa234a71fc21cd08fc40bc71f4dc8c  usr/lib/python3.11/dist-packages/netpulse-1.1.1.egg-info/PKG-INFO
 68b329da9893e34099c7d8ad5cb9c940  usr/lib/python3.11/dist-packages/netpulse-1.1.1.egg-info/dependency_links.txt
 319bd1582692b31b0de43e54b91cd815  usr/lib/python3.11/dist-packages/netpulse-1.1.1.egg-info/entry_points.txt
