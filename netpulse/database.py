@@ -4,12 +4,13 @@ Database module for Netpulse
 
 import json
 import logging
+import os
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-from .config import get_config
+from netpulse.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,6 @@ class Database:
                 # Create indexes for better performance
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON measurements(timestamp)")
                 conn.execute("CREATE INDEX IF NOT EXISTS idx_test_type ON measurements(test_type)")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON measurements(created_at)")
                 conn.commit()
                 
                 logger.info("Database verification completed")
