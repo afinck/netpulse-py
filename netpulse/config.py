@@ -40,6 +40,8 @@ class Config:
     def __init__(self, config_file="/etc/netpulse/netpulse.conf"):
         self.config_file = config_file
         self._config = DEFAULT_CONFIG.copy()
+        # Override database path to user home directory for development/testing
+        self._config["database.path"] = os.path.expanduser("~/netpulse/netpulse.db")
         self.load()
 
     def load(self):
