@@ -25,6 +25,18 @@ wheels/
 *.egg
 MANIFEST
 
+# Debian packaging build artifacts
+.pybuild/
+debian/.debhelper/
+debian/files
+debian/*.debhelper
+debian/*/DEBIAN/md5sums
+debian/*/DEBIAN/postrm
+*.deb
+*.buildinfo
+*.changes
+netpulse_*.deb
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
