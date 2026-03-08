@@ -34,14 +34,14 @@ override_dh_auto_install:
 			echo "Before replacement:" && \
 			find debian/netpulse -name "*egg-info" -o -name "*dist-info" || echo "No metadata found"; \
 			echo "Removing all version-specific netpulse metadata..." && \
-			rm -rf debian/netpulse/usr/lib/python3.10/dist-packages/netpulse-1.1.0.dist-info && \
-			rm -rf debian/netpulse/usr/lib/python3.10/dist-packages/netpulse-1.1.0.egg-info && \
+			rm -rf debian/netpulse/usr/lib/python3.*/*/netpulse-*.dist-info && \
+			rm -rf debian/netpulse/usr/lib/python3.*/*/netpulse-*.egg-info && \
 			echo "Installing metadata to system-wide location..." && \
 			mkdir -p debian/netpulse/usr/lib/python3/dist-packages && \
 			cp -r dist/netpulse-1.1.1.dist-info debian/netpulse/usr/lib/python3/dist-packages/ && \
 			echo "Also copying netpulse package files to system-wide location..." && \
 			mkdir -p debian/netpulse/usr/lib/python3/dist-packages && \
-			cp -r debian/netpulse/usr/lib/python3.10/dist-packages/netpulse debian/netpulse/usr/lib/python3/dist-packages/ && \
+			cp -r debian/netpulse/usr/lib/python3.*/*/netpulse debian/netpulse/usr/lib/python3/dist-packages/ && \
 			echo "After replacement:" && \
 			find debian/netpulse -name "*egg-info" -o -name "*dist-info" && \
 			echo "System-wide package files:" && \
