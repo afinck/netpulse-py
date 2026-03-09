@@ -59,25 +59,28 @@ dpkg-buildpackage -us -uc -b
 
 # Debug: Show what was created
 echo "Files created:"
-ls -la ../netpulse_${VERSION}_*
+ls -la ../netpulse_*.deb 2>/dev/null || echo "No .deb files found with version ${VERSION}"
 
-# Check if package was built
-if [ -f "../netpulse_${VERSION}_arm64.deb" ] || [ -f "../netpulse_${VERSION}_amd64.deb" ]; then
+# Check if package was built (more flexible version check)
+if ls ../netpulse_*.deb 1> /dev/null 2>&1; then
     echo "Package built successfully!"
     
     # Move package to current directory
-    mv ../netpulse_${VERSION}_*.deb ./
+    mv ../netpulse_*.deb ./
     
     # Show package info
     echo "Package information:"
-    dpkg -I netpulse_${VERSION}_*.deb
+    ls -la *.deb
+    dpkg -I *.deb
     
     echo ""
     echo "To install the package:"
-    echo "  sudo dpkg -i netpulse_${VERSION}_*.deb"
+    echo "  sudo dpkg -i *.deb"
     echo "  sudo apt-get install -f  # Install dependencies if needed"
     
 else
     echo "Error: Package build failed!"
+    echo "Looking for any .deb files in parent directory:"
+    ls -la ../ 2>/dev/null | grep "\.deb$" || echo "No .deb files found"
     exit 1
 fi
