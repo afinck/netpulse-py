@@ -127,20 +127,16 @@
             const savedTheme = localStorage.getItem('netpulse-theme');
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
-                console.log('Applied saved theme:', savedTheme);
                 return;
             }
             
             // Fall back to system preference
             const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            console.log('System theme detection:', isDark ? 'dark' : 'light');
             
             if (isDark) {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                console.log('Applied dark theme');
             } else {
                 document.documentElement.setAttribute('data-theme', 'light');
-                console.log('Applied light theme');
             }
         }
 
@@ -161,17 +157,14 @@
             // Save theme preference to localStorage
             localStorage.setItem('netpulse-theme', newTheme);
             
-            console.log('Manually switched to:', newTheme);
-            console.log('HTML attribute:', document.documentElement.getAttribute('data-theme'));
-            console.log('Saved to localStorage:', newTheme);
             showNotification(`Theme auf ${newTheme === 'dark' ? 'Dunkel' : 'Hell'} umgeschaltet`, 'info');
             
             // Force CSS reload
-            const links = document.querySelectorAll('link[rel="stylesheet"]');
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                link.setAttribute('href', href + '?v=' + Date.now());
-            });
+            setTimeout(() => {
+                document.documentElement.style.display = 'none';
+                document.documentElement.offsetHeight; // Trigger reflow
+                document.documentElement.style.display = '';
+            }, 10);
         }
 
         function toggleAutoRefresh() {

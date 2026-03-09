@@ -31,15 +31,7 @@ debian/.debhelper/
 debian/files
 debian/*.debhelper
 debian/*/DEBIAN/md5sums
-debian/*/DEBIAN/postrm
-*.deb
-*.buildinfo
-*.changes
-netpulse_*.deb
-
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -52,7 +44,6 @@ htmlcov/
 .tox/
 .nox/
 .coverage
-.coverage.*
 .cache
 nosetests.xml
 coverage.xml
@@ -144,6 +135,18 @@ netpulse.log
 logs/
 data/
 config/local.conf
+
+# Build artifacts
+.pybuild/
+debian/*/usr/lib/python*/dist-packages/
+debian/*/usr/bin/netpulse*
+debian/*/DEBIAN/md5sums
+
+# Debian packaging build artifacts
+*.deb
+*.buildinfo
+*.changes
+netpulse_*.deb
 
 # Security reports and sensitive files
 SECURITY_AUDIT_REPORT.md
