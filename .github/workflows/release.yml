@@ -109,20 +109,45 @@ jobs:
         prerelease: false
         name: Release ${{ github.ref_name }}
         body: |
-          ## Release ${{ github.ref_name }}
+          ## 🛡️ Release ${{ github.ref_name }} - Security-First Network Monitoring Tool
           
-          🚀 **Automatic Release**
+          🚀 **Production-Ready with OWASP Security Implementation**
           
           ### 📦 Downloads
           - **AMD64**: `netpulse_${{ github.ref_name }}_amd64.deb` - For desktops and servers
           - **ARM64**: `netpulse_${{ github.ref_name }}_arm64.deb` - For Raspberry Pi and ARM servers
           
-          ### ✨ Features
-          - Complete CI/CD pipeline with automatic releases
-          - Cross-compilation support for multiple architectures
-          - Database permission fixes for production deployments
-          - Python 3.8-3.13 compatibility testing
-          - Zero-touch release automation
+          ### ✨ Security Features (OWASP Top 10 2021)
+          🔒 **Security Headers**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options
+          🛡️ **Rate Limiting**: API endpoints with different limits (Test: 10/min, Config: 20/hour)
+          🔍 **Input Validation**: Strict validation against injection attacks
+          📝 **Security Logging**: IP tracking and event monitoring
+          🔐 **Secret Management**: Automatic secure secret key generation
+          🔒 **File Permissions**: Secure permissions (Database: 600, Config: 640)
+          🛡️ **Security Audit Tool**: Automated vulnerability scanning
+          
+          ### 🎨 UI/UX Improvements
+          📱 **Mobile Layout Fixes**: Responsive design and footer improvements
+          🎨 **Footer Design**: Glassmorphism effect with gradient background
+          📊 **Statistics Enhancement**: Icons and abbreviations for mobile readability
+          🔄 **Rolling Time Periods**: 7/30/365 days instead of calendar periods
+          🎨 **Theme Persistence**: Theme selection survives page reloads
+          
+          ### 🔧 Technical Improvements
+          🔧 **Timer Helper Script Fix**: Correct systemd calendar format for multi-hour intervals
+          📦 **Dependencies**: Flask-Talisman, Flask-Limiter, psutil, pip-audit
+          📋 **Documentation**: Complete security documentation and installation guide
+          🔒 **CSP Fixes**: Resolved Content Security Policy for Chart.js functionality
+          
+          ### 🐛 Bug Fixes
+          🐛 **Chart Display**: Fixed CSP blocking inline JavaScript and CDN connections
+          🐛 **Canvas Rendering**: Fixed canvas height and responsive display
+          🐛 **Data Loading**: Restored API data loading with proper error handling
+          
+          ### 🧹 Code Cleanup
+          - Removed duplicate templates/ and static/ directories
+          - Removed debug scripts and development artifacts
+          - Clean, production-ready codebase (29 files total)
           
           ### 🔧 Installation
           ```bash
@@ -131,16 +156,25 @@ jobs:
           sudo dpkg -i netpulse_${{ github.ref_name }}_arm64.deb  # For Raspberry Pi
           sudo dpkg -i netpulse_${{ github.ref_name }}_amd64.deb  # For desktops/servers
           sudo apt-get install -f  # Install dependencies if needed
+          
+          # Security hardening is automatic during installation
+          # Run security audit with: python3 /usr/lib/python3/dist-packages/netpulse/security/security_check.py
           ```
           
-          ### 🎯 What's Fixed
-          - Database schema issues resolved
-          - Missing imports added (os, timedelta)
-          - Static CSS file for web interface
-          - Python path wildcard compatibility
-          - Module installation fixes
+          ### 📋 Files Added
+          - `SECURITY_INSTALLATION.md`: Complete security installation guide
+          - `security/security_config.py`: Security configuration utilities
+          - `security/security_check.py`: Automated security auditor
+          - `debian/netpulse.postinst`: Post-installation security hardening
+          
+          ### 📊 Dependencies
+          - python3, python3-flask (>= 2.2.2), python3-click (>= 8.1.3)
+          - python3-jinja2 (>= 3.1.0), python3-werkzeug (>= 2.2.2)
+          - python3-pip-audit (for security scanning)
           
           ---
+          
+          🛡️ **Enterprise-Grade Security** | 📱 **Mobile-First Design** | 🚀 **Production-Ready**
           
           🤖 **This release was created automatically by GitHub Actions**
       env:
