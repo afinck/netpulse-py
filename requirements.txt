@@ -11,3 +11,6 @@ Flask-Talisman>=1.0.0
 Flask-Limiter>=3.3.0
 psutil>=5.9.0
 pip-audit>=2.5.0
+# Internationalization dependencies
+Flask-Babel>=3.0.0
+Babel>=2.10.0

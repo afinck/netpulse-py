@@ -12,11 +12,13 @@ from flask import (Flask, flash, jsonify, redirect, render_template, request,
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_babel import Babel, gettext as _
 
 from .config import get_config
 from .database import get_database
 from .speedtest import SpeedtestRunner
 from . import __version__
+from .i18n import babel, get_locale
 
 if os.getenv("NETPULSE_TEST_MODE"):
     # Use simple logging for tests
@@ -49,6 +51,9 @@ else:
 
 # Create Flask app
 app = Flask(__name__)
+
+# Initialize i18n
+babel.init_app(app)
 
 # Initialize config
 config = get_config()

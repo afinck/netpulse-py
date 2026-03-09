@@ -1,0 +1,180 @@
+# English translations for Netpulse
+# Copyright (C) 2026
+# This file is distributed under the same license as the Netpulse package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Netpulse 1.1.2\n"
+"Report-Msgid-Bugs-To: axiomfield@gmail.com\n"
+"POT-Creation-Date: 2026-03-09 17:00+0100\n"
+"PO-Revision-Date: 2026-03-09 17:00+0100\n"
+"Last-Translator: Andreas Finck <axiomfield@gmail.com>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: netpulse/web.py:50
+msgid "Netpulse - Network Monitor"
+msgstr "Netpulse - Network Monitor"
+
+#: netpulse/web.py:51
+msgid "Network monitoring tool for Raspberry Pi"
+msgstr "Network monitoring tool for Raspberry Pi"
+
+#: netpulse/templates/dashboard.html:10
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: netpulse/templates/dashboard.html:15
+msgid "Network Statistics"
+msgstr "Network Statistics"
+
+#: netpulse/templates/dashboard.html:18
+msgid "Last 24 hours"
+msgstr "Last 24 hours"
+
+#: netpulse/templates/dashboard.html:19
+msgid "Measurements"
+msgstr "Measurements"
+
+#: netpulse/templates/dashboard.html:20
+msgid "Avg Download"
+msgstr "Avg Download"
+
+#: netpulse/templates/dashboard.html:21
+msgid "Avg Upload"
+msgstr "Avg Upload"
+
+#: netpulse/templates/dashboard.html:22
+msgid "Avg Latency"
+msgstr "Avg Latency"
+
+#: netpulse/templates/dashboard.html:30
+msgid "Bandwidth"
+msgstr "Bandwidth"
+
+#: netpulse/templates/dashboard.html:33
+msgid "Latency"
+msgstr "Latency"
+
+#: netpulse/templates/dashboard.html:40
+msgid "Day"
+msgstr "Day"
+
+#: netpulse/templates/dashboard.html:41
+msgid "Week"
+msgstr "Week"
+
+#: netpulse/templates/dashboard.html:42
+msgid "Month"
+msgstr "Month"
+
+#: netpulse/templates/dashboard.html:43
+msgid "Year"
+msgstr "Year"
+
+#: netpulse/templates/base.html:85
+msgid "Theme auf %(theme)s umgeschaltet"
+msgstr "Theme switched to %(theme)s"
+
+#: netpulse/templates/base.html:86
+msgid "Auto-Refresh aktiviert"
+msgstr "Auto-Refresh enabled"
+
+#: netpulse/templates/base.html:87
+msgid "Auto-Refresh deaktiviert"
+msgstr "Auto-Refresh disabled"
+
+#: netpulse/templates/base.html:90
+msgid "Settings"
+msgstr "Settings"
+
+#: netpulse/templates/base.html:91
+msgid "History"
+msgstr "History"
+
+#: netpulse/templates/base.html:92
+msgid "Export"
+msgstr "Export"
+
+#: netpulse/templates/base.html:93
+msgid "Security Audit"
+msgstr "Security Audit"
+
+#: netpulse/templates/base.html:94
+msgid "Documentation"
+msgstr "Documentation"
+
+#: netpulse/templates/settings.html:10
+msgid "Settings"
+msgstr "Settings"
+
+#: netpulse/templates/settings.html:15
+msgid "Measurement Interval"
+msgstr "Measurement Interval"
+
+#: netpulse/templates/settings.html:16
+msgid "Test Servers"
+msgstr "Test Servers"
+
+#: netpulse/templates/settings.html:17
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: netpulse/templates/history.html:10
+msgid "History"
+msgstr "History"
+
+#: netpulse/templates/history.html:15
+msgid "Date"
+msgstr "Date"
+
+#: netpulse/templates/history.html:16
+msgid "Download"
+msgstr "Download"
+
+#: netpulse/templates/history.html:17
+msgid "Upload"
+msgstr "Upload"
+
+#: netpulse/templates/history.html:18
+msgid "Latency"
+msgstr "Latency"
+
+#: netpulse/templates/history.html:19
+msgid "Server"
+msgstr "Server"
+
+#: netpulse/templates/export.html:10
+msgid "Export Data"
+msgstr "Export Data"
+
+#: netpulse/templates/export.html:15
+msgid "Export Format"
+msgstr "Export Format"
+
+#: netpulse/templates/export.html:16
+msgid "CSV Export"
+msgstr "CSV Export"
+
+#: netpulse/templates/export.html:17
+msgid "JSON Export"
+msgstr "JSON Export"
+
+#: netpulse/web.py:200
+msgid "Settings saved successfully"
+msgstr "Settings saved successfully"
+
+#: netpulse/web.py:205
+msgid "Error saving settings"
+msgstr "Error saving settings"
+
+#: netpulse/web.py:250
+msgid "Security audit completed"
+msgstr "Security audit completed"
+
+#: netpulse/web.py:255
+msgid "Security audit failed"
+msgstr "Security audit failed"

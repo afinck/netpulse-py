@@ -48,18 +48,45 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            <i class="bi bi-house"></i> Dashboard
+                            <i class="bi bi-house"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('history') }}">
-                            <i class="bi bi-clock-history"></i> Verlauf
+                            <i class="bi bi-clock-history"></i> {{ _('History') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('export') }}">
-                            <i class="bi bi-download"></i> Export
+                            <i class="bi bi-download"></i> {{ _('Export') }}
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i class="bi bi-gear"></i> {{ _('Settings') }}
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Language Switcher -->
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-globe"></i> 
+                            {% if session.language == 'de' %}DE{% elif session.language == 'en' %}EN{% else %}{{ get_locale().upper() }}{% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="?lang=de" onclick="setLanguage('de')">
+                                    🇩🇪 Deutsch
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="?lang=en" onclick="setLanguage('en')">
+                                    🇺🇸 English
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
                 
@@ -148,6 +175,14 @@
 
         // Initialize theme on page load
         detectSystemTheme();
+
+        function setLanguage(lang) {
+            // Set language preference
+            localStorage.setItem('netpulse-language', lang);
+            
+            // Reload page with language parameter
+            window.location.href = window.location.pathname + '?lang=' + lang;
+        }
 
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
