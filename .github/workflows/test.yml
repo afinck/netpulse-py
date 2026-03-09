@@ -27,6 +27,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-cov pytest-mock
+        # Install security dependencies
+        pip install flask-talisman flask-limiter psutil pip-audit
 
     - name: Run unit tests
       run: |
