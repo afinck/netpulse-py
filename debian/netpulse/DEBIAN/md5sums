@@ -26,7 +26,7 @@ ac1a73cb8cc60540add4d436b0584066  usr/lib/python3.11/dist-packages/netpulse/__py
 50a55b5ece4e7bb48c333d143c553130  usr/lib/python3.11/dist-packages/netpulse/static/icons/favicon.svg
 f916ea2b674ce90eecbd1e6ae7e7ee35  usr/lib/python3.11/dist-packages/netpulse/templates/__init__.py
 7cb67f67f81adb86ca2df68cd8181bac  usr/lib/python3.11/dist-packages/netpulse/templates/__pycache__/__init__.cpython-311.pyc
-af5f55deb360112d76d8e73bd036674f  usr/lib/python3.11/dist-packages/netpulse/templates/base.html
+042962e6ca11522da0192deef202c94a  usr/lib/python3.11/dist-packages/netpulse/templates/base.html
 509cf7a9038e434d468a2aa57ae9dd7d  usr/lib/python3.11/dist-packages/netpulse/templates/base_broken.html
 a585b13c25ad1d945de77d9b44e3e7f8  usr/lib/python3.11/dist-packages/netpulse/templates/dashboard.html
 a9bf1fbd41fd2e921b81414fea4de76b  usr/lib/python3.11/dist-packages/netpulse/templates/export.html

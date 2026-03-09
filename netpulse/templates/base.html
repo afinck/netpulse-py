@@ -123,6 +123,15 @@
 
         // System theme detection
         function detectSystemTheme() {
+            // Check if user has manually set a theme preference
+            const savedTheme = localStorage.getItem('netpulse-theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                console.log('Applied saved theme:', savedTheme);
+                return;
+            }
+            
+            // Fall back to system preference
             const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             console.log('System theme detection:', isDark ? 'dark' : 'light');
             
@@ -148,8 +157,13 @@
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Save theme preference to localStorage
+            localStorage.setItem('netpulse-theme', newTheme);
+            
             console.log('Manually switched to:', newTheme);
             console.log('HTML attribute:', document.documentElement.getAttribute('data-theme'));
+            console.log('Saved to localStorage:', newTheme);
             showNotification(`Theme auf ${newTheme === 'dark' ? 'Dunkel' : 'Hell'} umgeschaltet`, 'info');
             
             // Force CSS reload
