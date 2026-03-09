@@ -8,7 +8,10 @@ import os
 from datetime import datetime
 
 from flask import (Flask, flash, jsonify, redirect, render_template, request,
-                   send_file)
+                   send_file, session)
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from .config import get_config
 from .database import get_database
@@ -50,6 +53,59 @@ app = Flask(__name__)
 # Initialize config
 config = get_config()
 app.secret_key = config.get("web.secret_key", "change-me-in-production")
+
+# Security headers and CSP
+if not os.getenv("NETPULSE_TEST_MODE"):
+    # Enable security headers in production
+    csp = {
+        'default-src': '\'self\'',
+        'script-src': [
+            '\'self\'',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+            '\'unsafe-inline\''
+        ],
+        'style-src': [
+            '\'self\'',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+            '\'unsafe-inline\''
+        ],
+        'img-src': [
+            '\'self\'',
+            'data:'
+        ],
+        'connect-src': [
+            '\'self\'',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com'
+        ],
+        'font-src': [
+            '\'self\'',
+            'https://cdn.jsdelivr.net'
+        ],
+        'object-src': '\'none\'',
+        'media-src': '\'self\'',
+        'frame-src': '\'none\''
+    }
+    
+    Talisman(app, 
+             force_https=os.getenv("FORCE_HTTPS", "false").lower() == "true",
+             strict_transport_security=True,
+             content_security_policy=csp,
+             referrer_policy='strict-origin-when-cross-origin',
+             feature_policy={
+                 'geolocation': '\'none\'',
+                 'camera': '\'none\'',
+                 'microphone': '\'none\''
+             })
+
+# Rate limiting
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 # Ensure necessary directories exist (only in production)
 if not os.getenv("NETPULSE_TEST_MODE"):
@@ -265,13 +321,23 @@ def api_data():
 
 
 @app.route("/api/test", methods=["POST"])
+@limiter.limit("10 per minute")
 def api_test():
     """API endpoint to run a test"""
     try:
-        test_type = (
-            request.json.get("type", "bandwidth") if request.is_json else "bandwidth"
-        )
+        # Validate content type
+        if not request.is_json:
+            logger.warning(f"Invalid content type for test API from {get_remote_address()}")
+            return jsonify({"error": "JSON content type required"}), 400
 
+        test_type = request.json.get("type", "bandwidth")
+        
+        # Input validation
+        if not isinstance(test_type, str) or test_type not in ["bandwidth", "latency"]:
+            logger.warning(f"Invalid test type '{test_type}' from {get_remote_address()}")
+            return jsonify({"error": "Invalid test type. Must be 'bandwidth' or 'latency'"}), 400
+
+        logger.info(f"Running {test_type} test from {get_remote_address()}")
         runner = SpeedtestRunner()
         success = runner.run_measurement(test_type)
 
@@ -283,23 +349,30 @@ def api_test():
             return jsonify({"success": False, "error": "Test fehlgeschlagen"})
 
     except Exception as e:
-        logger.error(f"Error running test: {e}")
-        return jsonify({"success": False, "error": str(e)}), 500
+        logger.error(f"Error running test from {get_remote_address()}: {e}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 @app.route("/api/stats")
+@limiter.limit("100 per hour")
 def api_stats():
     """API endpoint for statistics"""
     try:
-        db = get_database()
-
+        # Input validation for period parameter
         period = request.args.get("period", "day")
+        valid_periods = ["day", "week", "month", "year"]
+        
+        if period not in valid_periods:
+            logger.warning(f"Invalid period '{period}' requested from {get_remote_address()}")
+            return jsonify({"error": f"Invalid period. Must be one of: {', '.join(valid_periods)}"}), 400
+        
+        db = get_database()
         stats = db.get_statistics(period)
         return jsonify(stats)
 
     except Exception as e:
-        logger.error(f"Error getting stats: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error getting stats from {get_remote_address()}: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @app.route("/api/health")
@@ -358,19 +431,21 @@ def api_config_get():
 
 
 @app.route("/api/config", methods=["POST"])
+@limiter.limit("20 per hour")
 def api_config_set():
     """API endpoint to update configuration"""
     try:
+        # Validate content type
         if not request.is_json:
+            logger.warning(f"Invalid content type for config API from {get_remote_address()}")
             return jsonify({"error": "JSON data required"}), 400
 
         data = request.get_json()
         if not isinstance(data, dict):
+            logger.warning(f"Invalid JSON format from {get_remote_address()}")
             return jsonify({"error": "Invalid JSON format - object required"}), 400
         
         config = get_config()
-
-        # Check if interval is being changed
         old_interval = config.get("measurement.interval_minutes", 15)
         new_interval = old_interval
 
@@ -378,6 +453,7 @@ def api_config_set():
         if "measurement" in data:
             measurement_config = data["measurement"]
             if not isinstance(measurement_config, dict):
+                logger.warning(f"Invalid measurement config from {get_remote_address()}")
                 return jsonify({"error": "measurement section must be an object"}), 400
                 
             if "interval_minutes" in measurement_config:
@@ -387,6 +463,7 @@ def api_config_set():
                     or new_interval < 1
                     or new_interval > 1440
                 ):
+                    logger.warning(f"Invalid interval {new_interval} from {get_remote_address()}")
                     return (
                         jsonify(
                             {
@@ -396,10 +473,12 @@ def api_config_set():
                         400,
                     )
                 config.set("measurement.interval_minutes", new_interval)
+                logger.info(f"Interval changed from {old_interval} to {new_interval} by {get_remote_address()}")
 
             if "timeout_seconds" in measurement_config:
                 timeout = measurement_config["timeout_seconds"]
                 if not isinstance(timeout, int) or timeout < 5 or timeout > 300:
+                    logger.warning(f"Invalid timeout {timeout} from {get_remote_address()}")
                     return (
                         jsonify(
                             {
@@ -409,17 +488,18 @@ def api_config_set():
                         400,
                     )
                 config.set("measurement.timeout_seconds", timeout)
+                logger.info(f"Timeout changed to {timeout} by {get_remote_address()}")
 
             if "retry_count" in measurement_config:
                 retry = measurement_config["retry_count"]
                 if not isinstance(retry, int) or retry < 1 or retry > 10:
+                    logger.warning(f"Invalid retry count {retry} from {get_remote_address()}")
                     return (
-                        jsonify(
-                            {"error": "retry_count must be an integer between 1 and 10"}
-                        ),
+                        jsonify({"error": "retry_count must be an integer between 1 and 10"}),
                         400,
                     )
                 config.set("measurement.retry_count", retry)
+                logger.info(f"Retry count changed to {retry} by {get_remote_address()}")
 
         # Save configuration
         if config.save():
@@ -458,11 +538,12 @@ def api_config_set():
                     }
                 )
         else:
+            logger.error("Failed to save configuration")
             return jsonify({"error": "Failed to save configuration"}), 500
 
     except Exception as e:
-        logger.error(f"Error updating config: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error updating config from {get_remote_address()}: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
 def update_systemd_timer(interval_minutes):

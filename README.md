@@ -18,12 +18,23 @@ Dieses Projekt ist unter der [MIT License](LICENSE) lizenziert.
 - ✅ Manuelles Testen über Webinterface und Kommandozeile
 - ✅ **Web-basierte Konfiguration** für Messintervall, Timeout und Wiederholungsversuche
 - ✅ **Automatische SystemD-Timer-Aktualisierung** bei Konfigurationsänderungen
+- ✅ **Mobile-optimiertes Interface** mit verbesserten Layout und Footer
+- ✅ **Rolling Zeitperioden** (letzten 7/30/365 Tage statt Kalenderwochen)
+- ✅ **Theme-Persistenz** - gewähltes Theme bleibt über Seiten-Reloads hinweg erhalten
+- ✅ **Comprehensive Security Features**:
+  - 🔒 OWASP-konforme Security Headers (CSP, HSTS, X-Frame-Options)
+  - 🛡️ Rate Limiting für API-Endpunkte zum Schutz vor Missbrauch
+  - 🔍 Strikte Input Validation gegen Injection-Angriffe
+  - 📝 Security Logging mit IP-Tracking und Event-Monitoring
+  - 🔐 Automatische Secret-Key-Generierung bei Installation
+  - 🔒 Sichere File Permissions (Database: 600, Config: 640)
+  - 🛡️ Automatisierter Security Audit für Schwachstellen-Erkennung
 
 ## Installation
 
 ```bash
 # DEB-Paket installieren
-sudo dpkg -i netpulse_1.0.0_arm64.deb
+sudo dpkg -i netpulse_1.1.1_arm64.deb
 
 # Abhängigkeiten installieren (falls nötig)
 sudo apt-get install -f
@@ -32,6 +43,12 @@ sudo apt-get install -f
 sudo systemctl enable --now netpulse.timer
 sudo systemctl enable --now netpulse-web
 ```
+
+> 📋 **Hinweis**: Die Installation konfiguriert automatisch Security-Features:
+> - Generiert einen sicheren Secret Key
+> - Setzt sichere File Permissions
+> - Aktiviert Security Headers und Rate Limiting
+> - Führt einen automatischen Security Audit durch
 
 ## Verwendung
 
@@ -142,6 +159,42 @@ make lint
 # Code formatieren
 make format
 ```
+
+## 🛡️ Security
+
+Netpulse implementiert umfassende Security-Maßnahmen nach OWASP Top 10 2021 Standards:
+
+### Automatische Security-Features
+- **🔒 Security Headers**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options
+- **🛡️ Rate Limiting**: API-Endpunkte sind gegen Missbrauch geschützt
+- **🔍 Input Validation**: Strikte Validierung gegen Injection-Angriffe
+- **📝 Security Logging**: IP-Tracking und Event-Monitoring
+- **🔐 Secret Management**: Automatische Generierung sicherer Secret Keys
+- **🔒 File Permissions**: Sichere Berechtigungen für Datenbank und Konfiguration
+
+### Security Audit
+```bash
+# Automatischer Security Check
+python3 /usr/lib/python3/dist-packages/netpulse/security/security_check.py
+
+# Manuelle Überprüfung
+curl -I http://localhost:8080/  # Security Headers prüfen
+```
+
+### Security Best Practices
+- **🔍 Regelmäßige Audits**: Wöchentliche Security-Scans empfehlen
+- **📦 Dependency Updates**: Monatliche Sicherheits-Updates
+- **🔐 HTTPS**: Reverse Proxy mit SSL/TLS in Produktion
+- **🔥 Firewall**: Netzwerkzugriff beschränken
+
+### Security-Konfiguration
+Die Installation konfiguriert automatisch:
+- Sicheren Secret Key in `/etc/environment`
+- File Permissions (Database: 600, Config: 640)
+- Security Headers und Rate Limiting
+- Post-Installation Security Audit
+
+> 📋 **Details**: Siehe `SECURITY_INSTALLATION.md` für umfassende Security-Anleitung
 
 ## Tests
 

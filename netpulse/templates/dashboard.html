@@ -208,8 +208,14 @@ let bandwidthChart, latencyChart;
 
 function initCharts() {
     // Bandwidth Chart
-    const bandwidthCtx = document.getElementById('bandwidthChart').getContext('2d');
-    bandwidthChart = new Chart(bandwidthCtx, {
+    const bandwidthCtx = document.getElementById('bandwidthChart');
+    if (!bandwidthCtx) {
+        console.error('Bandwidth canvas not found!');
+        return;
+    }
+    
+    const bandwidthCtx2d = bandwidthCtx.getContext('2d');
+    bandwidthChart = new Chart(bandwidthCtx2d, {
         type: 'line',
         data: {
             labels: [],
@@ -234,8 +240,14 @@ function initCharts() {
     });
 
     // Latency Chart
-    const latencyCtx = document.getElementById('latencyChart').getContext('2d');
-    latencyChart = new Chart(latencyCtx, {
+    const latencyCtx = document.getElementById('latencyChart');
+    if (!latencyCtx) {
+        console.error('Latency canvas not found!');
+        return;
+    }
+    
+    const latencyCtx2d = latencyCtx.getContext('2d');
+    latencyChart = new Chart(latencyCtx2d, {
         type: 'line',
         data: {
             labels: [],
@@ -256,15 +268,19 @@ function loadChartData(period) {
         .then(response => response.json())
         .then(data => {
             // Update bandwidth chart
-            bandwidthChart.data.labels = data.labels;
-            bandwidthChart.data.datasets[0].data = data.download_speeds;
-            bandwidthChart.data.datasets[1].data = data.upload_speeds;
-            bandwidthChart.update();
+            if (bandwidthChart) {
+                bandwidthChart.data.labels = data.labels;
+                bandwidthChart.data.datasets[0].data = data.download_speeds;
+                bandwidthChart.data.datasets[1].data = data.upload_speeds;
+                bandwidthChart.update();
+            }
 
             // Update latency chart
-            latencyChart.data.labels = data.labels;
-            latencyChart.data.datasets[0].data = data.latencies;
-            latencyChart.update();
+            if (latencyChart) {
+                latencyChart.data.labels = data.labels;
+                latencyChart.data.datasets[0].data = data.latencies;
+                latencyChart.update();
+            }
         })
         .catch(error => {
             console.error('Error loading chart data:', error);

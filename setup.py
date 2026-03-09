@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="netpulse",
-    version="1.1.1",
+    version="1.1.2",
     description="Network monitoring tool for Raspberry Pi",
     author="Vector",
     packages=find_packages(),
@@ -13,6 +13,9 @@ setup(
         "click>=8.1.3", 
         "Jinja2>=3.1.0",
         "Werkzeug>=2.2.2",
+        "Flask-Talisman>=1.0.0",
+        "Flask-Limiter>=3.3.0",
+        "psutil>=5.9.0",
     ],
     python_requires=">=3.8",
     entry_points={

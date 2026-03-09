@@ -2,6 +2,71 @@
 
 Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
 
+## [1.1.2] - 2026-03-09
+
+### 🛡️ Security Features (OWASP Top 10 2021)
+- **Comprehensive Security Implementation**: Umfassende Security-Maßnahmen nach OWASP-Standards
+  - **🔒 Security Headers**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Feature-Policy
+  - **🛡️ Rate Limiting**: API-Endpunkte mit unterschiedlichen Limits (Test: 10/min, Config: 20/hour)
+  - **🔍 Input Validation**: Strikte Validierung gegen Injection-Angriffe (SQLi, XSS, CSRF)
+  - **📝 Security Logging**: IP-Tracking und Event-Monitoring mit sensitiven Daten-Filterung
+  - **🔐 Secret Management**: Automatische Generierung sicherer Secret Keys bei Installation
+  - **🔒 File Permissions**: Sichere Berechtigungen (Database: 600, Config: 640, Directories: 750)
+- **Security Audit Tool**: Automatisierter Security-Check mit Schwachstellen-Erkennung
+  - Prüft Secret Keys, File Permissions, Network Exposure, Dependencies
+  - Generiert detaillierte Reports mit Prioritäten und Empfehlungen
+  - Exit-Codes basierend auf Schweregrad (Critical: 2, High: 1, Medium: 0)
+- **Post-Installation Security Hardening**: Automatische Security-Konfiguration bei Installation
+  - Secret Key Generierung und Speicherung in `/etc/environment`
+  - Sichere File Permissions und Ownership
+  - Automatischer Security Audit nach Installation
+- **Security Dependencies**: Flask-Talisman, Flask-Limiter, psutil, pip-audit
+
+### 🎨 UI/UX Improvements
+- **Mobile Layout Fixes**: Verbessertes mobiles Layout und Footer-Design
+  - Tiles nicht mehr zu weit rechts im Header
+  - Statistiken-Tabelle vollständig sichtbar
+  - Footer mit Glassmorphismus-Effekt und Gradient
+  - Responsive CSS mit Media Queries für mobile Geräte
+- **Footer Readability**: Behebung von Lesbarkeitsproblemen im Hellmodus
+  - Transparenter Card-Hintergrund mit Blur-Effekt
+  - Weiße Schrift auf transparentem Hintergrund lesbar
+  - Dark Mode Support mit angepassten Farben
+- **Statistics Table Enhancement**: Icons und Abkürzungen für bessere mobile Lesbarkeit
+  - Min/Ø/Max mit Icons (arrow-down-circle, dash-circle, arrow-up-circle)
+  - Kompakte Darstellung statt voller Text
+- **Rolling Time Periods**: Logischere Zeitperioden statt Kalender-basiert
+  - "7 Tage" statt Kalenderwoche (Montag-Sonntag)
+  - "30 Tage" statt Kalendermonat
+  - "365 Tage" statt Kalenderjahr
+  - Rolling periods für intuitive Datenanalyse
+
+### 🔧 Technical Improvements
+- **Theme Persistence**: Theme-Auswahl bleibt über Seiten-Reloads erhalten
+  - localStorage Speicherung für Theme-Präferenzen
+  - Vorrang vor System-Präferenz bei manueller Auswahl
+  - Funktioniert mit Auto-Refresh (alle 60 Sekunden)
+- **Timer Helper Script Fix**: Korrektur für Multi-Stunden Intervalle
+  - Fix für systemd `OnCalendar` Format bei Intervallen > 60 Minuten
+  - Korrekte Generierung von `*-*-* 00/HOURS:00:00` statt `*-*-* */HOURS:00:00`
+  - Unterstützung für alle Intervalle von 1-1440 Minuten
+
+### 📚 Documentation
+- **Security Documentation**: Umfassende Security-Dokumentation
+  - `SECURITY_INSTALLATION.md`: Detaillierte Security-Anleitung
+  - `SECURITY_AUDIT_REPORT.md`: OWASP Security Audit Report (in .gitignore)
+  - `security/security_config.py`: Security Konfigurations-Utilities
+  - `security/security_check.py`: Automatisierter Security Auditor
+- **README.md Updates**: Security-Sektion mit allen Features und Best Practices
+- **.gitignore**: Security-Reports und sensible Dateien ausgeschlossen
+
+### 🔧 Dependencies
+- **New Security Packages**: Flask-Talisman, Flask-Limiter, psutil, pip-audit
+- **Dependency Scanning**: Automatischer Scan auf bekannte Schwachstellen
+- **Version Updates**: Aktualisierte Abhängigkeiten mit Security-Fixes
+
+---
+
 ## [1.1.0] - 2026-03-07
 
 ### ✨ Features

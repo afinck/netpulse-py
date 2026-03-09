@@ -144,3 +144,9 @@ netpulse.log
 logs/
 data/
 config/local.conf
+
+# Security reports and sensitive files
+SECURITY_AUDIT_REPORT.md
+*.security
+security_reports/
+*.audit
