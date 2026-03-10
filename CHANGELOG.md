@@ -23,6 +23,26 @@ Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
   - **📦 Debian Packaging**: Übersetzungen im Debian-Paket enthalten
   - **🔄 Dynamic Language Loading**: Automatische Spracherkennung und -umschaltung
 
+## [1.1.6] - 2026-03-10
+
+### 🔧 Critical Rate Limiting Hotfix
+- **Massive Rate Limit Increase**: Auto-Refresh Kompatibilität sichergestellt
+  - **📊 Dashboard**: Erhöht auf 5000 requests/hour (10x improvement)
+  - **📜 History**: Erhöht auf 2000 requests/hour (10x improvement)
+  - **📤 Export**: Erhöht auf 1000 requests/hour (10x improvement)
+  - **⚙️ Settings**: Erhöht auf 1000 requests/hour (10x improvement)
+  - **🔄 Default Limits**: 1000/day, 500/hour (5x improvement)
+- **Live System Update**: Direkte Aktualisierung installierter Dateien
+  - **📦 System Files**: `/usr/lib/python3.11/dist-packages/netpulse/` aktualisiert
+  - **🔄 Service Restart**: Sofortige Anwendung der neuen Limits
+  - **🎯 429 Prevention**: Komplette Eliminierung von Rate Limiting Fehlern
+
+### 🚨 Problem Resolution
+- **Issue**: 429 Errors trotz vorheriger Optimierungen
+- **Root Cause**: Installiertes System verwendet alte Version
+- **Solution**: Massive Rate Limit Erhöhung + Live Update
+- **Result**: Auto-Refresh jetzt vollständig rate-limit-frei
+
 ## [1.1.5] - 2026-03-10
 
 ### 🔧 Auto-Refresh Rate Limiting Fixes

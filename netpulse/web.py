@@ -120,7 +120,7 @@ if not os.getenv("NETPULSE_TEST_MODE"):
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["1000 per day", "500 per hour"]  # Increased from 200/50
 )
 
 # Ensure necessary directories exist (only in production)
@@ -153,7 +153,7 @@ def test():
 
 
 @app.route("/")
-@limiter.limit("2000 per hour")
+@limiter.limit("5000 per hour")  # Massive increase for auto-refresh
 def dashboard():
     """Main dashboard page"""
     try:
@@ -196,7 +196,7 @@ def dashboard():
 
 
 @app.route("/history")
-@limiter.limit("800 per hour")
+@limiter.limit("2000 per hour")  # Massive increase for auto-refresh
 def history():
     """History page with all measurements"""
     try:
@@ -249,14 +249,14 @@ def history():
 
 
 @app.route("/export")
-@limiter.limit("400 per hour")
+@limiter.limit("1000 per hour")  # Massive increase for auto-refresh
 def export():
     """Export page"""
     return render_template("export.html", version=__version__)
 
 
 @app.route("/settings")
-@limiter.limit("400 per hour")
+@limiter.limit("1000 per hour")  # Massive increase for auto-refresh
 def settings():
     """Settings page"""
     return render_template("settings.html", version=__version__)
