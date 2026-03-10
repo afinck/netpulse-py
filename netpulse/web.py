@@ -153,6 +153,7 @@ def test():
 
 
 @app.route("/")
+@limiter.limit("500 per hour")
 def dashboard():
     """Main dashboard page"""
     try:
@@ -195,6 +196,7 @@ def dashboard():
 
 
 @app.route("/history")
+@limiter.limit("200 per hour")
 def history():
     """History page with all measurements"""
     try:
@@ -247,12 +249,14 @@ def history():
 
 
 @app.route("/export")
+@limiter.limit("100 per hour")
 def export():
     """Export page"""
     return render_template("export.html", version=__version__)
 
 
 @app.route("/settings")
+@limiter.limit("100 per hour")
 def settings():
     """Settings page"""
     return render_template("settings.html", version=__version__)

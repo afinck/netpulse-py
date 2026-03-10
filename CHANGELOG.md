@@ -23,6 +23,20 @@ Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
   - **📦 Debian Packaging**: Übersetzungen im Debian-Paket enthalten
   - **🔄 Dynamic Language Loading**: Automatische Spracherkennung und -umschaltung
 
+## [1.1.3] - 2026-03-10
+
+### 🔧 API Rate Limiting Fixes
+- **Enhanced Rate Limits**: Optimierte Rate Limits für API und Web Endpoints
+  - **📊 Dashboard**: Erhöht auf 500 requests/hour (statt 50)
+  - **📜 History**: Erhöht auf 200 requests/hour (statt 50)
+  - **📤 Export**: Erhöht auf 100 requests/hour (statt 50)
+  - **⚙️ Settings**: Erhöht auf 100 requests/hour (statt 50)
+  - **📈 API Stats**: 100 requests/hour (unverändert)
+  - **🚀 API Test**: 10 requests/minute (unverändert)
+  - **🔧 API Config**: 20 requests/hour (unverändert)
+- **429 Error Prevention**: Behebung von "Too Many Requests" Fehlern bei API Testing
+- **Improved API Testing**: Bessere Unterstützung für externe API Testing Tools
+
 ### 🛡️ Security Features (OWASP Top 10 2021)
 - **Comprehensive Security Implementation**: Umfassende Security-Maßnahmen nach OWASP-Standards
   - **🔒 Security Headers**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Feature-Policy
