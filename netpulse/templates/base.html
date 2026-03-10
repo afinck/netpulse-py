@@ -213,7 +213,7 @@
             if (refreshInterval) clearInterval(refreshInterval);
             refreshInterval = setInterval(() => {
                 window.location.reload();
-            }, 60000); // Refresh every minute
+            }, 300000); // Refresh every 5 minutes (reduced from 1 minute)
         }
 
         function stopAutoRefresh() {
@@ -229,7 +229,13 @@
                 .then(data => {
                     if (data.success) {
                         showNotification('Test gestartet', 'success');
-                        setTimeout(() => window.location.reload(), 5000);
+                        // Remove auto-reload after test to avoid rate limiting
+                        setTimeout(() => {
+                            if (autoRefresh) {
+                                // Only reload if auto-refresh is enabled, and wait longer
+                                window.location.reload();
+                            }
+                        }, 10000); // Increased from 5000ms to 10000ms
                     } else {
                         showNotification('Test fehlgeschlagen: ' + data.error, 'danger');
                     }

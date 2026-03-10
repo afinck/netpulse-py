@@ -23,7 +23,27 @@ Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
   - **📦 Debian Packaging**: Übersetzungen im Debian-Paket enthalten
   - **🔄 Dynamic Language Loading**: Automatische Spracherkennung und -umschaltung
 
-## [1.1.3] - 2026-03-10
+## [1.1.5] - 2026-03-10
+
+### 🔧 Auto-Refresh Rate Limiting Fixes
+- **Optimized Rate Limits**: Massive Erhöhung der Limits für Auto-Refresh Kompatibilität
+  - **📊 Dashboard**: Erhöht auf 2000 requests/hour (4x improvement)
+  - **📜 History**: Erhöht auf 800 requests/hour (4x improvement)
+  - **📤 Export**: Erhöht auf 400 requests/hour (4x improvement)
+  - **⚙️ Settings**: Erhöht auf 400 requests/hour (4x improvement)
+- **Auto-Refresh Optimization**: Refresh-Intervall von 1 Minute auf 5 Minuten erhöht
+  - **🔄 Reduced Frequency**: Weniger Rate Limiting durch längere Intervalle
+  - **📱 Better UX**: Weniger ständiges Neuladen für bessere Benutzererfahrung
+- **Test Execution Optimization**: Test-Reload verzögert auf 10 Sekunden
+  - **🚀 Smart Reload**: Nur bei aktiviertem Auto-Refresh neu laden
+  - **⏱️ Reduced Burst**: Weniger aufeinanderfolgende Requests
+
+### 🎯 Problem Analysis
+- **Issue**: Auto-Refresh alle 60 Sekunden löste 429 "Too Many Requests" aus
+- **Root Cause**: Rate Limits waren für ständiges Webinterface-Neuladen zu niedrig
+- **Solution**: Limits massiv erhöht und Refresh-Intervall optimiert
+
+## [1.1.4] - 2026-03-10
 
 ### 🔧 API Rate Limiting Fixes
 - **Enhanced Rate Limits**: Optimierte Rate Limits für API und Web Endpoints
