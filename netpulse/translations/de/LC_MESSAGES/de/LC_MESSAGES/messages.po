@@ -1,180 +1,266 @@
 # German translations for Netpulse
-# Copyright (C) 2026
+# Copyright (C) 2026 Andreas Finck
 # This file is distributed under the same license as the Netpulse package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Netpulse 1.1.2\n"
 "Report-Msgid-Bugs-To: axiomfield@gmail.com\n"
-"POT-Creation-Date: 2026-03-09 17:00+0100\n"
-"PO-Revision-Date: 2026-03-09 17:00+0100\n"
+"POT-Creation-Date: 2026-03-09 17:57+0100\n"
+"PO-Revision-Date: 2026-03-09 17:57+0100\n"
 "Last-Translator: Andreas Finck <axiomfield@gmail.com>\n"
-"Language-Team: German\n"
+"Language-Team: de <LL@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: netpulse/web.py:50
-msgid "Netpulse - Network Monitor"
-msgstr "Netpulse - Netzwerk Monitor"
+msgid "Overview"
+msgstr "Überblick"
 
-#: netpulse/web.py:51
-msgid "Network monitoring tool for Raspberry Pi"
-msgstr "Netzwerk-Monitoring-Tool für Raspberry Pi"
+msgid "Network Dashboard"
+msgstr "Netzwerk-Dashboard"
 
-#: netpulse/templates/dashboard.html:10
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: netpulse/templates/dashboard.html:15
-msgid "Network Statistics"
-msgstr "Netzwerk-Statistiken"
-
-#: netpulse/templates/dashboard.html:18
-msgid "Last 24 hours"
-msgstr "Letzte 24 Stunden"
-
-#: netpulse/templates/dashboard.html:19
-msgid "Measurements"
-msgstr "Messungen"
-
-#: netpulse/templates/dashboard.html:20
-msgid "Avg Download"
-msgstr "Ø Download"
-
-#: netpulse/templates/dashboard.html:21
-msgid "Avg Upload"
-msgstr "Ø Upload"
-
-#: netpulse/templates/dashboard.html:22
-msgid "Avg Latency"
-msgstr "Ø Latenz"
-
-#: netpulse/templates/dashboard.html:30
-msgid "Bandwidth"
-msgstr "Bandbreite"
-
-#: netpulse/templates/dashboard.html:33
-msgid "Latency"
-msgstr "Latenz"
-
-#: netpulse/templates/dashboard.html:40
-msgid "Day"
-msgstr "Tag"
-
-#: netpulse/templates/dashboard.html:41
-msgid "Week"
-msgstr "Woche"
-
-#: netpulse/templates/dashboard.html:42
-msgid "Month"
-msgstr "Monat"
-
-#: netpulse/templates/dashboard.html:43
-msgid "Year"
-msgstr "Jahr"
-
-#: netpulse/templates/base.html:85
-msgid "Theme auf %(theme)s umgeschaltet"
-msgstr "Theme auf %(theme)s umgeschaltet"
-
-#: netpulse/templates/base.html:86
-msgid "Auto-Refresh aktiviert"
-msgstr "Auto-Refresh aktiviert"
-
-#: netpulse/templates/base.html:87
-msgid "Auto-Refresh deaktiviert"
-msgstr "Auto-Refresh deaktiviert"
-
-#: netpulse/templates/base.html:90
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: netpulse/templates/base.html:91
-msgid "History"
-msgstr "Verlauf"
-
-#: netpulse/templates/base.html:92
-msgid "Export"
-msgstr "Export"
-
-#: netpulse/templates/base.html:93
-msgid "Security Audit"
-msgstr "Security Audit"
-
-#: netpulse/templates/base.html:94
-msgid "Documentation"
-msgstr "Dokumentation"
-
-#: netpulse/templates/settings.html:10
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: netpulse/templates/settings.html:15
-msgid "Measurement Interval"
-msgstr "Messintervall"
-
-#: netpulse/templates/settings.html:16
-msgid "Test Servers"
-msgstr "Test-Server"
-
-#: netpulse/templates/settings.html:17
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: netpulse/templates/history.html:10
-msgid "History"
-msgstr "Verlauf"
-
-#: netpulse/templates/history.html:15
-msgid "Date"
-msgstr "Datum"
-
-#: netpulse/templates/history.html:16
 msgid "Download"
 msgstr "Download"
 
-#: netpulse/templates/history.html:17
 msgid "Upload"
 msgstr "Upload"
 
-#: netpulse/templates/history.html:18
 msgid "Latency"
 msgstr "Latenz"
 
-#: netpulse/templates/history.html:19
+msgid "No Data"
+msgstr "Keine Daten"
+
+msgid "Last Measurement"
+msgstr "Letzte Messung"
+
+msgid "Day"
+msgstr "Tag"
+
+msgid "Week"
+msgstr "Woche"
+
+msgid "Month"
+msgstr "Monat"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "History"
+msgstr "Verlauf"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Period Selection"
+msgstr "Zeitauswahl"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "7 Days"
+msgstr "7 Tage"
+
+msgid "30 Days"
+msgstr "30 Tage"
+
+msgid "365 Days"
+msgstr "365 Tage"
+
+msgid "Bandwidth"
+msgstr "Bandbreite"
+
+msgid "Statistics"
+msgstr "Statistiken"
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Toggle Theme"
+msgstr "Theme umschalten"
+
+msgid "Run Test"
+msgstr "Test jetzt ausführen"
+
+msgid "Auto-Refresh"
+msgstr "Auto-Refresh"
+
+msgid "Metric"
+msgstr "Metrik"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "Download (Mbit/s)"
+msgstr "Download (Mbit/s)"
+
+msgid "Upload (Mbit/s)"
+msgstr "Upload (Mbit/s)"
+
+msgid "Latency (ms)"
+msgstr "Latenz (ms)"
+
+msgid "Network Monitoring for Raspberry Pi"
+msgstr "Netzwerk-Monitoring für Raspberry Pi"
+
+msgid "Measurement History"
+msgstr "Messverlauf"
+
+msgid "Period"
+msgstr "Zeitraum"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "Last 7 Days"
+msgstr "Letzte 7 Tage"
+
+msgid "Last 30 Days"
+msgstr "Letzte 30 Tage"
+
+msgid "Last 365 Days"
+msgstr "Letzte 365 Tage"
+
+msgid "Test Type"
+msgstr "Test-Typ"
+
+msgid "Count"
+msgstr "Anzahl"
+
+msgid "Timestamp"
+msgstr "Zeitpunkt"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Jitter"
+msgstr "Jitter"
+
 msgid "Server"
 msgstr "Server"
 
-#: netpulse/templates/export.html:10
-msgid "Export Data"
-msgstr "Daten exportieren"
+msgid "Unknown"
+msgstr "Unbekannt"
 
-#: netpulse/templates/export.html:15
-msgid "Export Format"
-msgstr "Export-Format"
+msgid "Measurements"
+msgstr "Messungen"
 
-#: netpulse/templates/export.html:16
+msgid "Measurement Settings"
+msgstr "Messungseinstellungen"
+
+msgid "Measurement Interval (Minutes)"
+msgstr "Messintervall (Minuten)"
+
+msgid "How often measurements are performed (1-1440 minutes)"
+msgstr "Wie oft Messungen durchgeführt werden (1-1440 Minuten)"
+
+msgid "Timeout (Seconds)"
+msgstr "Timeout (Sekunden)"
+
+msgid "Maximum duration of a measurement (5-300 seconds)"
+msgstr "Maximale Dauer einer Messung (5-300 Sekunden)"
+
+msgid "Retry Attempts"
+msgstr "Wiederholungsversuche"
+
+msgid "Number of attempts on failure (1-10)"
+msgstr "Anzahl der Versuche bei Fehlschlag (1-10)"
+
+msgid "Note"
+msgstr "Hinweis"
+
+msgid "Changes to measurement interval require a restart of the systemd timer to take effect."
+msgstr "Änderungen am Messintervall erfordern einen Neustart des systemd-Timers, um wirksam zu werden."
+
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Current Configuration"
+msgstr "Aktuelle Konfiguration"
+
+msgid "minutes"
+msgstr "Minuten"
+
+msgid "seconds"
+msgstr "Sekunden"
+
+msgid "System Status"
+msgstr "Systemstatus"
+
+msgid "System Information"
+msgstr "System-Informationen"
+
+msgid "Timer Status"
+msgstr "Timer-Status"
+
+msgid "Next Measurement"
+msgstr "Nächste Messung"
+
+msgid "Configuration File"
+msgstr "Konfigurationsdatei"
+
+msgid "Filter"
+msgstr "Filtern"
+
+msgid "measurements found"
+msgstr "Messungen gefunden"
+
+msgid "for the period"
+msgstr "für den Zeitraum"
+
+msgid "No measurements found"
+msgstr "Keine Messungen gefunden"
+
+msgid "No measurements found for the selected filters."
+msgstr "Für die ausgewählten Filter wurden keine Messungen gefunden."
+
+msgid "Try a different period or run a test."
+msgstr "Versuche es mit einem anderen Zeitraum oder führe einen Test durch."
+
+msgid "Run test now"
+msgstr "Jetzt testen"
+
+msgid "Data Export"
+msgstr "Daten Export"
+
 msgid "CSV Export"
-msgstr "CSV-Export"
+msgstr "CSV Export"
 
-#: netpulse/templates/export.html:17
-msgid "JSON Export"
-msgstr "JSON-Export"
+msgid "Export all measurements as CSV file for external analysis."
+msgstr "Exportieren Sie alle Messungen als CSV-Datei für die externe Analyse."
 
-#: netpulse/web.py:200
-msgid "Settings saved successfully"
-msgstr "Einstellungen erfolgreich gespeichert"
+msgid "Start Date"
+msgstr "Startdatum"
 
-#: netpulse/web.py:205
-msgid "Error saving settings"
-msgstr "Fehler beim Speichern der Einstellungen"
+msgid "End Date"
+msgstr "Enddatum"
 
-#: netpulse/web.py:250
-msgid "Security audit completed"
-msgstr "Security-Audit abgeschlossen"
+msgid "Back to History"
+msgstr "Zurück zum Verlauf"
 
-#: netpulse/web.py:255
-msgid "Security audit failed"
-msgstr "Security-Audit fehlgeschlagen"
+msgid "Notes"
+msgstr "Hinweise"
+
+msgid "CSV files can be opened in Excel, LibreOffice Calc or other spreadsheet programs"
+msgstr "CSV-Dateien können in Excel, LibreOffice Calc oder anderen Tabellenkalkulationsprogrammen geöffnet werden"
+
+msgid "The export file contains all measurements in the selected period"
+msgstr "Die Export-Datei enthält alle Messungen im gewählten Zeitraum"
+
+msgid "If no period is selected, all measurements will be exported"
+msgstr "Wenn kein Zeitraum ausgewählt ist, werden alle Messungen exportiert"

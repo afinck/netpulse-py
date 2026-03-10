@@ -12,7 +12,7 @@ babel = Babel()
 @babel.localeselector
 def get_locale():
     """
-    Determine the best locale to use:
+    Determine best locale to use:
     1. User's session preference
     2. URL parameter (?lang=en or ?lang=de)
     3. Browser's Accept-Language header
@@ -33,10 +33,19 @@ def get_locale():
     if request.accept_languages:
         browser_lang = request.accept_languages.best_match(['en', 'de'])
         if browser_lang:
+            # Store in session for consistency
+            session['language'] = browser_lang
             return browser_lang
     
     # Default to English
+    session['language'] = 'en'
     return 'en'
+
+# Configure Babel to find translations
+def configure_babel(app):
+    """Configure Babel to find translations"""
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    return babel
 
 def get_translations():
     """

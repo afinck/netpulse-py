@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Export - Netpulse{% endblock %}
+{% block title %}{{ _('Export') }} - Netpulse{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <h1 class="h3 mb-4">
-            <i class="bi bi-download"></i> Daten Export
+            <i class="bi bi-download"></i> {{ _('Data Export') }}
         </h1>
     </div>
 </div>
@@ -15,29 +15,29 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">CSV Export</h5>
+                <h5 class="card-title">{{ _('CSV Export') }}</h5>
                 <p class="card-text">
-                    Exportieren Sie alle Messungen als CSV-Datei für die externe Analyse.
+                    {{ _('Export all measurements as CSV file for external analysis.') }}
                 </p>
                 
                 <form method="GET" action="/export/csv">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="start_date" class="form-label">Startdatum</label>
+                            <label for="start_date" class="form-label">{{ _('Start Date') }}</label>
                             <input type="datetime-local" class="form-control" id="start_date" name="start_date">
                         </div>
                         <div class="col-md-6">
-                            <label for="end_date" class="form-label">Enddatum</label>
+                            <label for="end_date" class="form-label">{{ _('End Date') }}</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date">
                         </div>
                     </div>
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-download"></i> Exportieren
+                            <i class="bi bi-download"></i> {{ _('Export') }}
                         </button>
                         <a href="/history" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Zurück zum Verlauf
+                            <i class="bi bi-arrow-left"></i> {{ _('Back to History') }}
                         </a>
                     </div>
                 </form>
@@ -51,14 +51,14 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-info-circle"></i> Hinweise
+                    <i class="bi bi-info-circle"></i> {{ _('Notes') }}
                 </h5>
             </div>
             <div class="card-body">
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-check-circle text-success"></i> CSV-Dateien können in Excel, LibreOffice Calc oder anderen Tabellenkalkulationsprogrammen geöffnet werden</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Die Export-Datei enthält alle Messungen im gewählten Zeitraum</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Wenn kein Zeitraum ausgewählt ist, werden alle Messungen exportiert</li>
+                    <li><i class="bi bi-check-circle text-success"></i> {{ _('CSV files can be opened in Excel, LibreOffice Calc or other spreadsheet programs') }}
+                    <li><i class="bi bi-check-circle text-success"></i> {{ _('The export file contains all measurements in the selected period') }}
+                    <li><i class="bi bi-check-circle text-success"></i> {{ _('If no period is selected, all measurements will be exported') }}
                 </ul>
             </div>
         </div>

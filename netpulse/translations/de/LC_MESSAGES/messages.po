@@ -23,55 +23,71 @@ msgstr "Netpulse - Netzwerk Monitor"
 msgid "Network monitoring tool for Raspberry Pi"
 msgstr "Netzwerk-Monitoring-Tool für Raspberry Pi"
 
-#: netpulse/templates/dashboard.html:10
+#: netpulse/templates/dashboard.html:3
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: netpulse/templates/dashboard.html:15
+#: netpulse/templates/dashboard.html:9
+msgid "Network Dashboard"
+msgstr "Netzwerk Dashboard"
+
+#: netpulse/templates/dashboard.html:18
+msgid "Download"
+msgstr "Download"
+
+#: netpulse/templates/dashboard.html:19
+msgid "No Data"
+msgstr "Keine Daten"
+
+#: netpulse/templates/dashboard.html:21
+msgid "Last Measurement"
+msgstr "Letzte Messung"
+
+#: netpulse/templates/dashboard.html:22
 msgid "Network Statistics"
 msgstr "Netzwerk-Statistiken"
 
-#: netpulse/templates/dashboard.html:18
+#: netpulse/templates/dashboard.html:25
 msgid "Last 24 hours"
 msgstr "Letzte 24 Stunden"
 
-#: netpulse/templates/dashboard.html:19
+#: netpulse/templates/dashboard.html:26
 msgid "Measurements"
 msgstr "Messungen"
 
-#: netpulse/templates/dashboard.html:20
+#: netpulse/templates/dashboard.html:27
 msgid "Avg Download"
 msgstr "Ø Download"
 
-#: netpulse/templates/dashboard.html:21
+#: netpulse/templates/dashboard.html:28
 msgid "Avg Upload"
 msgstr "Ø Upload"
 
-#: netpulse/templates/dashboard.html:22
+#: netpulse/templates/dashboard.html:29
 msgid "Avg Latency"
 msgstr "Ø Latenz"
 
-#: netpulse/templates/dashboard.html:30
+#: netpulse/templates/dashboard.html:37
 msgid "Bandwidth"
 msgstr "Bandbreite"
 
-#: netpulse/templates/dashboard.html:33
+#: netpulse/templates/dashboard.html:40
 msgid "Latency"
 msgstr "Latenz"
 
-#: netpulse/templates/dashboard.html:40
+#: netpulse/templates/dashboard.html:47
 msgid "Day"
 msgstr "Tag"
 
-#: netpulse/templates/dashboard.html:41
+#: netpulse/templates/dashboard.html:48
 msgid "Week"
 msgstr "Woche"
 
-#: netpulse/templates/dashboard.html:42
+#: netpulse/templates/dashboard.html:49
 msgid "Month"
 msgstr "Monat"
 
-#: netpulse/templates/dashboard.html:43
+#: netpulse/templates/dashboard.html:50
 msgid "Year"
 msgstr "Jahr"
 

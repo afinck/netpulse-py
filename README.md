@@ -28,13 +28,21 @@ Dieses Projekt ist unter der [MIT License](LICENSE) lizenziert.
   - 📝 Security Logging mit IP-Tracking und Event-Monitoring
   - 🔐 Automatische Secret-Key-Generierung bei Installation
   - 🔒 Sichere File Permissions (Database: 600, Config: 640)
-  - 🛡️ Automatisierter Security Audit für Schwachstellen-Erkennung
+- ✅ **Complete Internationalization (i18n)**:
+  - 🌍 Multi-Language Support für Englisch und Deutsch
+  - 🎨 Professional Language Switcher mit Flaggen
+  - 🔄 URL Parameter Support (`?lang=en`/`?lang=de`)
+  - 🌐 Automatische Browser-Spracherkennung
+  - 🇺🇸 Englisch als Default-Sprache
+  - 🔗 Language-Preserving Navigation
+  - 📝 Vollständige Übersetzung aller Templates (Dashboard, History, Settings, Export)
+  - 📦 Gettext-basierte Übersetzungs-Infrastruktur
 
 ## Installation
 
 ```bash
 # DEB-Paket installieren
-sudo dpkg -i netpulse_1.1.1_arm64.deb
+sudo dpkg -i netpulse_1.1.2_arm64.deb
 
 # Abhängigkeiten installieren (falls nötig)
 sudo apt-get install -f

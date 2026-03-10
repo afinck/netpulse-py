@@ -1,6 +1,6 @@
 # English translations for Netpulse
 # Copyright (C) 2026
-# This file is distributed under the same license as the Netpulse package.
+# This file is distributed under the same license as Netpulse package.
 #
 msgid ""
 msgstr ""
@@ -23,55 +23,71 @@ msgstr "Netpulse - Network Monitor"
 msgid "Network monitoring tool for Raspberry Pi"
 msgstr "Network monitoring tool for Raspberry Pi"
 
-#: netpulse/templates/dashboard.html:10
+#: netpulse/templates/dashboard.html:3
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: netpulse/templates/dashboard.html:15
+#: netpulse/templates/dashboard.html:9
+msgid "Network Dashboard"
+msgstr "Network Dashboard"
+
+#: netpulse/templates/dashboard.html:18
+msgid "Last Measurement"
+msgstr "Last Measurement"
+
+#: netpulse/templates/dashboard.html:21
+msgid "Download"
+msgstr "Download"
+
+#: netpulse/templates/dashboard.html:22
+msgid "No Data"
+msgstr "No Data"
+
+#: netpulse/templates/dashboard.html:29
 msgid "Network Statistics"
 msgstr "Network Statistics"
 
-#: netpulse/templates/dashboard.html:18
+#: netpulse/templates/dashboard.html:30
 msgid "Last 24 hours"
 msgstr "Last 24 hours"
 
-#: netpulse/templates/dashboard.html:19
+#: netpulse/templates/dashboard.html:33
 msgid "Measurements"
 msgstr "Measurements"
 
-#: netpulse/templates/dashboard.html:20
+#: netpulse/templates/dashboard.html:34
 msgid "Avg Download"
 msgstr "Avg Download"
 
-#: netpulse/templates/dashboard.html:21
+#: netpulse/templates/dashboard.html:35
 msgid "Avg Upload"
 msgstr "Avg Upload"
 
-#: netpulse/templates/dashboard.html:22
+#: netpulse/templates/dashboard.html:36
 msgid "Avg Latency"
 msgstr "Avg Latency"
 
-#: netpulse/templates/dashboard.html:30
+#: netpulse/templates/dashboard.html:42
 msgid "Bandwidth"
 msgstr "Bandwidth"
 
-#: netpulse/templates/dashboard.html:33
+#: netpulse/templates/dashboard.html:45
 msgid "Latency"
 msgstr "Latency"
 
-#: netpulse/templates/dashboard.html:40
+#: netpulse/templates/dashboard.html:52
 msgid "Day"
 msgstr "Day"
 
-#: netpulse/templates/dashboard.html:41
+#: netpulse/templates/dashboard.html:53
 msgid "Week"
 msgstr "Week"
 
-#: netpulse/templates/dashboard.html:42
+#: netpulse/templates/dashboard.html:54
 msgid "Month"
 msgstr "Month"
 
-#: netpulse/templates/dashboard.html:43
+#: netpulse/templates/dashboard.html:55
 msgid "Year"
 msgstr "Year"
 

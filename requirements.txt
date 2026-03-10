@@ -14,3 +14,4 @@ pip-audit>=2.5.0
 # Internationalization dependencies
 Flask-Babel>=3.0.0
 Babel>=2.10.0
+Flask-Session>=0.4.0

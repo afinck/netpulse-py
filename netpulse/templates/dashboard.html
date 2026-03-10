@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Netpulse{% endblock %}
+{% block title %}{{ _('Dashboard') }} - Netpulse{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <h1 class="h3 mb-4">
-            <i class="bi bi-speedometer2"></i> Netzwerk Dashboard
+            <i class="bi bi-speedometer2"></i> {{ _('Network Dashboard') }}
         </h1>
     </div>
 </div>
@@ -18,15 +18,15 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">Download</h6>
-                        <h4 class="mb-0">{{ "%.2f"|format(latest.download_speed) if latest else 'Keine Daten' }} Mbit/s</h4>
+                        <h6 class="card-title">{{ _('Download') }}</h6>
+                        <h4 class="mb-0">{{ "%.2f"|format(latest.download_speed) if latest else _('No Data') }} Mbit/s</h4>
                     </div>
                     <div class="align-self-center">
                         <i class="bi bi-download fs-2"></i>
                     </div>
                 </div>
                 <small class="text-white-50">
-                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                    {{ _('Last Measurement') }}: {{ latest.timestamp.strftime('%H:%M') if latest else _('No Data') }}
                 </small>
             </div>
         </div>
@@ -37,15 +37,15 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">Upload</h6>
-                        <h4 class="mb-0">{{ "%.2f"|format(latest.upload_speed) if latest else 'Keine Daten' }} Mbit/s</h4>
+                        <h6 class="card-title">{{ _('Upload') }}</h6>
+                        <h4 class="mb-0">{{ "%.2f"|format(latest.upload_speed) if latest else _('No Data') }} Mbit/s</h4>
                     </div>
                     <div class="align-self-center">
                         <i class="bi bi-upload fs-2"></i>
                     </div>
                 </div>
                 <small class="text-white-50">
-                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                    {{ _('Last Measurement') }}: {{ latest.timestamp.strftime('%H:%M') if latest else _('No Data') }}
                 </small>
             </div>
         </div>
@@ -56,15 +56,15 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">Latenz</h6>
-                        <h4 class="mb-0">{{ "%.1f"|format(latest.latency) if latest else 'Keine Daten' }} ms</h4>
+                        <h6 class="card-title">{{ _('Latency') }}</h6>
+                        <h4 class="mb-0">{{ "%.1f"|format(latest.latency) if latest else _('No Data') }} ms</h4>
                     </div>
                     <div class="align-self-center">
                         <i class="bi bi-clock fs-2"></i>
                     </div>
                 </div>
                 <small class="text-white-50">
-                    Letzte Messung: {{ latest.timestamp.strftime('%H:%M') if latest else 'Keine Daten' }}
+                    {{ _('Last Measurement') }}: {{ latest.timestamp.strftime('%H:%M') if latest else _('No Data') }}
                 </small>
             </div>
         </div>
@@ -75,7 +75,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">Heute</h6>
+                        <h6 class="card-title">{{ _('Day') }}</h6>
                         <h4 class="mb-0">{{ today_stats.count }}</h4>
                     </div>
                     <div class="align-self-center">
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <small class="text-white-50">
-                    Messungen heute
+                    {{ _('Measurements') }} {{ _('today') if session.language == 'de' else _('today') }}
                 </small>
             </div>
         </div>
@@ -95,12 +95,12 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Zeitauswahl</h5>
+                <h5 class="card-title">{{ _('Period Selection') }}</h5>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary period-btn" data-period="day">Heute</button>
-                    <button type="button" class="btn btn-outline-primary period-btn" data-period="week">7 Tage</button>
-                    <button type="button" class="btn btn-outline-primary period-btn" data-period="month">30 Tage</button>
-                    <button type="button" class="btn btn-outline-primary period-btn" data-period="year">365 Tage</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="day">{{ _('Today') }}</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="week">{{ _('7 Days') }}</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="month">{{ _('30 Days') }}</button>
+                    <button type="button" class="btn btn-outline-primary period-btn" data-period="year">{{ _('365 Days') }}</button>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-graph-up"></i> Bandbreite
+                    <i class="bi bi-graph-up"></i> {{ _('Bandwidth') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -126,7 +126,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-graph-down"></i> Latenz
+                    <i class="bi bi-graph-down"></i> {{ _('Latency') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -142,7 +142,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-table"></i> Statistiken
+                    <i class="bi bi-table"></i> {{ _('Statistics') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -150,27 +150,27 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Metrik</th>
-                                <th><i class="bi bi-arrow-down-circle"></i> Min</th>
+                                <th>{{ _('Metric') }}</th>
+                                <th><i class="bi bi-arrow-down-circle"></i> {{ _('Min') }}</th>
                                 <th><i class="bi bi-dash-circle"></i> Ø</th>
-                                <th><i class="bi bi-arrow-up-circle"></i> Max</th>
+                                <th><i class="bi bi-arrow-up-circle"></i> {{ _('Max') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Download (Mbit/s)</td>
+                                <td>{{ _('Download (Mbit/s)') }}</td>
                                 <td>{{ "%.2f"|format(stats.download_speed.min if stats and stats.get('download_speed') else 0) }}</td>
                                 <td>{{ "%.2f"|format(stats.download_speed.avg if stats and stats.get('download_speed') else 0) }}</td>
                                 <td>{{ "%.2f"|format(stats.download_speed.max if stats and stats.get('download_speed') else 0) }}</td>
                             </tr>
                             <tr>
-                                <td>Upload (Mbit/s)</td>
+                                <td>{{ _('Upload (Mbit/s)') }}</td>
                                 <td>{{ "%.2f"|format(stats.upload_speed.min if stats and stats.get('upload_speed') else 0) }}</td>
                                 <td>{{ "%.2f"|format(stats.upload_speed.avg if stats and stats.get('upload_speed') else 0) }}</td>
                                 <td>{{ "%.2f"|format(stats.upload_speed.max if stats and stats.get('upload_speed') else 0) }}</td>
                             </tr>
                             <tr>
-                                <td>Latenz (ms)</td>
+                                <td>{{ _('Latency (ms)') }}</td>
                                 <td>{{ "%.1f"|format(stats.latency.min if stats and stats.get('latency') else 0) }}</td>
                                 <td>{{ "%.1f"|format(stats.latency.avg if stats and stats.get('latency') else 0) }}</td>
                                 <td>{{ "%.1f"|format(stats.latency.max if stats and stats.get('latency') else 0) }}</td>

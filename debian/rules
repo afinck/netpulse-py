@@ -64,6 +64,10 @@ override_dh_auto_install:
 	# Install sudoers file
 	install -d debian/netpulse/etc/sudoers.d
 	install -m 440 debian/netpulse.sudoers debian/netpulse/etc/sudoers.d/netpulse
+	
+	# Install translation files
+	install -d debian/netpulse/usr/lib/python3/dist-packages/netpulse/translations
+	cp -r netpulse/translations/* debian/netpulse/usr/lib/python3/dist-packages/netpulse/translations/
 
 override_dh_fixperms:
 	dh_fixperms
