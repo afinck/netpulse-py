@@ -1,7 +1,3 @@
-"""
-Internationalization (i18n) support for Netpulse
-"""
-
 from flask import request, session, current_app
 from flask_babel import Babel, gettext, ngettext
 import os
@@ -9,7 +5,6 @@ import os
 # Initialize Babel
 babel = Babel()
 
-@babel.localeselector
 def get_locale():
     """
     Determine best locale to use:
@@ -19,18 +14,18 @@ def get_locale():
     4. Default to 'en'
     """
     # Check URL parameter first
-    if request.args.get('lang'):
+    if request and request.args and request.args.get('lang'):
         lang = request.args.get('lang')
         if lang in ['en', 'de']:
             session['language'] = lang
             return lang
     
     # Check session preference
-    if 'language' in session:
+    if session and 'language' in session:
         return session['language']
     
     # Check browser preference
-    if request.accept_languages:
+    if request and request.accept_languages:
         browser_lang = request.accept_languages.best_match(['en', 'de'])
         if browser_lang:
             # Store in session for consistency
@@ -38,7 +33,8 @@ def get_locale():
             return browser_lang
     
     # Default to English
-    session['language'] = 'en'
+    if session:
+        session['language'] = 'en'
     return 'en'
 
 # Configure Babel to find translations
@@ -51,7 +47,7 @@ def get_translations():
     """
     Get available translations
     """
-    translations_dir = os.path.join(current_app.root_path, 'translations')
+    translations_dir = os.path.join(current_app.root_path, 'translations') if current_app else 'translations'
     if os.path.exists(translations_dir):
         return [d for d in os.listdir(translations_dir) 
                 if os.path.isdir(os.path.join(translations_dir, d))]
