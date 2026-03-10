@@ -156,15 +156,15 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showAlert('Einstellungen erfolgreich gespeichert', 'success');
+                showAlert('{{ _("Settings saved successfully") }}', 'success');
                 loadConfig(); // Reload to update display
             } else {
-                showAlert(data.error || 'Fehler beim Speichern', 'danger');
+                showAlert(data.error || '{{ _("Error saving settings") }}', 'danger');
             }
         })
         .catch(error => {
             console.error('Error saving config:', error);
-            showAlert('Fehler beim Speichern der Einstellungen', 'danger');
+            showAlert('{{ _("Error saving settings") }}', 'danger');
         });
     }
     

@@ -23,6 +23,21 @@ Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
   - **📦 Debian Packaging**: Übersetzungen im Debian-Paket enthalten
   - **🔄 Dynamic Language Loading**: Automatische Spracherkennung und -umschaltung
 
+## [1.1.7] - 2026-03-10
+
+### 🌍 Translation Bug Fix
+- **Settings Success Message**: Englische Übersetzung korrigiert
+  - **🔧 Fixed**: "Einstellungen erfolgreich gespeichert" → "Settings saved successfully"
+  - **🔧 Fixed**: "Fehler beim Speichern" → "Error saving settings"
+  - **🎯 JavaScript Messages**: Jetzt vollständig internationalisiert
+  - **📱 Live Update**: Direkte Aktualisierung des installierten Systems
+
+### 🎯 Problem Resolution
+- **Issue**: Englische Interface zeigte deutsche Success-Messages
+- **Root Cause**: JavaScript Alerts waren hartcodiert auf Deutsch
+- **Solution**: Jinja2 `_()` Template-Funktion für JavaScript Integration
+- **Result**: Komplette Multi-Language Support auch für JavaScript Messages
+
 ## [1.1.6] - 2026-03-10
 
 ### 🔧 Critical Rate Limiting Hotfix
