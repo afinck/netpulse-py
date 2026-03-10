@@ -1,0 +1,266 @@
+# English translations for Netpulse
+# Copyright (C) 2026 Andreas Finck
+# This file is distributed under the same license as the Netpulse package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Netpulse 1.1.2\n"
+"Report-Msgid-Bugs-To: axiomfield@gmail.com\n"
+"POT-Creation-Date: 2026-03-09 17:57+0100\n"
+"PO-Revision-Date: 2026-03-09 17:57+0100\n"
+"Last-Translator: Andreas Finck <axiomfield@gmail.com>\n"
+"Language-Team: en <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Overview"
+msgstr "Overview"
+
+msgid "Network Dashboard"
+msgstr "Network Dashboard"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Upload"
+msgstr "Upload"
+
+msgid "Latency"
+msgstr "Latency"
+
+msgid "No Data"
+msgstr "No Data"
+
+msgid "Last Measurement"
+msgstr "Last Measurement"
+
+msgid "Day"
+msgstr "Day"
+
+msgid "Week"
+msgstr "Week"
+
+msgid "Month"
+msgstr "Month"
+
+msgid "Year"
+msgstr "Year"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "History"
+msgstr "History"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Period Selection"
+msgstr "Period Selection"
+
+msgid "Today"
+msgstr "Today"
+
+msgid "7 Days"
+msgstr "7 Days"
+
+msgid "30 Days"
+msgstr "30 Days"
+
+msgid "365 Days"
+msgstr "365 Days"
+
+msgid "Bandwidth"
+msgstr "Bandwidth"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "User"
+msgstr "User"
+
+msgid "Toggle Theme"
+msgstr "Toggle Theme"
+
+msgid "Run Test"
+msgstr "Run Test"
+
+msgid "Auto-Refresh"
+msgstr "Auto-Refresh"
+
+msgid "Metric"
+msgstr "Metric"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "Download (Mbit/s)"
+msgstr "Download (Mbit/s)"
+
+msgid "Upload (Mbit/s)"
+msgstr "Upload (Mbit/s)"
+
+msgid "Latency (ms)"
+msgstr "Latency (ms)"
+
+msgid "Network Monitoring for Raspberry Pi"
+msgstr "Network Monitoring for Raspberry Pi"
+
+msgid "Measurement History"
+msgstr "Measurement History"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "All"
+msgstr "All"
+
+msgid "Last 7 Days"
+msgstr "Last 7 Days"
+
+msgid "Last 30 Days"
+msgstr "Last 30 Days"
+
+msgid "Last 365 Days"
+msgstr "Last 365 Days"
+
+msgid "Test Type"
+msgstr "Test Type"
+
+msgid "Count"
+msgstr "Count"
+
+msgid "Timestamp"
+msgstr "Timestamp"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Jitter"
+msgstr "Jitter"
+
+msgid "Server"
+msgstr "Server"
+
+msgid "Unknown"
+msgstr "Unknown"
+
+msgid "Measurements"
+msgstr "Measurements"
+
+msgid "Measurement Settings"
+msgstr "Measurement Settings"
+
+msgid "Measurement Interval (Minutes)"
+msgstr "Measurement Interval (Minutes)"
+
+msgid "How often measurements are performed (1-1440 minutes)"
+msgstr "How often measurements are performed (1-1440 minutes)"
+
+msgid "Timeout (Seconds)"
+msgstr "Timeout (Seconds)"
+
+msgid "Maximum duration of a measurement (5-300 seconds)"
+msgstr "Maximum duration of a measurement (5-300 seconds)"
+
+msgid "Retry Attempts"
+msgstr "Retry Attempts"
+
+msgid "Number of attempts on failure (1-10)"
+msgstr "Number of attempts on failure (1-10)"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Changes to measurement interval require a restart of the systemd timer to take effect."
+msgstr "Changes to measurement interval require a restart of the systemd timer to take effect."
+
+msgid "Save Settings"
+msgstr "Save Settings"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Current Configuration"
+msgstr "Current Configuration"
+
+msgid "minutes"
+msgstr "minutes"
+
+msgid "seconds"
+msgstr "seconds"
+
+msgid "System Status"
+msgstr "System Status"
+
+msgid "System Information"
+msgstr "System Information"
+
+msgid "Timer Status"
+msgstr "Timer Status"
+
+msgid "Next Measurement"
+msgstr "Next Measurement"
+
+msgid "Configuration File"
+msgstr "Configuration File"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "measurements found"
+msgstr "measurements found"
+
+msgid "for the period"
+msgstr "for the period"
+
+msgid "No measurements found"
+msgstr "No measurements found"
+
+msgid "No measurements found for the selected filters."
+msgstr "No measurements found for the selected filters."
+
+msgid "Try a different period or run a test."
+msgstr "Try a different period or run a test."
+
+msgid "Run test now"
+msgstr "Run test now"
+
+msgid "Data Export"
+msgstr "Data Export"
+
+msgid "CSV Export"
+msgstr "CSV Export"
+
+msgid "Export all measurements as CSV file for external analysis."
+msgstr "Export all measurements as CSV file for external analysis."
+
+msgid "Start Date"
+msgstr "Start Date"
+
+msgid "End Date"
+msgstr "End Date"
+
+msgid "Back to History"
+msgstr "Back to History"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "CSV files can be opened in Excel, LibreOffice Calc or other spreadsheet programs"
+msgstr "CSV files can be opened in Excel, LibreOffice Calc or other spreadsheet programs"
+
+msgid "The export file contains all measurements in the selected period"
+msgstr "The export file contains all measurements in the selected period"
+
+msgid "If no period is selected, all measurements will be exported"
+msgstr "If no period is selected, all measurements will be exported"

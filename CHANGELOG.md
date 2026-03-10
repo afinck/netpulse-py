@@ -2,7 +2,26 @@
 
 Alle wichtigen Änderungen des Netpulse Projekts werden hier dokumentiert.
 
-## [1.1.2] - 2026-03-09
+## [1.1.2] - 2026-03-10
+
+### 🌍 Internationalization (i18n) Features
+- **Complete Multi-Language Support**: Vollständige Internationalisierung für Englisch und Deutsch
+  - **🌍 Language Switcher**: Professioneller Sprachwechsler mit Flaggen im Header
+  - **🔄 URL Parameter Support**: Sprachumschaltung über `?lang=en`/`?lang=de`
+  - **🌐 Browser Detection**: Automatische Erkennung der Browsersprache
+  - **🇺🇸 English Default**: Englisch als Standardsprache bei neuer Session
+  - **🔗 Language-Preserving Navigation**: Alle Links behalten die Sprache bei
+- **Complete Template Translation**: Alle Templates vollständig übersetzt
+  - **📊 Dashboard**: Statistics, Charts, Period Selection, Metrics
+  - **📜 History**: Measurements Table, Filter Controls, Pagination
+  - **⚙️ Settings**: Configuration Forms, System Status, Save/Reset Actions
+  - **📤 Export**: CSV Export, Date Selection, Help Text
+  - **🎯 Navigation**: Clean Navigation ohne Duplikate
+- **Translation Infrastructure**: Übersetzungs-Infrastruktur
+  - **📝 .po/.mo Files**: Gettext-basierte Übersetzungsdateien
+  - **🔧 Babel Integration**: Flask-Babel für Template-Übersetzungen
+  - **📦 Debian Packaging**: Übersetzungen im Debian-Paket enthalten
+  - **🔄 Dynamic Language Loading**: Automatische Spracherkennung und -umschaltung
 
 ### 🛡️ Security Features (OWASP Top 10 2021)
 - **Comprehensive Security Implementation**: Umfassende Security-Maßnahmen nach OWASP-Standards

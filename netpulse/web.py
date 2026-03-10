@@ -12,11 +12,14 @@ from flask import (Flask, flash, jsonify, redirect, render_template, request,
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_babel import Babel, gettext as _
+from flask_session import Session
 
 from .config import get_config
 from .database import get_database
 from .speedtest import SpeedtestRunner
 from . import __version__
+from .i18n import babel, get_locale
 
 if os.getenv("NETPULSE_TEST_MODE"):
     # Use simple logging for tests
@@ -50,9 +53,22 @@ else:
 # Create Flask app
 app = Flask(__name__)
 
+# Initialize i18n
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = '/usr/lib/python3/dist-packages/netpulse/translations'
+babel.init_app(app)
+
 # Initialize config
 config = get_config()
 app.secret_key = config.get("web.secret_key", "change-me-in-production")
+
+# Configure session
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_FILE_DIR'] = '/tmp/netpulse_sessions'
+
+# Initialize session
+sess = Session(app)
 
 # Security headers and CSP
 if not os.getenv("NETPULSE_TEST_MODE"):
@@ -114,6 +130,26 @@ if not os.getenv("NETPULSE_TEST_MODE"):
     except (PermissionError, OSError):
         # Skip directory creation in environments where we don't have permissions
         pass
+
+
+@app.context_processor
+def inject_locale():
+    """Inject locale functions into templates"""
+    return dict(get_locale=get_locale)
+
+
+@app.route("/test")
+def test():
+    """Test route for debugging"""
+    from flask_babel import gettext as _
+    return {
+        'locale': get_locale(),
+        'session_language': session.get('language'),
+        'url_lang': request.args.get('lang'),
+        'accept_languages': str(request.accept_languages),
+        'test_translation': _('Network Dashboard'),
+        'test_german': _('Period Selection')
+    }
 
 
 @app.route("/")
